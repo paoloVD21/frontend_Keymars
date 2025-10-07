@@ -1,0 +1,18 @@
+.sidebar {
+    width: 16rem;
+    background-color: rgb(31, 41, 55);
+    color: white;
+}
+
+.navigation {
+    margin-top: 1.25rem;
+}
+
+.navLink {
+    display: block;
+    padding: 0.5rem 1rem;
+}
+
+.navLink:hover {
+    background-color: rgb(55, 65, 81);
+}

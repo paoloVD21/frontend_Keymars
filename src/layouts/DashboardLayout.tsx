@@ -1,5 +1,6 @@
-import { Outlet, Link, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
+import { Sidebar } from '../components/ui/Sidebar';
 
 export const DashboardLayout = () => {
     const { user, logout } = useAuthStore();
@@ -12,38 +13,7 @@ export const DashboardLayout = () => {
 
     return (
         <div className="min-h-screen flex">
-            {/* Sidebar */}
-            <aside className="w-64 bg-gray-800 text-white">
-                <nav className="mt-5">
-                    <Link to="/dashboard" className="block px-4 py-2 hover:bg-gray-700">
-                        Dashboard
-                    </Link>
-                    <Link to="/products" className="block px-4 py-2 hover:bg-gray-700">
-                        Productos
-                    </Link>
-                    <Link to="/inventory" className="block px-4 py-2 hover:bg-gray-700">
-                        Inventario
-                    </Link>
-                    <Link to="/suppliers" className="block px-4 py-2 hover:bg-gray-700">
-                        Proveedores
-                    </Link>
-                    <Link to="/alerts" className="block px-4 py-2 hover:bg-gray-700">
-                        Alertas
-                    </Link>
-                    
-                    {/* Menú solo para supervisores */}
-                    {user?.role === 'Supervisor' && (
-                        <>
-                            <Link to="/users" className="block px-4 py-2 hover:bg-gray-700">
-                                Usuarios
-                            </Link>
-                            <Link to="/reports" className="block px-4 py-2 hover:bg-gray-700">
-                                Reportes
-                            </Link>
-                        </>
-                    )}
-                </nav>
-            </aside>
+            <Sidebar user={user} />
 
             {/* Contenido principal */}
             <main className="flex-1 p-8">
