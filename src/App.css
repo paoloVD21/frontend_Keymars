@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+/* Estilos globales de la aplicación */
+#root {
+  min-height: 100vh;
+  width: 100%;
+}
