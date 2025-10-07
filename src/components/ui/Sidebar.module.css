@@ -2,10 +2,14 @@
     width: 16rem;
     background-color: rgb(31, 41, 55);
     color: white;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 .navigation {
     margin-top: 1.25rem;
+    flex: 1;
 }
 
 .navLink {
@@ -15,4 +19,22 @@
 
 .navLink:hover {
     background-color: rgb(55, 65, 81);
+}
+
+.logoutContainer {
+    padding: 1rem;
+    border-top: 1px solid rgb(75, 85, 99);
+}
+
+.logoutButton {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    background-color: rgb(220, 38, 38);
+    color: white;
+    border-radius: 0.25rem;
+    text-align: center;
+}
+
+.logoutButton:hover {
+    background-color: rgb(185, 28, 28);
 }

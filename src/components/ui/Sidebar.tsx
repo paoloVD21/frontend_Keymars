@@ -1,5 +1,6 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import type { User } from '../../types/auth';
+import { useAuthStore } from '../../store/authStore';
 import styles from './Sidebar.module.css';
 
 interface SidebarProps {
@@ -7,6 +8,14 @@ interface SidebarProps {
 }
 
 export const Sidebar = ({ user }: SidebarProps) => {
+    const navigate = useNavigate();
+    const { logout } = useAuthStore();
+
+    const handleLogout = async () => {
+        await logout();
+        navigate('/login');
+    };
+
     return (
         <aside className={styles.sidebar}>
             <nav className={styles.navigation}>
@@ -38,6 +47,16 @@ export const Sidebar = ({ user }: SidebarProps) => {
                     </>
                 )}
             </nav>
+
+            {/* Botón de cerrar sesión */}
+            <div className={styles.logoutContainer}>
+                <button
+                    onClick={handleLogout}
+                    className={styles.logoutButton}
+                >
+                    Cerrar Sesión
+                </button>
+            </div>
         </aside>
     );
 };
