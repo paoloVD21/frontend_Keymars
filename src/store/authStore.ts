@@ -12,12 +12,67 @@ interface AuthState {
     logout: () => Promise<void>;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
-    user: null,
-    token: localStorage.getItem('token'),
-    isAuthenticated: !!localStorage.getItem('token'),
-    isLoading: false,
-    error: null,
+export const useAuthStore = create<AuthState>((set) => {
+    // Función para inicializar el store
+    const initializeStore = async () => {
+        console.log('🚀 Iniciando inicialización del store');
+        set({ isLoading: true }); // Establecer loading al inicio
+        
+        const token = localStorage.getItem('token');
+        console.log('🔑 Token encontrado:', token ? 'Sí' : 'No');
+        
+        if (!token) {
+            console.log('❌ No hay token, estableciendo estado inicial');
+            set({
+                user: null,
+                token: null,
+                isAuthenticated: false,
+                isLoading: false,
+                error: null
+            });
+            return;
+        }
+
+        try {
+            console.log('🔄 Intentando obtener usuario actual');
+            const response = await authService.getCurrentUser();
+            console.log('✅ Usuario obtenido:', response.user);
+            
+            set({
+                user: response.user,
+                token: response.token,
+                isAuthenticated: true,
+                isLoading: false,
+                error: null
+            });
+            
+            console.log('💫 Estado actualizado:', {
+                isAuthenticated: true,
+                isLoading: false,
+                user: response.user
+            });
+        } catch (error) {
+            console.error('❌ Error al inicializar la sesión:', error);
+            localStorage.removeItem('token');
+            set({
+                user: null,
+                token: null,
+                isAuthenticated: false,
+                isLoading: false,
+                error: null
+            });
+        }
+    };
+
+    // Inicializar el store inmediatamente
+    initializeStore();
+
+    return {
+        user: null,
+        token: null,
+        isAuthenticated: false,
+        isLoading: false,
+        error: null,
 
     login: async (email: string, password: string) => {
         try {
@@ -59,4 +114,4 @@ export const useAuthStore = create<AuthState>((set) => ({
             throw error;
         }
     }
-}));
+}});

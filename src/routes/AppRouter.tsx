@@ -11,7 +11,7 @@ import { LoginPage } from '../pages/auth/LoginPage';
 // import { ProductsPage } from '../pages/products/ProductsPage';
 // import { InventoryPage } from '../pages/inventory/InventoryPage';
 // import { SuppliersPage } from '../pages/suppliers/SuppliersPage';
-// import { UsersPage } from '../pages/users/UsersPage';
+import { UsersPage } from '../pages/users/UsersPage';
 // import { ReportsPage } from '../pages/reports/ReportsPage';
 // import { AlertsPage } from '../pages/alerts/AlertsPage';
 
@@ -70,12 +70,12 @@ export const AppRouter = () => {
                     // Rutas solo para supervisores - TODO: Implementar
                     element: <PrivateRoute allowedRoles={['supervisor']} />,
                     children: [
-                        // TODO: Implementar estas páginas
-                        /*{
+                        {
                             path: 'users',
                             element: <UsersPage />
                         },
-                        {
+                        // TODO: Implementar estas páginas
+                        /*{
                             path: 'reports',
                             element: <ReportsPage />
                         }*/

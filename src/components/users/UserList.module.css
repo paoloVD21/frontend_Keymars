@@ -1,0 +1,121 @@
+.container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.tableHeader {
+    padding: 1rem;
+    background-color: #f9fafb;
+    font-weight: 600;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.tableCell {
+    padding: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.messageCell {
+    padding: 3rem;
+    text-align: center;
+}
+
+.loadingMessage {
+    color: #6b7280;
+    font-size: 1rem;
+}
+
+.errorMessage {
+    color: #dc2626;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.emptyMessage {
+    color: #6b7280;
+}
+
+.retryButton {
+    padding: 0.5rem 1rem;
+    background-color: #dc2626;
+    color: white;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+}
+
+.retryButton:hover {
+    background-color: #b91c1c;
+}
+
+.statusActive {
+    color: #059669;
+    background-color: #ecfdf5;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+}
+
+.statusInactive {
+    color: #dc2626;
+    background-color: #fef2f2;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+}
+
+.actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.editButton {
+    padding: 0.25rem 0.75rem;
+    background-color: #2563eb;
+    color: white;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+}
+
+.editButton:hover {
+    background-color: #1d4ed8;
+}
+
+.activateButton {
+    padding: 0.25rem 0.75rem;
+    background-color: #059669;
+    color: white;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+}
+
+.activateButton:hover {
+    background-color: #047857;
+}
+
+.deactivateButton {
+    padding: 0.25rem 0.75rem;
+    background-color: #dc2626;
+    color: white;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+}
+
+.deactivateButton:hover {
+    background-color: #b91c1c;
+}
+
+.footer {
+    padding: 1rem;
+    text-align: right;
+    color: #6b7280;
+    font-size: 0.875rem;
+    border-top: 1px solid #e5e7eb;
+}

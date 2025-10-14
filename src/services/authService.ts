@@ -4,6 +4,68 @@ import type { AuthResponse, LoginCredentials } from '../types/auth';
 const API_URL = 'http://localhost:8000/api/auth';
 
 export const authService = {
+    getCurrentUser: async (): Promise<AuthResponse> => {
+        console.log("📡 Iniciando getCurrentUser");
+        const token = localStorage.getItem('token');
+        if (!token) {
+            console.error("❌ No se encontró token en localStorage");
+            throw new Error('No token found');
+        }
+
+        try {
+            console.log("🔄 Realizando petición a /session");
+            const response = await axios.get(`${API_URL}/session`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            console.log("✅ Respuesta del backend:", response.data);
+
+            // Verificar si la sesión está activa
+            if (!response.data.activa) {
+                console.error("❌ Sesión no activa");
+                throw new Error('Sesión no activa');
+            }
+
+            // Obtener la información del usuario almacenada
+            const storedUser = localStorage.getItem('user');
+            if (!storedUser) {
+                console.error("❌ No se encontró información del usuario");
+                throw new Error('No user information found');
+            }
+
+            const user = JSON.parse(storedUser);
+            const userData = {
+                user: {
+                    email: user.email,
+                    role: user.role,
+                    nombre: user.nombre || '',
+                    apellido: user.apellido || ''
+                },
+                token
+            };
+
+            console.log("✅ Datos de usuario procesados:", {
+                ...userData,
+                token: "OCULTO"
+            });
+            return userData;
+
+        } catch (error) {
+            console.error("❌ Error en getCurrentUser:", error);
+            if (axios.isAxiosError(error)) {
+                console.error("Detalles del error:", {
+                    status: error.response?.status,
+                    data: error.response?.data
+                });
+            }
+            localStorage.removeItem('token');
+            throw error;
+        }
+    },
     login: async (credentials: LoginCredentials): Promise<AuthResponse> => {
         try {
             console.log('Intentando login con credenciales:', { email: credentials.email });
@@ -33,21 +95,30 @@ export const authService = {
             localStorage.setItem('token', token);
 
             // Convertir id_rol a string role
-            const getRoleFromId = (id: number): 'Supervisor' | 'Asistente' => {
-                switch (id) {
-                    case 1:
-                        return 'Supervisor';
-                    default:
-                        return 'Asistente';
+            const getRoleFromId = (id: number): 'supervisor' | 'asistente' => {
+                if (id === 1) {
+                    return 'supervisor';
+                } else if (id === 0) {
+                    return 'asistente';
+                } else {
+                    console.warn(`ID de rol no reconocido: ${id}, asignando rol por defecto 'asistente'`);
+                    return 'asistente';
                 }
             };
 
+            const user = {
+                email: credentials.email,
+                role: getRoleFromId(response.data.user?.id_rol),
+                nombre: response.data.user?.nombre || '',
+                apellido: response.data.user?.apellido || ''
+            };
+
+            // Guardar la información del usuario
+            localStorage.setItem('user', JSON.stringify(user));
+
             // Adaptar la respuesta al formato que espera nuestra aplicación
-            const authResponse = {
-                user: {
-                    email: credentials.email,
-                    role: getRoleFromId(response.data.user?.id_rol)
-                },
+            const authResponse: AuthResponse = {
+                user,
                 token
             };
             

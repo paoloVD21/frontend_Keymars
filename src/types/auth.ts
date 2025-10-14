@@ -1,6 +1,16 @@
+/**
+ * Roles de usuario en el sistema
+ * Mapeo desde id_rol del backend:
+ * - 1 -> 'supervisor'
+ * - 0 -> 'asistente'
+ */
+export type UserRole = 'supervisor' | 'asistente';
+
 export interface User {
     email: string;
-    role: 'Supervisor' | 'Asistente';
+    role: UserRole;
+    nombre: string;
+    apellido: string;
 }
 
 export interface LoginCredentials {

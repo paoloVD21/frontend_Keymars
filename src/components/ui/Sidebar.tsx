@@ -36,7 +36,7 @@ export const Sidebar = ({ user }: SidebarProps) => {
                 </Link>
                 
                 {/* Menú solo para supervisores */}
-                {user?.role === 'Supervisor' && (
+                {user?.role === 'supervisor' && (
                     <>
                         <Link to="/users" className={styles.navLink}>
                             Usuarios
