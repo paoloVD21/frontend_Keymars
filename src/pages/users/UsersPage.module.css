@@ -5,13 +5,13 @@
 }
 
 .title {
-    font-size: 1.25rem;
+    font-size: 3rem;
     font-weight: bold;
     margin-bottom: 1rem;
 }
 
 .buttonContainer {
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
     display: flex;
     justify-content: flex-end;
 }

@@ -72,7 +72,9 @@ export const authService = {
             
             // Crear FormData con el formato correcto
             const formData = new URLSearchParams();
+            // Enviar tanto 'username' como 'email' para compatibilidad con distintos backends
             formData.append('username', credentials.email);
+            formData.append('email', credentials.email);
             formData.append('password', credentials.password);
 
             console.log('Enviando petición al backend...');
@@ -82,13 +84,45 @@ export const authService = {
                 }
             });
 
-            console.log('Respuesta del backend:', response.data);
+            console.log('Respuesta del backend (status):', response.status);
+            console.log('Respuesta del backend (headers):', response.headers);
+            console.log('Respuesta del backend (body):', response.data);
 
-            // Asumiendo que el backend devuelve { access_token, user }
-            const token = response.data.access_token;
+            // Intentar extraer el token desde varias claves comunes
+            const possibleTokenKeys = ['access_token', 'accessToken', 'token', 'auth_token', 'id_token'];
+            let token: string | undefined = undefined;
+            if (response.data && typeof response.data === 'object') {
+                for (const key of possibleTokenKeys) {
+                    if (response.data[key]) {
+                        token = response.data[key];
+                        break;
+                    }
+                }
+                // Manejar respuestas anidadas: { data: { token: '...' } } o { result: { access_token: '...' } }
+                if (!token) {
+                    const nestedCandidates = ['data', 'result', 'payload'];
+                    for (const nested of nestedCandidates) {
+                        if (response.data[nested] && typeof response.data[nested] === 'object') {
+                            for (const key of possibleTokenKeys) {
+                                if (response.data[nested][key]) {
+                                    token = response.data[nested][key];
+                                    break;
+                                }
+                            }
+                        }
+                        if (token) break;
+                    }
+                }
+                // También puede venir directamente como string (ej: response.data === '...')
+                if (!token && typeof response.data === 'string') {
+                    token = response.data as string;
+                }
+            }
+
             if (!token) {
-                console.error('No se recibió token en la respuesta');
-                throw new Error('No se recibió token de acceso');
+                console.error('No se encontró token en la respuesta. Claves recibidas:', Object.keys(response.data || {}));
+                // Lanzar error con detalle para que el UI pueda mostrarlo
+                throw new Error('No se recibió token de acceso. Revisa la respuesta del servidor en la consola.');
             }
             
             // Guardar el token
@@ -127,6 +161,11 @@ export const authService = {
         } catch (error) {
             console.error('Error durante el login:', error);
             if (axios.isAxiosError(error)) {
+                // Detectar error de CORS
+                if (error.code === 'ERR_NETWORK' && !error.response) {
+                    console.error('Error de CORS detectado - El backend no permite peticiones desde este origen');
+                    throw new Error('Error de conexión: El servidor no permite peticiones desde esta aplicación. Contacta al administrador.');
+                }
                 console.error('Detalles del error:', error.response?.data);
             }
             throw error;
