@@ -33,14 +33,18 @@ export const userService = {
                 2: 'Asistente'
             };
 
-            return {
-                ...data,
-                usuarios: data.usuarios.map(user => ({
+            const usuariosOrdenados = data.usuarios
+                .map(user => ({
                     ...user,
                     rol: rolesMap[user.id_rol] || 'Desconocido',
                     nombreSucursal: `Sucursal ${user.id_sucursal}`,
                     sucursalClass: `sucursal${user.id_sucursal}`
                 }))
+                .sort((a, b) => a.id_usuario - b.id_usuario); // Ordenar por ID de usuario
+
+            return {
+                ...data,
+                usuarios: usuariosOrdenados
             };
         } catch (error) {
             if (axios.isAxiosError(error) && error.response) {

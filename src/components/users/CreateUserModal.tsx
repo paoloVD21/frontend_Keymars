@@ -17,13 +17,11 @@ export const CreateUserModal = ({ isOpen, onClose, onUserCreated }: CreateUserMo
         email: '',
         password: '',
         id_sucursal: '',
-        id_supervisor: '',
         activo: true,
         id_rol: '0' // Siempre será rol asistente
     });
 
     const [sucursales, setSucursales] = useState<Sucursal[]>([]);
-    const [supervisores, setSupervisores] = useState<{ id: number; nombre: string }[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
@@ -33,14 +31,13 @@ export const CreateUserModal = ({ isOpen, onClose, onUserCreated }: CreateUserMo
             
             setLoading(true);
             try {
-                // Cargar sucursales y supervisores en paralelo
-                const [sucursalesRes, supervisoresRes] = await Promise.all([
-                    sucursalService.getSucursales(),
-                    userService.getUsers({ 
-                        activo: true,
-                        rol: 1 // Filtrar por rol supervisor (id_rol = 1)
-                    })
-                ]);
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    setError('No hay sesión activa. Por favor, inicia sesión nuevamente.');
+                    return;
+                }
+
+                const sucursalesRes = await sucursalService.getSucursales();
                 
                 if (sucursalesRes?.sucursales) {
                     setSucursales(sucursalesRes.sucursales);
@@ -48,16 +45,14 @@ export const CreateUserModal = ({ isOpen, onClose, onUserCreated }: CreateUserMo
                     console.error('Respuesta de sucursales inválida:', sucursalesRes);
                     setError('Error: No se pudieron cargar las sucursales');
                 }
-
-                // Procesar supervisores
-                setSupervisores(supervisoresRes.usuarios.map(u => ({
-                    id: u.id_usuario,
-                    nombre: `${u.nombre} ${u.apellido}`
-                })));
                 
             } catch (error) {
                 console.error('Error al cargar datos:', error);
-                setError('Error al cargar los datos necesarios. Por favor, intenta de nuevo.');
+                if (error instanceof Error) {
+                    setError(error.message);
+                } else {
+                    setError('Error al cargar los datos necesarios. Por favor, intenta de nuevo.');
+                }
             } finally {
                 setLoading(false);
             }
@@ -82,7 +77,6 @@ export const CreateUserModal = ({ isOpen, onClose, onUserCreated }: CreateUserMo
             password: '',
             id_sucursal: '',
             id_rol: '0', // Siempre asistente
-            id_supervisor: '',
             activo: true
         });
     };
@@ -97,7 +91,6 @@ export const CreateUserModal = ({ isOpen, onClose, onUserCreated }: CreateUserMo
                 ...formData,
                 id_sucursal: parseInt(formData.id_sucursal),
                 id_rol: 0, // Siempre asistente
-                id_supervisor: formData.id_supervisor ? parseInt(formData.id_supervisor) : undefined,
                 activo: formData.activo // Asegurar que se envía el estado activo
             });
             onUserCreated();
@@ -197,30 +190,6 @@ export const CreateUserModal = ({ isOpen, onClose, onUserCreated }: CreateUserMo
                             {sucursales?.map(sucursal => (
                                 <option key={sucursal.id_sucursal} value={sucursal.id_sucursal}>
                                     {sucursal.nombre}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-
-                    <div className={styles.formGroup}>
-                        <label className={styles.label} htmlFor="id_supervisor">
-                            Supervisor Asignado
-                        </label>
-                        <select
-                            id="id_supervisor"
-                            name="id_supervisor"
-                            required
-                            value={formData.id_supervisor}
-                            onChange={handleChange}
-                            className={styles.select}
-                            disabled={loading}
-                        >
-                            <option value="">
-                                {loading ? 'Cargando supervisores...' : 'Seleccione un supervisor'}
-                            </option>
-                            {supervisores.map(supervisor => (
-                                <option key={supervisor.id} value={supervisor.id}>
-                                    {supervisor.nombre}
                                 </option>
                             ))}
                         </select>
