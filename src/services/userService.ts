@@ -26,7 +26,22 @@ export const userService = {
                 }
             });
             console.log('Respuesta del servidor:', data); // Para depuración
-            return data;
+            
+            // Mapear temporalmente los roles mientras el backend se actualiza
+            const rolesMap: Record<number, string> = {
+                1: 'Supervisor',
+                2: 'Asistente'
+            };
+
+            return {
+                ...data,
+                usuarios: data.usuarios.map(user => ({
+                    ...user,
+                    rol: rolesMap[user.id_rol] || 'Desconocido',
+                    nombreSucursal: `Sucursal ${user.id_sucursal}`,
+                    sucursalClass: `sucursal${user.id_sucursal}`
+                }))
+            };
         } catch (error) {
             if (axios.isAxiosError(error) && error.response) {
                 console.error('Error detallado:', {

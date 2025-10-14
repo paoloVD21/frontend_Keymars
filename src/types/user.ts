@@ -4,7 +4,10 @@ export interface User {
     apellido: string;
     email: string;
     id_sucursal: number;
+    nombreSucursal?: string;
+    sucursalClass?: string;
     id_rol: number;
+    rol: string;
     id_supervisor: number | null;
     fecha_creacion: string;
     activo: boolean;

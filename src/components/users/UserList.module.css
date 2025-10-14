@@ -141,6 +141,46 @@
     background-color: #b91c1c;
 }
 
+.rolSupervisor {
+    color: #1d4ed8;
+    background-color: #eff6ff;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+}
+
+.rolAsistente {
+    color: #ea580c;
+    background-color: #fff7ed;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+}
+
+.sucursal1 {
+    color: #0369a1;
+    background-color: #f0f9ff;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+}
+
+.sucursal2 {
+    color: #047857;
+    background-color: #ecfdf5;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+}
+
+.sucursal3 {
+    color: #7c3aed;
+    background-color: #f5f3ff;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+}
+
 .footer {
     padding: 1rem;
     text-align: right;

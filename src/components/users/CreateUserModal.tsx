@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react';
 import styles from './CreateUserModal.module.css';
 import type { Sucursal } from '../../types/sucursal';
-import type { Rol } from '../../types/rol';
 import { sucursalService } from '../../services/sucursalService';
-import { rolService } from '../../services/rolService';
 import { userService } from '../../services/userService';
 
 interface CreateUserModalProps {
@@ -19,13 +17,12 @@ export const CreateUserModal = ({ isOpen, onClose, onUserCreated }: CreateUserMo
         email: '',
         password: '',
         id_sucursal: '',
-        id_rol: '',
         id_supervisor: '',
-        activo: true
+        activo: true,
+        id_rol: '0' // Siempre será rol asistente
     });
 
     const [sucursales, setSucursales] = useState<Sucursal[]>([]);
-    const [roles, setRoles] = useState<Rol[]>([]);
     const [supervisores, setSupervisores] = useState<{ id: number; nombre: string }[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -36,13 +33,14 @@ export const CreateUserModal = ({ isOpen, onClose, onUserCreated }: CreateUserMo
             
             setLoading(true);
             try {
-                console.log('Iniciando carga de datos...');
-                const [sucursalesRes, rolesRes] = await Promise.all([
+                // Cargar sucursales y supervisores en paralelo
+                const [sucursalesRes, supervisoresRes] = await Promise.all([
                     sucursalService.getSucursales(),
-                    rolService.getRoles()
+                    userService.getUsers({ 
+                        activo: true,
+                        rol: 1 // Filtrar por rol supervisor (id_rol = 1)
+                    })
                 ]);
-
-                console.log('Datos recibidos:', { sucursalesRes, rolesRes });
                 
                 if (sucursalesRes?.sucursales) {
                     setSucursales(sucursalesRes.sucursales);
@@ -51,12 +49,12 @@ export const CreateUserModal = ({ isOpen, onClose, onUserCreated }: CreateUserMo
                     setError('Error: No se pudieron cargar las sucursales');
                 }
 
-                if (rolesRes?.roles) {
-                    setRoles(rolesRes.roles);
-                } else {
-                    console.error('Respuesta de roles inválida:', rolesRes);
-                    setError('Error: No se pudieron cargar los roles');
-                }
+                // Procesar supervisores
+                setSupervisores(supervisoresRes.usuarios.map(u => ({
+                    id: u.id_usuario,
+                    nombre: `${u.nombre} ${u.apellido}`
+                })));
+                
             } catch (error) {
                 console.error('Error al cargar datos:', error);
                 setError('Error al cargar los datos necesarios. Por favor, intenta de nuevo.');
@@ -67,31 +65,6 @@ export const CreateUserModal = ({ isOpen, onClose, onUserCreated }: CreateUserMo
 
         loadData();
     }, [isOpen]);
-
-    // Cargar supervisores cuando se selecciona el rol de asistente
-    useEffect(() => {
-        const loadSupervisores = async () => {
-            // El rol con id 0 es asistente, el rol con id 1 es supervisor
-            if (formData.id_rol === '0') {
-                try {
-                    console.log('Cargando supervisores...');
-                    const response = await userService.getUsers({ 
-                        activo: true,
-                        rol: 1 // Filtrar por rol supervisor (id_rol = 1)
-                    });
-                    console.log('Supervisores obtenidos:', response.usuarios);
-                    setSupervisores(response.usuarios.map(u => ({
-                        id: u.id_usuario,
-                        nombre: `${u.nombre} ${u.apellido}`
-                    })));
-                } catch (error) {
-                    console.error('Error al cargar supervisores:', error);
-                }
-            }
-        };
-
-        loadSupervisores();
-    }, [formData.id_rol]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -108,7 +81,7 @@ export const CreateUserModal = ({ isOpen, onClose, onUserCreated }: CreateUserMo
             email: '',
             password: '',
             id_sucursal: '',
-            id_rol: '',
+            id_rol: '0', // Siempre asistente
             id_supervisor: '',
             activo: true
         });
@@ -123,7 +96,7 @@ export const CreateUserModal = ({ isOpen, onClose, onUserCreated }: CreateUserMo
             await userService.createUser({
                 ...formData,
                 id_sucursal: parseInt(formData.id_sucursal),
-                id_rol: parseInt(formData.id_rol),
+                id_rol: 0, // Siempre asistente
                 id_supervisor: formData.id_supervisor ? parseInt(formData.id_supervisor) : undefined,
                 activo: formData.activo // Asegurar que se envía el estado activo
             });
@@ -230,51 +203,28 @@ export const CreateUserModal = ({ isOpen, onClose, onUserCreated }: CreateUserMo
                     </div>
 
                     <div className={styles.formGroup}>
-                        <label className={styles.label} htmlFor="id_rol">
-                            Rol Asignado
+                        <label className={styles.label} htmlFor="id_supervisor">
+                            Supervisor Asignado
                         </label>
                         <select
-                            id="id_rol"
-                            name="id_rol"
+                            id="id_supervisor"
+                            name="id_supervisor"
                             required
-                            value={formData.id_rol}
+                            value={formData.id_supervisor}
                             onChange={handleChange}
                             className={styles.select}
                             disabled={loading}
                         >
                             <option value="">
-                                {loading ? 'Cargando roles...' : 'Seleccione un rol'}
+                                {loading ? 'Cargando supervisores...' : 'Seleccione un supervisor'}
                             </option>
-                            {roles?.map(rol => (
-                                <option key={rol.id_rol} value={rol.id_rol}>
-                                    {rol.nombre}
+                            {supervisores.map(supervisor => (
+                                <option key={supervisor.id} value={supervisor.id}>
+                                    {supervisor.nombre}
                                 </option>
                             ))}
                         </select>
                     </div>
-
-                    {formData.id_rol === '0' && ( // Mostrar solo si el rol es asistente
-                        <div className={styles.formGroup}>
-                            <label className={styles.label} htmlFor="id_supervisor">
-                                Supervisor Asignado
-                            </label>
-                            <select
-                                id="id_supervisor"
-                                name="id_supervisor"
-                                required
-                                value={formData.id_supervisor}
-                                onChange={handleChange}
-                                className={styles.select}
-                            >
-                                <option value="">Seleccione un supervisor</option>
-                                {supervisores.map(supervisor => (
-                                    <option key={supervisor.id} value={supervisor.id}>
-                                        {supervisor.nombre}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                    )}
 
                     {error && <p className={styles.errorText}>{error}</p>}
 
