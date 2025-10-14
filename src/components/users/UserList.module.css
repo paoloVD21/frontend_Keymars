@@ -88,6 +88,35 @@
     background-color: #1d4ed8;
 }
 
+.editButton:disabled,
+.statusButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.statusButton {
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    color: white;
+}
+
+.activateButton {
+    background-color: #059669;
+}
+
+.activateButton:hover:not(:disabled) {
+    background-color: #047857;
+}
+
+.deactivateButton {
+    background-color: #dc2626;
+}
+
+.deactivateButton:hover:not(:disabled) {
+    background-color: #b91c1c;
+}
+
 .activateButton {
     padding: 0.25rem 0.75rem;
     background-color: #059669;

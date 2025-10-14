@@ -14,7 +14,7 @@ export const DashboardLayout = () => {
                 <header className="mb-8">
                     <div>
                         <span className="text-gray-600">
-                            Bienvenido, {user?.email}
+                            Bienvenido, {user?.nombre} {user?.apellido}
                         </span>
                     </div>
                 </header>

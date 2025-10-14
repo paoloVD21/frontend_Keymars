@@ -18,6 +18,7 @@ export interface UserCreate {
     id_sucursal: number;
     id_rol: number;
     id_supervisor?: number;
+    activo: boolean;
 }
 
 export interface UserUpdate {
@@ -40,4 +41,5 @@ export interface GetUsersParams {
     limit?: number;
     search?: string;
     activo?: boolean;
+    rol?: number;
 }

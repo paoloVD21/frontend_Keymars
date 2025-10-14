@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { User, GetUsersParams } from '../../types/user';
 import { userService } from '../../services/userService';
+import { EditUserModal } from './EditUserModal';
 import styles from './UserList.module.css';
 
 export const UserList = () => {
@@ -8,6 +9,9 @@ export const UserList = () => {
     const [total, setTotal] = useState(0);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [selectedUser, setSelectedUser] = useState<User | null>(null);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [loadingUserId, setLoadingUserId] = useState<number | null>(null);
 
     const loadUsers = async (params?: GetUsersParams) => {
         try {
@@ -84,16 +88,38 @@ export const UserList = () => {
                 <td className={styles.tableCell}>
                     <div className={styles.actions}>
                         <button 
-                            onClick={() => {/* Editar usuario */}}
+                            onClick={() => {
+                                setSelectedUser(user);
+                                setIsEditModalOpen(true);
+                            }}
                             className={styles.editButton}
+                            disabled={loadingUserId === user.id_usuario}
                         >
                             Editar
                         </button>
                         <button 
-                            onClick={() => userService.toggleUserStatus(user.id_usuario, !user.activo)}
-                            className={user.activo ? styles.deactivateButton : styles.activateButton}
+                            onClick={async () => {
+                                try {
+                                    setLoadingUserId(user.id_usuario);
+                                    setError(null);
+                                    await userService.toggleUserStatus(user.id_usuario, !user.activo);
+                                    await loadUsers(); // Recargar la lista
+                                } catch (err) {
+                                    console.error('Error al cambiar estado:', err);
+                                    if (err instanceof Error) {
+                                        setError(err.message);
+                                    } else {
+                                        setError('Error al cambiar el estado del usuario');
+                                    }
+                                } finally {
+                                    setLoadingUserId(null);
+                                }
+                            }}
+                            className={`${styles.statusButton} ${user.activo ? styles.deactivateButton : styles.activateButton}`}
+                            disabled={loadingUserId === user.id_usuario}
                         >
-                            {user.activo ? 'Desactivar' : 'Activar'}
+                            {loadingUserId === user.id_usuario ? 'Procesando...' : 
+                             user.activo ? 'Desactivar' : 'Activar'}
                         </button>
                     </div>
                 </td>
@@ -120,6 +146,22 @@ export const UserList = () => {
             <div className={styles.footer}>
                 Total de usuarios: {total}
             </div>
+
+            {selectedUser && (
+                <EditUserModal
+                    isOpen={isEditModalOpen}
+                    onClose={() => {
+                        setIsEditModalOpen(false);
+                        setSelectedUser(null);
+                    }}
+                    onUserUpdated={() => {
+                        loadUsers();
+                        setIsEditModalOpen(false);
+                        setSelectedUser(null);
+                    }}
+                    user={selectedUser}
+                />
+            )}
         </div>
     );
 };

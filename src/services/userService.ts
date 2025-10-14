@@ -72,7 +72,7 @@ export const userService = {
 
     toggleUserStatus: async (id: number, active: boolean): Promise<User> => {
         try {
-            const { data } = await axios.patch<User>(`${BASE_URL}/${id}/toggle-status`, { active }, {
+            const { data } = await axios.patch<User>(`${BASE_URL}/${id}/status`, { active }, {
                 headers: getAuthHeaders()
             });
             return data;
