@@ -4,7 +4,11 @@ import { userService } from '../../services/userService';
 import { EditUserModal } from './EditUserModal';
 import styles from './UserList.module.css';
 
-export const UserList = () => {
+interface UserListProps {
+    onRefresh?: () => void;
+}
+
+export const UserList = ({ onRefresh }: UserListProps) => {
     const [users, setUsers] = useState<User[]>([]);
     const [total, setTotal] = useState(0);
     const [loading, setLoading] = useState(false);
@@ -20,6 +24,7 @@ export const UserList = () => {
             setUsers(data.usuarios);
             setTotal(data.total);
             setError(null);
+            onRefresh?.();
         } catch (err) {
             setError('Error al cargar usuarios');
             console.error(err);
