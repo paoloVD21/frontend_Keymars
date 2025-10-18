@@ -61,9 +61,13 @@ export const userService = {
 
     createUser: async (userData: UserCreate): Promise<User> => {
         try {
-            const { data } = await axios.post<User>(BASE_URL, userData, {
-                headers: getAuthHeaders()
-            });
+            const { data } = await axios.post<User>(
+              `${BASE_URL}/crearUsuario`,
+              userData,
+              {
+                headers: getAuthHeaders(),
+              }
+            );
             return data;
         } catch (error) {
             if (axios.isAxiosError(error) && error.response) {

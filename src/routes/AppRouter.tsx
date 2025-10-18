@@ -12,6 +12,7 @@ import { LoginPage } from '../pages/auth/LoginPage';
 // import { InventoryPage } from '../pages/inventory/InventoryPage';
 // import { SuppliersPage } from '../pages/suppliers/SuppliersPage';
 import { UsersPage } from '../pages/users/UsersPage';
+import { ProveedoresPage } from '../pages/proveedores/ProveedoresPage';
 // import { ReportsPage } from '../pages/reports/ReportsPage';
 // import { AlertsPage } from '../pages/alerts/AlertsPage';
 
@@ -38,28 +39,10 @@ export const AppRouter = () => {
                 {
                     element: <PrivateRoute />,
                     children: [
-                        // TODO: Implementar estas páginas
-                        /*{
-                            path: 'dashboard',
-                            element: <DashboardPage />
-                        },
-                        {
-                            path: 'products',
-                            element: <ProductsPage />
-                        },
-                        {
-                            path: 'inventory',
-                            element: <InventoryPage />
-                        },
                         {
                             path: 'suppliers',
-                            element: <SuppliersPage />
+                            element: <ProveedoresPage />
                         },
-                        {
-                            path: 'alerts',
-                            element: <AlertsPage />
-                        }*/
-                        // Por ahora, solo redirigimos a una página temporal
                         {
                             path: '*',
                             element: <div>En construcción</div>

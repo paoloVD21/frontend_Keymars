@@ -1,0 +1,227 @@
+.container {
+    padding: 1rem;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.title {
+    font-size: 1.5rem;
+    color: #333;
+    margin: 0;
+}
+
+.createButton {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: background-color 0.2s;
+}
+
+.createButton:hover {
+    background-color: #218838;
+}
+
+.searchContainer {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    align-items: center;
+}
+
+.searchInput {
+    flex: 1;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    max-width: 300px;
+}
+
+.searchButton {
+    padding: 0.5rem 1rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.searchButton:hover {
+    background-color: #0056b3;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.table th,
+.table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #495057;
+}
+
+.actionButton {
+    padding: 0.25rem 0.5rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: background-color 0.2s;
+}
+
+.editButton {
+    background-color: #007bff;
+    color: white;
+    margin-right: 0.5rem;
+}
+
+.editButton:hover {
+    background-color: #0056b3;
+}
+
+.deleteButton {
+    background-color: #dc3545;
+    color: white;
+}
+
+.deleteButton:hover {
+    background-color: #c82333;
+}
+
+.statusBadge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.statusActive {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.statusInactive {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.paginationContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    padding: 0.5rem;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+.paginationInfo {
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+.paginationButtons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.paginationButton {
+    padding: 0.25rem 0.75rem;
+    border: 1px solid #ddd;
+    background-color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+}
+
+.paginationButton:hover:not(:disabled) {
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+}
+
+.paginationButton:disabled {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+
+.noDataMessage {
+    text-align: center;
+    padding: 2rem;
+    color: #6c757d;
+    font-style: italic;
+}
+
+.loadingSpinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    color: #6c757d;
+}
+
+.errorRow {
+    background-color: #fff3f3;
+}
+
+.messageCell {
+    padding: 3rem;
+    text-align: center;
+}
+
+.errorMessage {
+    color: #dc2626;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.emptyMessage {
+    color: #6b7280;
+}
+
+.retryButton {
+    padding: 0.5rem 1rem;
+    background-color: #dc2626;
+    color: white;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+}
+
+.retryButton:hover {
+    background-color: #b91c1c;
+}
+
+.errorIcon {
+    font-size: 1.25rem;
+}
+
+.footer {
+    padding: 1rem;
+    text-align: right;
+    color: #6b7280;
+    font-size: 0.875rem;
+    border-top: 1px solid #e5e7eb;
+}

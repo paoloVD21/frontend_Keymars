@@ -18,7 +18,7 @@ export const CreateUserModal = ({ isOpen, onClose, onUserCreated }: CreateUserMo
         password: '',
         id_sucursal: '',
         activo: true,
-        id_rol: '0' // Siempre será rol asistente
+        id_rol: '2' // Rol asistente (ID 2)
     });
 
     const [sucursales, setSucursales] = useState<Sucursal[]>([]);
@@ -76,7 +76,7 @@ export const CreateUserModal = ({ isOpen, onClose, onUserCreated }: CreateUserMo
             email: '',
             password: '',
             id_sucursal: '',
-            id_rol: '0', // Siempre asistente
+            id_rol: '2', // Rol asistente (ID 2)
             activo: true
         });
     };
@@ -90,7 +90,7 @@ export const CreateUserModal = ({ isOpen, onClose, onUserCreated }: CreateUserMo
             await userService.createUser({
                 ...formData,
                 id_sucursal: parseInt(formData.id_sucursal),
-                id_rol: 0, // Siempre asistente
+                id_rol: 2, // Rol asistente (ID 2)
                 activo: formData.activo // Asegurar que se envía el estado activo
             });
             onUserCreated();
