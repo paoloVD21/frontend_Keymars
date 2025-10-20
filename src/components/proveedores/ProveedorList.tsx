@@ -171,9 +171,6 @@ export const ProveedorList = ({ onRefresh, userRole }: ProveedorListProps) => {
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className={styles.searchInput}
                 />
-                <button type="submit" className={styles.searchButton}>
-                    Buscar
-                </button>
             </form>
 
             <div className={styles.tableContainer}>
