@@ -14,11 +14,17 @@ export const ProveedorList = ({ onRefresh }: ProveedorListProps) => {
     const [loadingProveedor, setLoadingProveedor] = useState<number | null>(null);
     const [total, setTotal] = useState(0);
     const [searchTerm, setSearchTerm] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
 
-    const loadProveedores = useCallback(async (params?: { search?: string }) => {
+    const loadProveedores = useCallback(async (params?: { search?: string, skip?: number, limit?: number }) => {
         try {
             setLoading(true);
-            const response = await proveedorService.getProveedores(params);
+            const response = await proveedorService.getProveedores({
+                ...params,
+                skip: (currentPage - 1) * itemsPerPage,
+                limit: itemsPerPage
+            });
             setProveedores(response.proveedores);
             setTotal(response.total);
             setError(null);
@@ -29,18 +35,26 @@ export const ProveedorList = ({ onRefresh }: ProveedorListProps) => {
         } finally {
             setLoading(false);
         }
-    }, [onRefresh]);
+    }, [currentPage, onRefresh]);
 
     useEffect(() => {
-        loadProveedores();
-    }, [loadProveedores]);
+        loadProveedores({ search: searchTerm });
+    }, [loadProveedores, searchTerm]);
 
     const handleToggleStatus = async (proveedor: Proveedor) => {
         try {
             setLoadingProveedor(proveedor.id_proveedor);
             setError(null);
             await proveedorService.toggleProveedorStatus(proveedor.id_proveedor);
-            await loadProveedores();
+            
+            // Actualizar solo el proveedor modificado en la lista
+            setProveedores(prevProveedores => 
+                prevProveedores.map(p => 
+                    p.id_proveedor === proveedor.id_proveedor
+                        ? { ...p, activo: !p.activo }
+                        : p
+                )
+            );
         } catch (err) {
             console.error('Error al cambiar estado:', err);
             if (err instanceof Error) {
@@ -55,6 +69,7 @@ export const ProveedorList = ({ onRefresh }: ProveedorListProps) => {
 
     const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setCurrentPage(1); // Resetear a la primera página
         loadProveedores({ search: searchTerm });
     };
 
@@ -151,23 +166,46 @@ export const ProveedorList = ({ onRefresh }: ProveedorListProps) => {
                 </button>
             </form>
 
-            <table className={styles.table}>
-                <thead>
-                    <tr>
-                        <th className={styles.tableHeader}>Proveedor</th>
-                        <th className={styles.tableHeader}>Contacto</th>
-                        <th className={styles.tableHeader}>Email</th>
-                        <th className={styles.tableHeader}>Teléfono</th>
-                        <th className={styles.tableHeader}>Estado</th>
-                        <th className={styles.tableHeader}>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {renderTableContent()}
-                </tbody>
-            </table>
-            <div className={styles.footer}>
-                Total de proveedores: {total}
+            <div className={styles.tableContainer}>
+                <table className={styles.table}>
+                    <thead>
+                        <tr>
+                            <th>Proveedor</th>
+                            <th>Contacto</th>
+                            <th>Email</th>
+                            <th>Teléfono</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {renderTableContent()}
+                    </tbody>
+                </table>
+            </div>
+            <div className={styles.paginationContainer}>
+                <div className={styles.paginationInfo}>
+                    Mostrando {proveedores.length} de {total} proveedores
+                </div>
+                <div className={styles.paginationButtons}>
+                    <button
+                        className={styles.paginationButton}
+                        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                        disabled={currentPage === 1 || loading}
+                    >
+                        Anterior
+                    </button>
+                    <span className={styles.paginationInfo}>
+                        Página {currentPage} de {Math.ceil(total / itemsPerPage)}
+                    </span>
+                    <button
+                        className={styles.paginationButton}
+                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(total / itemsPerPage)))}
+                        disabled={currentPage >= Math.ceil(total / itemsPerPage) || loading}
+                    >
+                        Siguiente
+                    </button>
+                </div>
             </div>
         </div>
     )

@@ -59,24 +59,65 @@
     background-color: #0056b3;
 }
 
-.table {
+.tableContainer {
     width: 100%;
-    border-collapse: collapse;
+    height: 280px; /* altura ajustada para mostrar exactamente 4 filas completas */
+    overflow-y: auto;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
     background-color: white;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.table th,
-.table td {
-    padding: 0.75rem;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
+.table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background-color: white;
 }
 
 .table th {
+    position: sticky;
+    top: 0;
     background-color: #f8f9fa;
     font-weight: 600;
     color: #495057;
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+    z-index: 1;
+}
+
+.table td {
+    padding: 1rem 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+    height: 70px; /* altura fija para cada fila */
+    box-sizing: border-box;
+}
+
+/* Añadir hover a las filas */
+.table tr:hover td {
+    background-color: #f9fafb;
+}
+
+/* Estilos para la barra de scroll */
+.tableContainer::-webkit-scrollbar {
+    width: 8px;
+}
+
+.tableContainer::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.tableContainer::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.tableContainer::-webkit-scrollbar-thumb:hover {
+    background: #666;
 }
 
 .actionButton {
