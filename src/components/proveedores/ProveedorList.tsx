@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import styles from './ProveedorList.module.css';
 import { proveedorService } from '../../services/proveedorService';
 import type { Proveedor } from '../../types/proveedor';
+import { EditProveedorModal } from './EditProveedorModal';
 
 interface ProveedorListProps {
     onRefresh?: () => void;
@@ -15,6 +16,8 @@ export const ProveedorList = ({ onRefresh }: ProveedorListProps) => {
     const [total, setTotal] = useState(0);
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
+    const [editModalOpen, setEditModalOpen] = useState(false);
+    const [selectedProveedor, setSelectedProveedor] = useState<Proveedor | null>(null);
     const itemsPerPage = 10;
 
     const loadProveedores = useCallback(async (params?: { search?: string, skip?: number, limit?: number }) => {
@@ -131,7 +134,10 @@ export const ProveedorList = ({ onRefresh }: ProveedorListProps) => {
                     <div className={styles.actionButtons}>
                         <button
                             className={`${styles.actionButton} ${styles.editButton}`}
-                            onClick={() => {/* TODO: Implementar edición */}}
+                            onClick={() => {
+                                setSelectedProveedor(proveedor);
+                                setEditModalOpen(true);
+                            }}
                             title="Editar proveedor"
                         >
                             Editar
@@ -207,6 +213,29 @@ export const ProveedorList = ({ onRefresh }: ProveedorListProps) => {
                     </button>
                 </div>
             </div>
+
+            {selectedProveedor && (
+                <EditProveedorModal
+                    isOpen={editModalOpen}
+                    onClose={() => {
+                        setEditModalOpen(false);
+                        setSelectedProveedor(null);
+                    }}
+                    onSuccess={(proveedorActualizado) => {
+                        // Actualizar solo el proveedor editado en la lista
+                        setProveedores(prevProveedores => 
+                            prevProveedores.map(p => 
+                                p.id_proveedor === proveedorActualizado.id_proveedor
+                                    ? proveedorActualizado
+                                    : p
+                            )
+                        );
+                        setEditModalOpen(false);
+                        setSelectedProveedor(null);
+                    }}
+                    proveedor={selectedProveedor}
+                />
+            )}
         </div>
     )
 };
