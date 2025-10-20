@@ -1,16 +1,16 @@
 export interface Proveedor {
-    id_proveedor: number;
-    nombre: string;
-    direccion: string;
-    telefono: string;
-    email: string;
-    activo: boolean;
-    fecha_creacion: string;
+  id_proveedor: number;
+  nombre: string;
+  contacto: string;
+  email: string;
+  telefono: string;
+  activo: boolean;
+  fecha_creacion: string;
 }
 
 export interface ProveedorCreate {
     nombre: string;
-    direccion: string;
+    contacto: string;
     telefono: string;
     email: string;
     activo: boolean;
@@ -18,7 +18,7 @@ export interface ProveedorCreate {
 
 export interface ProveedorUpdate {
     nombre?: string;
-    direccion?: string;
+    contacto?: string;
     telefono?: string;
     email?: string;
 }

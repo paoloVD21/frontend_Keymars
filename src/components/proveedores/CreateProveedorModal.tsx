@@ -10,10 +10,10 @@ interface CreateProveedorModalProps {
 
 export const CreateProveedorModal = ({ isOpen, onClose, onProveedorCreated }: CreateProveedorModalProps) => {
     const [formData, setFormData] = useState({
-        nombre: '',
-        direccion: '',
-        telefono: '',
-        email: '',
+        nombre: '', // nombre del proveedor
+        contacto: '', // nombre de la persona de contacto
+        email: '', // email del proveedor
+        telefono: '', // teléfono del proveedor
         activo: true
     });
 
@@ -31,11 +31,12 @@ export const CreateProveedorModal = ({ isOpen, onClose, onProveedorCreated }: Cr
     const resetForm = () => {
         setFormData({
             nombre: '',
-            direccion: '',
-            telefono: '',
+            contacto: '',
             email: '',
+            telefono: '',
             activo: true
         });
+        setError('');
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -86,17 +87,18 @@ export const CreateProveedorModal = ({ isOpen, onClose, onProveedorCreated }: Cr
                     </div>
 
                     <div className={styles.formGroup}>
-                        <label className={styles.label} htmlFor="direccion">
-                            Dirección
+                        <label className={styles.label} htmlFor="contacto">
+                            Persona de Contacto
                         </label>
-                        <textarea
-                            id="direccion"
-                            name="direccion"
+                        <input
+                            id="contacto"
+                            name="contacto"
+                            type="text"
                             required
-                            value={formData.direccion}
+                            value={formData.contacto}
                             onChange={handleChange}
                             className={styles.input}
-                            rows={3}
+                            placeholder="Nombre del contacto"
                         />
                     </div>
 

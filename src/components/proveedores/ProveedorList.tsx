@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import styles from './ProveedorList.module.css';
-import { CreateProveedorModal } from './CreateProveedorModal';
 import { proveedorService } from '../../services/proveedorService';
 import type { Proveedor } from '../../types/proveedor';
 
@@ -12,7 +11,6 @@ export const ProveedorList = ({ onRefresh }: ProveedorListProps) => {
     const [proveedores, setProveedores] = useState<Proveedor[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [loadingProveedor, setLoadingProveedor] = useState<number | null>(null);
     const [total, setTotal] = useState(0);
     const [searchTerm, setSearchTerm] = useState('');
@@ -37,19 +35,11 @@ export const ProveedorList = ({ onRefresh }: ProveedorListProps) => {
         loadProveedores();
     }, [loadProveedores]);
 
-    const handleCreateProveedor = () => {
-        setIsCreateModalOpen(true);
-    };
-
-    const handleProveedorCreated = () => {
-        loadProveedores();
-    };
-
     const handleToggleStatus = async (proveedor: Proveedor) => {
         try {
             setLoadingProveedor(proveedor.id_proveedor);
             setError(null);
-            await proveedorService.toggleProveedorStatus(proveedor.id_proveedor, !proveedor.activo);
+            await proveedorService.toggleProveedorStatus(proveedor.id_proveedor);
             await loadProveedores();
         } catch (err) {
             console.error('Error al cambiar estado:', err);
@@ -72,7 +62,7 @@ export const ProveedorList = ({ onRefresh }: ProveedorListProps) => {
         if (loading) {
             return (
                 <tr>
-                    <td colSpan={6} className={styles.messageCell}>
+                    <td colSpan={7} className={styles.messageCell}>
                         <div className={styles.loadingMessage}>
                             Cargando proveedores...
                         </div>
@@ -84,7 +74,7 @@ export const ProveedorList = ({ onRefresh }: ProveedorListProps) => {
         if (error) {
             return (
                 <tr>
-                    <td colSpan={6} className={styles.messageCell}>
+                    <td colSpan={7} className={styles.messageCell}>
                         <div className={styles.errorMessage}>
                             {error}
                             <button 
@@ -102,7 +92,7 @@ export const ProveedorList = ({ onRefresh }: ProveedorListProps) => {
         if (proveedores.length === 0) {
             return (
                 <tr>
-                    <td colSpan={6} className={styles.messageCell}>
+                    <td colSpan={7} className={styles.messageCell}>
                         <div className={styles.emptyMessage}>
                             No hay proveedores registrados
                         </div>
@@ -114,20 +104,28 @@ export const ProveedorList = ({ onRefresh }: ProveedorListProps) => {
         return proveedores.map(proveedor => (
             <tr key={proveedor.id_proveedor} className={styles.tableRow}>
                 <td className={styles.tableCell}>{proveedor.nombre}</td>
+                <td className={styles.tableCell}>{proveedor.contacto}</td>
                 <td className={styles.tableCell}>{proveedor.email}</td>
                 <td className={styles.tableCell}>{proveedor.telefono}</td>
-                <td className={styles.tableCell}>{proveedor.direccion}</td>
                 <td className={styles.tableCell}>
-                    <span className={proveedor.activo ? styles.statusActive : styles.statusInactive}>
+                    <span className={`${styles.statusBadge} ${proveedor.activo ? styles.statusActive : styles.statusInactive}`}>
                         {proveedor.activo ? 'Activo' : 'Inactivo'}
                     </span>
                 </td>
                 <td className={styles.tableCell}>
-                    <div className={styles.actions}>
+                    <div className={styles.actionButtons}>
+                        <button
+                            className={`${styles.actionButton} ${styles.editButton}`}
+                            onClick={() => {/* TODO: Implementar edición */}}
+                            title="Editar proveedor"
+                        >
+                            Editar
+                        </button>
                         <button
                             onClick={() => handleToggleStatus(proveedor)}
-                            className={`${styles.statusButton} ${proveedor.activo ? styles.deactivateButton : styles.activateButton}`}
+                            className={`${styles.actionButton} ${proveedor.activo ? styles.deleteButton : styles.activateButton}`}
                             disabled={loadingProveedor === proveedor.id_proveedor}
+                            title={proveedor.activo ? 'Desactivar proveedor' : 'Activar proveedor'}
                         >
                             {loadingProveedor === proveedor.id_proveedor ? 'Procesando...' : 
                              proveedor.activo ? 'Desactivar' : 'Activar'}
@@ -140,16 +138,6 @@ export const ProveedorList = ({ onRefresh }: ProveedorListProps) => {
 
     return (
         <div className={styles.container}>
-            <div className={styles.header}>
-                <h2 className={styles.title}>Proveedores</h2>
-                <button
-                    onClick={handleCreateProveedor}
-                    className={styles.createButton}
-                >
-                    Nuevo Proveedor
-                </button>
-            </div>
-
             <form onSubmit={handleSearch} className={styles.searchContainer}>
                 <input
                     type="text"
@@ -166,10 +154,10 @@ export const ProveedorList = ({ onRefresh }: ProveedorListProps) => {
             <table className={styles.table}>
                 <thead>
                     <tr>
-                        <th className={styles.tableHeader}>Nombre</th>
+                        <th className={styles.tableHeader}>Proveedor</th>
+                        <th className={styles.tableHeader}>Contacto</th>
                         <th className={styles.tableHeader}>Email</th>
                         <th className={styles.tableHeader}>Teléfono</th>
-                        <th className={styles.tableHeader}>Dirección</th>
                         <th className={styles.tableHeader}>Estado</th>
                         <th className={styles.tableHeader}>Acciones</th>
                     </tr>
@@ -181,14 +169,6 @@ export const ProveedorList = ({ onRefresh }: ProveedorListProps) => {
             <div className={styles.footer}>
                 Total de proveedores: {total}
             </div>
-
-            {isCreateModalOpen && (
-                <CreateProveedorModal 
-                    isOpen={true}
-                    onClose={() => setIsCreateModalOpen(false)}
-                    onProveedorCreated={handleProveedorCreated}
-                />
-            )}
         </div>
     )
 };
