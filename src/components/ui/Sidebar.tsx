@@ -25,8 +25,11 @@ export const Sidebar = ({ user }: SidebarProps) => {
                 <Link to="/products" className={styles.navLink}>
                     Productos
                 </Link>
-                <Link to="/inventory" className={styles.navLink}>
-                    Inventario
+                <Link to="/inventory/entries" className={styles.navLink}>
+                    Entradas
+                </Link>
+                <Link to="/inventory/exits" className={styles.navLink}>
+                    Salidas
                 </Link>
                 <Link to="/suppliers" className={styles.navLink}>
                     Proveedores
