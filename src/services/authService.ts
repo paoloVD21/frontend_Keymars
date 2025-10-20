@@ -6,11 +6,13 @@ const API_URL = 'http://localhost:8000/api/auth';
 export const authService = {
     getCurrentUser: async (): Promise<AuthResponse> => {
         console.log("📡 Iniciando getCurrentUser");
+        console.log("LocalStorage items:", Object.keys(localStorage));
         const token = localStorage.getItem('token');
         if (!token) {
             console.error("❌ No se encontró token en localStorage");
             throw new Error('No token found');
         }
+        console.log("Token encontrado en localStorage");
 
         try {
             console.log("🔄 Realizando petición a /session");
@@ -132,7 +134,7 @@ export const authService = {
             const getRoleFromId = (id: number): 'supervisor' | 'asistente' => {
                 if (id === 1) {
                     return 'supervisor';
-                } else if (id === 0) {
+                } else if (id === 2) {
                     return 'asistente';
                 } else {
                     console.warn(`ID de rol no reconocido: ${id}, asignando rol por defecto 'asistente'`);
@@ -176,9 +178,11 @@ export const authService = {
         try {
             // Si tu backend tiene un endpoint de logout, llamarlo aquí
             localStorage.removeItem('token');
+            localStorage.removeItem('user');
         } catch (error) {
             console.error('Error during logout:', error);
             localStorage.removeItem('token');
+            localStorage.removeItem('user');
         }
     }
 };

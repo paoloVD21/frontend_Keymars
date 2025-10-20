@@ -2,7 +2,7 @@
  * Roles de usuario en el sistema
  * Mapeo desde id_rol del backend:
  * - 1 -> 'supervisor'
- * - 0 -> 'asistente'
+ * - 2 -> 'asistente'
  */
 export type UserRole = 'supervisor' | 'asistente';
 

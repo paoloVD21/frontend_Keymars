@@ -6,9 +6,11 @@ import { EditProveedorModal } from './EditProveedorModal';
 
 interface ProveedorListProps {
     onRefresh?: () => void;
+    userRole: 'supervisor' | 'asistente';
 }
 
-export const ProveedorList = ({ onRefresh }: ProveedorListProps) => {
+export const ProveedorList = ({ onRefresh, userRole }: ProveedorListProps) => {
+    const isSupervisor = userRole === 'supervisor';
     const [proveedores, setProveedores] = useState<Proveedor[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -80,7 +82,7 @@ export const ProveedorList = ({ onRefresh }: ProveedorListProps) => {
         if (loading) {
             return (
                 <tr>
-                    <td colSpan={7} className={styles.messageCell}>
+                    <td colSpan={isSupervisor ? 6 : 5} className={styles.messageCell}>
                         <div className={styles.loadingMessage}>
                             Cargando proveedores...
                         </div>
@@ -92,7 +94,7 @@ export const ProveedorList = ({ onRefresh }: ProveedorListProps) => {
         if (error) {
             return (
                 <tr>
-                    <td colSpan={7} className={styles.messageCell}>
+                    <td colSpan={isSupervisor ? 6 : 5} className={styles.messageCell}>
                         <div className={styles.errorMessage}>
                             {error}
                             <button 
@@ -110,7 +112,7 @@ export const ProveedorList = ({ onRefresh }: ProveedorListProps) => {
         if (proveedores.length === 0) {
             return (
                 <tr>
-                    <td colSpan={7} className={styles.messageCell}>
+                    <td colSpan={isSupervisor ? 6 : 5} className={styles.messageCell}>
                         <div className={styles.emptyMessage}>
                             No hay proveedores registrados
                         </div>
@@ -130,29 +132,31 @@ export const ProveedorList = ({ onRefresh }: ProveedorListProps) => {
                         {proveedor.activo ? 'Activo' : 'Inactivo'}
                     </span>
                 </td>
-                <td className={styles.tableCell}>
-                    <div className={styles.actionButtons}>
-                        <button
-                            className={`${styles.actionButton} ${styles.editButton}`}
-                            onClick={() => {
-                                setSelectedProveedor(proveedor);
-                                setEditModalOpen(true);
-                            }}
-                            title="Editar proveedor"
-                        >
-                            Editar
-                        </button>
-                        <button
-                            onClick={() => handleToggleStatus(proveedor)}
-                            className={`${styles.actionButton} ${proveedor.activo ? styles.deleteButton : styles.activateButton}`}
-                            disabled={loadingProveedor === proveedor.id_proveedor}
-                            title={proveedor.activo ? 'Desactivar proveedor' : 'Activar proveedor'}
-                        >
-                            {loadingProveedor === proveedor.id_proveedor ? 'Procesando...' : 
-                             proveedor.activo ? 'Desactivar' : 'Activar'}
-                        </button>
-                    </div>
-                </td>
+                {isSupervisor && (
+                    <td className={styles.tableCell}>
+                        <div className={styles.actionButtons}>
+                            <button
+                                className={`${styles.actionButton} ${styles.editButton}`}
+                                onClick={() => {
+                                    setSelectedProveedor(proveedor);
+                                    setEditModalOpen(true);
+                                }}
+                                title="Editar proveedor"
+                            >
+                                Editar
+                            </button>
+                            <button
+                                onClick={() => handleToggleStatus(proveedor)}
+                                className={`${styles.actionButton} ${proveedor.activo ? styles.deleteButton : styles.activateButton}`}
+                                disabled={loadingProveedor === proveedor.id_proveedor}
+                                title={proveedor.activo ? 'Desactivar proveedor' : 'Activar proveedor'}
+                            >
+                                {loadingProveedor === proveedor.id_proveedor ? 'Procesando...' : 
+                                 proveedor.activo ? 'Desactivar' : 'Activar'}
+                            </button>
+                        </div>
+                    </td>
+                )}
             </tr>
         ));
     };
@@ -181,7 +185,7 @@ export const ProveedorList = ({ onRefresh }: ProveedorListProps) => {
                             <th>Email</th>
                             <th>Teléfono</th>
                             <th>Estado</th>
-                            <th>Acciones</th>
+                            {isSupervisor && <th>Acciones</th>}
                         </tr>
                     </thead>
                     <tbody>
