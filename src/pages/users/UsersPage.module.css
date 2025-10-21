@@ -10,6 +10,12 @@
     margin-bottom: 1rem;
 }
 
+.subtitle {
+    font-size: 1.25rem;
+    color: #6b7280;
+    margin-bottom: 0.1rem;
+}
+
 .buttonContainer {
     margin-bottom: 1.5rem;
     display: flex;

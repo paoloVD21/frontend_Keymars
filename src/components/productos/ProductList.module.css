@@ -5,18 +5,18 @@
 
 .searchContainer {
     display: flex;
+    gap: 1rem;
     margin-bottom: 1rem;
-    max-width: 400px;
-    height: 2.5rem;
+    align-items: center;
 }
 
 .searchInput {
-    width: 100%;
+    flex: 1;
     padding: 0.5rem;
-    border: 1px solid #ccc;
+    border: 1px solid #ddd;
     border-radius: 4px;
+    max-width: 300px;
     font-size: 0.875rem;
-    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .searchInput:focus {
@@ -27,29 +27,39 @@
 
 .tableContainer {
     width: 100%;
-    overflow-x: auto;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    height: 280px;
+    overflow-y: auto;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
     background-color: white;
 }
 
 .table th {
+    position: sticky;
+    top: 0;
     background-color: #f8f9fa;
-    padding: 1rem;
-    text-align: left;
     font-weight: 600;
     color: #495057;
-    border-bottom: 2px solid #dee2e6;
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+    z-index: 1;
 }
 
-.tableCell {
-    padding: 1rem;
-    border-bottom: 1px solid #dee2e6;
+.table td {
+    padding: 1rem 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+    height: 70px;
+    box-sizing: border-box;
     color: #212529;
 }
 
@@ -89,25 +99,26 @@
 
 .actionButtons {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.25rem;
 }
 
 .actionButton {
-    padding: 0.5rem 1rem;
+    padding: 0.25rem 0.5rem;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     font-size: 0.875rem;
     transition: background-color 0.2s;
+    margin: 0 0.25rem;
 }
 
 .editButton {
-    background-color: #ffc107;
-    color: #212529;
+    background-color: #007bff;
+    color: white;
 }
 
 .editButton:hover {
-    background-color: #e0a800;
+    background-color: #0056b3;
 }
 
 .deleteButton {
@@ -120,12 +131,12 @@
 }
 
 .activateButton {
-    background-color: #28a745;
+    background-color: #059669;
     color: white;
 }
 
 .activateButton:hover {
-    background-color: #218838;
+    background-color: #047857;
 }
 
 .actionButton:disabled {
@@ -179,36 +190,38 @@
     justify-content: space-between;
     align-items: center;
     margin-top: 1rem;
-    padding: 1rem 0;
+    padding: 0.5rem;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+.paginationInfo {
+    font-size: 0.875rem;
+    color: #6c757d;
 }
 
 .paginationButtons {
     display: flex;
-    gap: 1rem;
-    align-items: center;
+    gap: 0.5rem;
 }
 
 .paginationButton {
-    padding: 0.5rem 1rem;
-    background-color: #007bff;
-    color: white;
-    border: none;
+    padding: 0.25rem 0.75rem;
+    border: 1px solid #ddd;
+    background-color: white;
     border-radius: 4px;
     cursor: pointer;
-    transition: background-color 0.2s;
+    font-size: 0.875rem;
+    transition: all 0.2s;
 }
 
 .paginationButton:hover:not(:disabled) {
-    background-color: #0056b3;
+    background-color: #e9ecef;
+    border-color: #dee2e6;
 }
 
 .paginationButton:disabled {
-    background-color: #6c757d;
+    background-color: #e9ecef;
     cursor: not-allowed;
-    opacity: 0.7;
-}
-
-.paginationInfo {
-    color: #6c757d;
-    font-size: 0.875rem;
+    opacity: 0.65;
 }

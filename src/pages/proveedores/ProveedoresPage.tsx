@@ -40,7 +40,7 @@ export const ProveedoresPage = () => {
     return (
         <div className={styles.container}>
             <h1 className={styles.title}>Proveedores</h1>
-            <h2 className={styles.subtitle}>Gestiona los Proveedores del sistema</h2>
+            <h2 className={styles.subtitle}>Gestiona los Proveedores</h2>
 
             {user.role === 'supervisor' && (
                 <div className={styles.buttonContainer}>

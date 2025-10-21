@@ -5,22 +5,21 @@
 }
 
 .title {
-    font-size: 2rem;
-    font-weight: 600;
-    color: #1f2937;
+    font-size: 3rem;
+    font-weight: bold;
     margin-bottom: 1rem;
 }
 
 .subtitle {
     font-size: 1.25rem;
     color: #6b7280;
-    margin-bottom: 2rem;
+    margin-bottom: 0.1rem;
 }
 
 .buttonContainer {
     display: flex;
     justify-content: flex-end;
-    margin-bottom: 2rem;
+    margin-bottom: 0.5rem;
 }
 
 .registerButton {

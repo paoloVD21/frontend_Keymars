@@ -35,6 +35,7 @@
 }
 
 .subtitle {
-    color: #6b7280; /* gray-500 */
-    margin-bottom: 1rem;
+    font-size: 1.25rem;
+    color: #6b7280;
+    margin-bottom: 0.1rem;
 }

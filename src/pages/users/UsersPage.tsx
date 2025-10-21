@@ -24,7 +24,7 @@ export const UsersPage = () => {
     return (
         <div className={styles.container}>
             <h1 className={styles.title}>Usuarios</h1>
-            <h2>Gestiona los Usuarios del sistema</h2>
+            <h2 className={styles.subtitle}>Gestiona los Usuarios del sistema</h2>
             
             <div className={styles.buttonContainer}>
                 <button 

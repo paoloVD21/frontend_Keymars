@@ -35,7 +35,7 @@ export const ProductosPage = () => {
     return (
         <div className={styles.container}>
             <h1 className={styles.title}>Productos</h1>
-            <h2 className={styles.subtitle}>Gestiona los Productos del sistema</h2>
+            <h2 className={styles.subtitle}>Gestiona los Productos</h2>
 
             {user.role === 'supervisor' && (
                 <div className={styles.buttonContainer}>
