@@ -47,3 +47,8 @@ export interface GetProductosParams {
     id_proveedor?: number;
     activo?: boolean;
 }
+
+export interface ProductoListResponse {
+    productos: Producto[];
+    total: number;
+}

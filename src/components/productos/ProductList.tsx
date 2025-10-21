@@ -20,13 +20,13 @@ export const ProductList = ({ onRefresh, userRole }: ProductListProps) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [selectedProducto, setSelectedProducto] = useState<Producto | null>(null);
-    const itemsPerPage = 10;
+    const itemsPerPage = 15;
 
-    const loadProductos = useCallback(async (params?: { search?: string, skip?: number, limit?: number }) => {
+    const loadProductos = useCallback(async () => {
         try {
             setLoading(true);
             const response = await productoService.getProductos({
-                ...params,
+                search: searchTerm,
                 skip: (currentPage - 1) * itemsPerPage,
                 limit: itemsPerPage
             });
@@ -40,11 +40,11 @@ export const ProductList = ({ onRefresh, userRole }: ProductListProps) => {
         } finally {
             setLoading(false);
         }
-    }, [currentPage, onRefresh]);
+    }, [currentPage, searchTerm, itemsPerPage, onRefresh]);
 
     useEffect(() => {
-        loadProductos({ search: searchTerm });
-    }, [loadProductos, searchTerm]);
+        loadProductos();
+    }, [loadProductos]);
 
     const handleToggleStatus = async (producto: Producto) => {
         try {
@@ -73,8 +73,7 @@ export const ProductList = ({ onRefresh, userRole }: ProductListProps) => {
 
     useEffect(() => {
         setCurrentPage(1);
-        loadProductos({ search: searchTerm });
-    }, [searchTerm, loadProductos]);
+    }, [searchTerm]);
 
     const renderTableContent = () => {
         if (loading) {
@@ -96,7 +95,7 @@ export const ProductList = ({ onRefresh, userRole }: ProductListProps) => {
                         <div className={styles.errorMessage}>
                             {error}
                             <button 
-                                onClick={() => loadProductos()}
+                                onClick={loadProductos}
                                 className={styles.retryButton}
                             >
                                 Reintentar
@@ -139,7 +138,7 @@ export const ProductList = ({ onRefresh, userRole }: ProductListProps) => {
                     </span>
                 </td>
                 <td className={styles.tableCell}>{producto.stock_actual}</td>
-                <td className={styles.tableCell}>S/ {producto.precio?.toFixed(2) || '0.00'}</td>
+                <td className={styles.tableCell}>S/ {Number(producto.precio || 0).toFixed(2)}</td>
                 <td className={styles.tableCell}>
                     <span className={`${styles.statusBadge} ${producto.activo ? styles.statusActive : styles.statusInactive}`}>
                         {producto.activo ? 'Activo' : 'Inactivo'}

@@ -17,16 +17,17 @@ const getAuthHeaders = () => {
 export const categoriaService = {
     getCategorias: async () => {
         try {
-            const { data } = await axios.get<{ categorias: Categoria[], total: number }>(
-                `${BASE_URL}/ListarCategorias`,
+            const response = await axios.get<Categoria[]>(
+                `${BASE_URL}/listarCategorias`,
                 {
                     headers: getAuthHeaders()
                 }
             );
             
-            console.log('Respuesta del servidor (categorías):', data);
+            console.log('Respuesta del servidor (categorías):', response.data);
             
-            const categoriasOrdenadas = data.categorias
+            // Asumimos que el backend devuelve directamente el array de categorías
+            const categoriasOrdenadas = (response.data || [])
                 .map(categoria => ({
                     ...categoria
                 }))
@@ -34,7 +35,7 @@ export const categoriaService = {
 
             return {
                 categorias: categoriasOrdenadas,
-                total: data.total
+                total: categoriasOrdenadas.length
             };
         } catch (error) {
             if (axios.isAxiosError(error) && error.response) {

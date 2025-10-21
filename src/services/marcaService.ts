@@ -17,16 +17,17 @@ const getAuthHeaders = () => {
 export const marcaService = {
     getMarcas: async () => {
         try {
-            const { data } = await axios.get<{ marcas: Marca[], total: number }>(
-                `${BASE_URL}/ListarMarcas`,
+            const response = await axios.get<Marca[]>(
+                `${BASE_URL}/listarMarcas`,
                 {
                     headers: getAuthHeaders()
                 }
             );
             
-            console.log('Respuesta del servidor (marcas):', data);
+            console.log('Respuesta del servidor (marcas):', response.data);
             
-            const marcasOrdenadas = data.marcas
+            // Asumimos que el backend devuelve directamente el array de marcas
+            const marcasOrdenadas = (response.data || [])
                 .map(marca => ({
                     ...marca
                 }))
@@ -34,7 +35,7 @@ export const marcaService = {
 
             return {
                 marcas: marcasOrdenadas,
-                total: data.total
+                total: marcasOrdenadas.length
             };
         } catch (error) {
             if (axios.isAxiosError(error) && error.response) {
