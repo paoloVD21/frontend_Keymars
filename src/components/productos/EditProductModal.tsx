@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import styles from './EditProductModal.module.css';
 import { productoService } from '../../services/productoService';
+import { categoriaService } from '../../services/categoriaService';
+import { marcaService } from '../../services/marcaService';
+import { proveedorService } from '../../services/proveedorService';
 import type { Producto, ProductoUpdate } from '../../types/producto';
+import type { Categoria } from '../../types/categoria';
+import type { Marca } from '../../types/marca';
 
 interface EditProductModalProps {
     isOpen: boolean;
@@ -28,8 +33,28 @@ export const EditProductModal: React.FC<EditProductModalProps> = ({
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [categorias, setCategorias] = useState<Categoria[]>([]);
+    const [marcas, setMarcas] = useState<Marca[]>([]);
+    const [proveedores, setProveedores] = useState<{id_proveedor: number, nombre: string}[]>([]);
 
     useEffect(() => {
+        const loadData = async () => {
+            try {
+                const [categoriasData, marcasData, proveedoresData] = await Promise.all([
+                    categoriaService.getCategorias(),
+                    marcaService.getMarcas(),
+                    proveedorService.getProveedores()
+                ]);
+
+                setCategorias(categoriasData.categorias);
+                setMarcas(marcasData.marcas);
+                setProveedores(proveedoresData.proveedores);
+            } catch (error) {
+                console.error('Error al cargar datos:', error);
+                setError('Error al cargar datos necesarios');
+            }
+        };
+
         if (producto) {
             setFormData({
                 nombre: producto.nombre,
@@ -41,6 +66,7 @@ export const EditProductModal: React.FC<EditProductModalProps> = ({
                 precio: producto.precio,
                 unidad_medida: producto.unidad_medida
             });
+            loadData();
         }
     }, [producto]);
 
@@ -149,18 +175,84 @@ export const EditProductModal: React.FC<EditProductModalProps> = ({
                         <label className={styles.label} htmlFor="unidad_medida">
                             Unidad de Medida
                         </label>
-                        <input
+                        <select
                             id="unidad_medida"
                             name="unidad_medida"
-                            type="text"
                             required
                             value={formData.unidad_medida}
                             onChange={handleChange}
                             className={styles.input}
-                        />
+                        >
+                            <option value="">Seleccione una unidad de medida</option>
+                            <option value="UNIDAD">UNIDAD</option>
+                            <option value="KG">KG</option>
+                            <option value="GRAMO">GRAMO</option>
+                            <option value="LITRO">LITRO</option>
+                            <option value="ML">ML</option>
+                            <option value="METRO">METRO</option>
+                            <option value="CM">CM</option>
+                        </select>
                     </div>
 
-                    {/* TODO: Agregar selectores para categoría, marca y proveedor */}
+                    <div className={styles.formGroup}>
+                        <label className={styles.label} htmlFor="id_categoria">
+                            Categoría
+                        </label>
+                        <select
+                            id="id_categoria"
+                            name="id_categoria"
+                            value={formData.id_categoria || ''}
+                            onChange={handleChange}
+                            className={styles.input}
+                        >
+                            <option value="">Seleccione una categoría</option>
+                            {categorias.map(categoria => (
+                                <option key={categoria.id_categoria} value={categoria.id_categoria}>
+                                    {categoria.nombre}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className={styles.formGroup}>
+                        <label className={styles.label} htmlFor="id_marca">
+                            Marca
+                        </label>
+                        <select
+                            id="id_marca"
+                            name="id_marca"
+                            value={formData.id_marca || ''}
+                            onChange={handleChange}
+                            className={styles.input}
+                        >
+                            <option value="">Seleccione una marca</option>
+                            {marcas.map(marca => (
+                                <option key={marca.id_marca} value={marca.id_marca}>
+                                    {marca.nombre}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className={styles.formGroup}>
+                        <label className={styles.label} htmlFor="id_proveedor">
+                            Proveedor
+                        </label>
+                        <select
+                            id="id_proveedor"
+                            name="id_proveedor"
+                            value={formData.id_proveedor || ''}
+                            onChange={handleChange}
+                            className={styles.input}
+                        >
+                            <option value="">Seleccione un proveedor</option>
+                            {proveedores.map(proveedor => (
+                                <option key={proveedor.id_proveedor} value={proveedor.id_proveedor}>
+                                    {proveedor.nombre}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
 
                     {error && <div className={styles.errorText}>{error}</div>}
 

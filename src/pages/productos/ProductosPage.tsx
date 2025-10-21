@@ -42,22 +42,19 @@ export const ProductosPage = () => {
             <h1 className={styles.title}>Productos</h1>
             <h2 className={styles.subtitle}>Gestiona los Productos</h2>
 
-            {user.role === 'supervisor' && (
-                <div className={styles.buttonContainer}>
-                    <button
-                        className={styles.registerButton}
-                        onClick={handleOpenModal}
-                    >
-                        Registrar Producto
-                    </button>
-                </div>
-            )}
+            <div className={styles.buttonContainer}>
+                <button
+                    className={styles.registerButton}
+                    onClick={handleOpenModal}
+                >
+                    Registrar Producto
+                </button>
+            </div>
 
             <div className={styles.tableContainer}>
                 <ProductList 
                     key={shouldRefreshList} 
                     onRefresh={handleListRefreshed}
-                    userRole={user.role}
                 />
             </div>
 

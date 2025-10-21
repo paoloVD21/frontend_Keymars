@@ -213,15 +213,23 @@ export const CreateProductModal = ({
                         <label className={styles.label} htmlFor="unidad_medida">
                             Unidad de Medida
                         </label>
-                        <input
+                        <select
                             id="unidad_medida"
                             name="unidad_medida"
-                            type="text"
                             required
                             value={formData.unidad_medida || ''}
                             onChange={handleChange}
-                            className={styles.input}
-                        />
+                            className={styles.select}
+                        >
+                            <option value="">Seleccione una unidad de medida</option>
+                            <option value="UNIDAD">UNIDAD</option>
+                            <option value="KG">KG</option>
+                            <option value="GRAMO">GRAMO</option>
+                            <option value="LITRO">LITRO</option>
+                            <option value="ML">ML</option>
+                            <option value="METRO">METRO</option>
+                            <option value="CM">CM</option>
+                        </select>
                     </div>
 
                     <div className={styles.formGroup}>

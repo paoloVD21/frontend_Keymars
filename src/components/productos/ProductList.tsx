@@ -6,11 +6,9 @@ import { EditProductModal } from './EditProductModal';
 
 interface ProductListProps {
     onRefresh?: () => void;
-    userRole: 'supervisor' | 'asistente';
 }
 
-export const ProductList = ({ onRefresh, userRole }: ProductListProps) => {
-    const isSupervisor = userRole === 'supervisor';
+export const ProductList = ({ onRefresh }: ProductListProps) => {
     const [productos, setProductos] = useState<Producto[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -79,7 +77,7 @@ export const ProductList = ({ onRefresh, userRole }: ProductListProps) => {
         if (loading) {
             return (
                 <tr>
-                    <td colSpan={isSupervisor ? 9 : 8} className={styles.messageCell}>
+                    <td colSpan={9} className={styles.messageCell}>
                         <div className={styles.loadingMessage}>
                             Cargando productos...
                         </div>
@@ -91,7 +89,7 @@ export const ProductList = ({ onRefresh, userRole }: ProductListProps) => {
         if (error) {
             return (
                 <tr>
-                    <td colSpan={isSupervisor ? 9 : 8} className={styles.messageCell}>
+                    <td colSpan={9} className={styles.messageCell}>
                         <div className={styles.errorMessage}>
                             {error}
                             <button 
@@ -109,7 +107,7 @@ export const ProductList = ({ onRefresh, userRole }: ProductListProps) => {
         if (!productos || productos.length === 0) {
             return (
                 <tr>
-                    <td colSpan={isSupervisor ? 9 : 8} className={styles.messageCell}>
+                    <td colSpan={9} className={styles.messageCell}>
                         <div className={styles.emptyMessage}>
                             No hay productos registrados
                         </div>
@@ -144,31 +142,29 @@ export const ProductList = ({ onRefresh, userRole }: ProductListProps) => {
                         {producto.activo ? 'Activo' : 'Inactivo'}
                     </span>
                 </td>
-                {isSupervisor && (
-                    <td className={styles.tableCell}>
-                        <div className={styles.actionButtons}>
-                            <button
-                                className={`${styles.actionButton} ${styles.editButton}`}
-                                onClick={() => {
-                                    setSelectedProducto(producto);
-                                    setEditModalOpen(true);
-                                }}
-                                title="Editar producto"
-                            >
-                                Editar
-                            </button>
-                            <button
-                                onClick={() => handleToggleStatus(producto)}
-                                className={`${styles.actionButton} ${producto.activo ? styles.deleteButton : styles.activateButton}`}
-                                disabled={loadingProducto === producto.id_producto}
-                                title={producto.activo ? 'Desactivar producto' : 'Activar producto'}
-                            >
-                                {loadingProducto === producto.id_producto ? 'Procesando...' : 
-                                 producto.activo ? 'Desactivar' : 'Activar'}
-                            </button>
-                        </div>
-                    </td>
-                )}
+                <td className={styles.tableCell}>
+                    <div className={styles.actionButtons}>
+                        <button
+                            className={`${styles.actionButton} ${styles.editButton}`}
+                            onClick={() => {
+                                setSelectedProducto(producto);
+                                setEditModalOpen(true);
+                            }}
+                            title="Editar producto"
+                        >
+                            Editar
+                        </button>
+                        <button
+                            onClick={() => handleToggleStatus(producto)}
+                            className={`${styles.actionButton} ${producto.activo ? styles.deleteButton : styles.activateButton}`}
+                            disabled={loadingProducto === producto.id_producto}
+                            title={producto.activo ? 'Desactivar producto' : 'Activar producto'}
+                        >
+                            {loadingProducto === producto.id_producto ? 'Procesando...' : 
+                             producto.activo ? 'Desactivar' : 'Activar'}
+                        </button>
+                    </div>
+                </td>
             </tr>
         ));
     };
@@ -197,7 +193,7 @@ export const ProductList = ({ onRefresh, userRole }: ProductListProps) => {
                             <th>Stock</th>
                             <th>Precio</th>
                             <th>Estado</th>
-                            {isSupervisor && <th>Acciones</th>}
+                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
