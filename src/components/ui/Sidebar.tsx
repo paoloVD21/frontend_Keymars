@@ -22,7 +22,7 @@ export const Sidebar = ({ user }: SidebarProps) => {
                 <Link to="/dashboard" className={styles.navLink}>
                     Dashboard
                 </Link>
-                <Link to="/products" className={styles.navLink}>
+                <Link to="/productos" className={styles.navLink}>
                     Productos
                 </Link>
                 <Link to="/inventory/entries" className={styles.navLink}>

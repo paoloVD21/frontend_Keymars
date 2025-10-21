@@ -9,10 +9,10 @@ import { LoginPage } from '../pages/auth/LoginPage';
 // Páginas privadas - TODO: Implementar estos componentes
 // import { DashboardPage } from '../pages/dashboard/DashboardPage';
 // import { ProductsPage } from '../pages/products/ProductsPage';
-// import { InventoryPage } from '../pages/inventory/InventoryPage';
 // import { SuppliersPage } from '../pages/suppliers/SuppliersPage';
 import { UsersPage } from '../pages/users/UsersPage';
 import { ProveedoresPage } from '../pages/proveedores/ProveedoresPage';
+import { ProductosPage } from '../pages/productos/ProductosPage';
 // import { ReportsPage } from '../pages/reports/ReportsPage';
 // import { AlertsPage } from '../pages/alerts/AlertsPage';
 
@@ -42,6 +42,10 @@ export const AppRouter = () => {
                         {
                             path: 'suppliers',
                             element: <ProveedoresPage />
+                        },
+                        {
+                            path: 'productos',
+                            element: <ProductosPage />
                         },
                         {
                             path: '*',
