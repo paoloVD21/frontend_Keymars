@@ -7,14 +7,19 @@ import styles from './ProductosPage.module.css';
 export const ProductosPage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [shouldRefreshList, setShouldRefreshList] = useState(0);
+    const [shouldRefreshData, setShouldRefreshData] = useState(false);
     const { user, isLoading } = useAuthStore();
 
     const handleOpenModal = () => setIsModalOpen(true);
-    const handleCloseModal = () => setIsModalOpen(false);
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setShouldRefreshData(false); // Resetear el indicador de recarga al cerrar el modal
+    };
 
-    // Callback para forzar la actualización de la lista de productos
+    // Callback para forzar la actualización de la lista de productos y datos relacionados
     const handleProductCreated = () => {
         setShouldRefreshList(prev => prev + 1);
+        setShouldRefreshData(true); // Forzar la recarga de proveedores, categorías y marcas
     };
 
     // Callback para controlar cuando se ha completado el refresh
@@ -60,6 +65,7 @@ export const ProductosPage = () => {
                 isOpen={isModalOpen}
                 onClose={handleCloseModal}
                 onProductCreated={handleProductCreated}
+                shouldRefreshData={shouldRefreshData}
             />
         </div>
     );

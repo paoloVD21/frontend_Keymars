@@ -138,5 +138,37 @@ export const proveedorService = {
             }
             throw error;
         }
+    },
+
+    // Función simplificada para obtener solo ID y nombre de proveedores para el modal
+    getProveedoresSimple: async (): Promise<{ proveedores: { id_proveedor: number; nombre: string }[]; total: number }> => {
+        try {
+            console.log('Obteniendo proveedores...');
+            const { data } = await axios.get<Proveedor[]>(`${BASE_URL}/listarModalProveedores`, {
+                headers: getAuthHeaders()
+            });
+            console.log('Respuesta de proveedores:', data);
+            
+            // El backend devuelve directamente el array de proveedores
+            if (!Array.isArray(data)) {
+                console.error('Respuesta inválida del servidor:', data);
+                throw new Error('Formato de respuesta inválido');
+            }
+
+            // Transformamos la respuesta al formato esperado por el frontend
+            return {
+                proveedores: data.map(p => ({
+                    id_proveedor: p.id_proveedor,
+                    nombre: p.nombre
+                })),
+                total: data.length
+            };
+        } catch (error) {
+            if (axios.isAxiosError(error) && error.response) {
+                console.error('Error al obtener proveedores:', error.response.data);
+                throw new Error(error.response.data.detail || 'Error al obtener proveedores');
+            }
+            throw error;
+        }
     }
 };
