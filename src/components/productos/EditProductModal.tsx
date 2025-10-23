@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './EditProductModal.module.css';
 import { productoService } from '../../services/productoService';
 import { categoriaService } from '../../services/categoriaService';
@@ -15,12 +15,12 @@ interface EditProductModalProps {
     producto: Producto;
 }
 
-export const EditProductModal: React.FC<EditProductModalProps> = ({
+export const EditProductModal = ({
     isOpen,
     onClose,
     onSuccess,
     producto
-}) => {
+}: EditProductModalProps): React.ReactElement | null => {
     const [formData, setFormData] = useState<ProductoUpdate>({
         nombre: '',
         descripcion: '',
@@ -36,22 +36,32 @@ export const EditProductModal: React.FC<EditProductModalProps> = ({
     const [categorias, setCategorias] = useState<Categoria[]>([]);
     const [marcas, setMarcas] = useState<Marca[]>([]);
     const [proveedores, setProveedores] = useState<{id_proveedor: number, nombre: string}[]>([]);
+    // Se eliminaron los estados de sucursales y ubicaciones
 
     useEffect(() => {
         const loadData = async () => {
             try {
-                const [categoriasData, marcasData, proveedoresData] = await Promise.all([
+                setLoading(true);
+                // Cargar todos los datos necesarios en paralelo
+                const [
+                    categoriasData,
+                    marcasData,
+                    proveedoresData
+                ] = await Promise.all([
                     categoriaService.getCategorias(),
                     marcaService.getMarcas(),
                     proveedorService.getProveedores()
                 ]);
 
+                // Establecer los datos básicos
                 setCategorias(categoriasData.categorias);
                 setMarcas(marcasData.marcas);
                 setProveedores(proveedoresData.proveedores);
             } catch (error) {
                 console.error('Error al cargar datos:', error);
                 setError('Error al cargar datos necesarios');
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -104,6 +114,8 @@ export const EditProductModal: React.FC<EditProductModalProps> = ({
             setLoading(false);
         }
     };
+
+    // Se eliminaron las funciones relacionadas con sucursales y ubicaciones
 
     if (!isOpen) return null;
 
@@ -181,7 +193,7 @@ export const EditProductModal: React.FC<EditProductModalProps> = ({
                             required
                             value={formData.unidad_medida}
                             onChange={handleChange}
-                            className={styles.input}
+                            className={styles.select}
                         >
                             <option value="">Seleccione una unidad de medida</option>
                             <option value="UNIDAD">UNIDAD</option>
@@ -203,7 +215,7 @@ export const EditProductModal: React.FC<EditProductModalProps> = ({
                             name="id_categoria"
                             value={formData.id_categoria || ''}
                             onChange={handleChange}
-                            className={styles.input}
+                            className={styles.select}
                         >
                             <option value="">Seleccione una categoría</option>
                             {categorias.map(categoria => (
@@ -223,7 +235,7 @@ export const EditProductModal: React.FC<EditProductModalProps> = ({
                             name="id_marca"
                             value={formData.id_marca || ''}
                             onChange={handleChange}
-                            className={styles.input}
+                            className={styles.select}
                         >
                             <option value="">Seleccione una marca</option>
                             {marcas.map(marca => (
@@ -243,7 +255,7 @@ export const EditProductModal: React.FC<EditProductModalProps> = ({
                             name="id_proveedor"
                             value={formData.id_proveedor || ''}
                             onChange={handleChange}
-                            className={styles.input}
+                            className={styles.select}
                         >
                             <option value="">Seleccione un proveedor</option>
                             {proveedores.map(proveedor => (

@@ -28,6 +28,7 @@ export const ProductList = ({ onRefresh }: ProductListProps) => {
                 skip: (currentPage - 1) * itemsPerPage,
                 limit: itemsPerPage
             });
+            
             setProductos(response.productos);
             setTotal(response.total);
             setError(null);
@@ -45,15 +46,21 @@ export const ProductList = ({ onRefresh }: ProductListProps) => {
     }, [loadProductos]);
 
     const handleToggleStatus = async (producto: Producto) => {
+        // Si ya hay una operación en curso para este producto, no hacer nada
+        if (loadingProducto === producto.id_producto) return;
+
         try {
             setLoadingProducto(producto.id_producto);
             setError(null);
-            await productoService.toggleProductoStatus(producto.id_producto);
             
+            // Obtener el producto actualizado del servidor
+            const updatedProducto = await productoService.toggleProductoStatus(producto.id_producto);
+            
+            // Actualizar solo el producto específico con los datos del servidor
             setProductos(prevProductos => 
                 prevProductos.map(p => 
                     p.id_producto === producto.id_producto
-                        ? { ...p, activo: !p.activo }
+                        ? { ...p, activo: updatedProducto.activo }
                         : p
                 )
             );

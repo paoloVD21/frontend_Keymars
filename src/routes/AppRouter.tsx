@@ -6,15 +6,11 @@ import { AuthLayout } from '../layouts/AuthLayout';
 // Páginas públicas
 import { LoginPage } from '../pages/auth/LoginPage';
 
-// Páginas privadas - TODO: Implementar estos componentes
-// import { DashboardPage } from '../pages/dashboard/DashboardPage';
-// import { ProductsPage } from '../pages/products/ProductsPage';
-// import { SuppliersPage } from '../pages/suppliers/SuppliersPage';
 import { UsersPage } from '../pages/users/UsersPage';
 import { ProveedoresPage } from '../pages/proveedores/ProveedoresPage';
 import { ProductosPage } from '../pages/productos/ProductosPage';
-// import { ReportsPage } from '../pages/reports/ReportsPage';
-// import { AlertsPage } from '../pages/alerts/AlertsPage';
+import { EntradaPage } from '../pages/entradas/EntradaPage';
+
 
 export const AppRouter = () => {
     const router = createBrowserRouter([
@@ -28,7 +24,7 @@ export const AppRouter = () => {
                 },
                 {
                     path: '/',
-                    element: <Navigate to="/dashboard" replace />
+                    element: <Navigate to="/productos" replace />
                 }
             ]
         },
@@ -40,12 +36,20 @@ export const AppRouter = () => {
                     element: <PrivateRoute />,
                     children: [
                         {
-                            path: 'suppliers',
-                            element: <ProveedoresPage />
+                            index: true,
+                            element: <ProductosPage />
                         },
                         {
                             path: 'productos',
                             element: <ProductosPage />
+                        },
+                        {
+                            path: 'suppliers',
+                            element: <ProveedoresPage />
+                        },
+                        {
+                            path: 'entries',
+                            element: <EntradaPage />
                         },
                         {
                             path: '*',

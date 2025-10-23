@@ -43,6 +43,7 @@ export const CreateProductModal = ({
     const [categorias, setCategorias] = useState<Categoria[]>([]);
     const [marcas, setMarcas] = useState<Marca[]>([]);
     const [proveedores, setProveedores] = useState<ProveedorSelect[]>([]);
+    // Se eliminaron los estados de sucursales y ubicaciones
 
     useEffect(() => {
         const loadData = async () => {
@@ -120,6 +121,8 @@ export const CreateProductModal = ({
         });
         setError('');
     };
+
+    // Se eliminaron las funciones relacionadas con sucursales y ubicaciones
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();

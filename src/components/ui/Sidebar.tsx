@@ -25,10 +25,10 @@ export const Sidebar = ({ user }: SidebarProps) => {
                 <Link to="/productos" className={styles.navLink}>
                     Productos
                 </Link>
-                <Link to="/inventory/entries" className={styles.navLink}>
+                <Link to="/entries" className={styles.navLink}>
                     Entradas
                 </Link>
-                <Link to="/inventory/exits" className={styles.navLink}>
+                <Link to="/exits" className={styles.navLink}>
                     Salidas
                 </Link>
                 <Link to="/suppliers" className={styles.navLink}>

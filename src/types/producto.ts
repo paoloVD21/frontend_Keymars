@@ -37,6 +37,8 @@ export interface ProductoUpdate {
     id_proveedor?: number;
     precio?: number;
     unidad_medida?: string;
+    sucursal_id?: number;
+    ubicaciones?: number[];
 }
 
 export interface GetProductosParams {

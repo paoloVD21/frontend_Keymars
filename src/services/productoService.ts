@@ -34,6 +34,7 @@ export const productoService = {
       });
       console.log('Respuesta del servidor:', data);
 
+      // Procesar y ordenar los productos
       const productosOrdenados = data.productos
         .map((producto: Producto): Producto => ({
           ...producto
