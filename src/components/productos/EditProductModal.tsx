@@ -21,80 +21,86 @@ export const EditProductModal = ({
     onSuccess,
     producto
 }: EditProductModalProps): React.ReactElement | null => {
-    const [formData, setFormData] = useState<Omit<ProductoUpdate, 'id_proveedor'>>({
+    const [formData, setFormData] = useState<ProductoUpdate>({
         nombre: '',
         descripcion: null,
         codigo_producto: '',
         id_categoria: 0,
         id_marca: null,
+        id_proveedor: 0,
         precio: 0,
         unidad_medida: 'UNIDAD',
         stock_minimo: 0
     });
 
-    // Estado eliminado ya que no se necesita
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [categorias, setCategorias] = useState<Categoria[]>([]);
     const [marcas, setMarcas] = useState<Marca[]>([]);
-    const [proveedores, setProveedores] = useState<{id_proveedor: number, nombre: string}[]>([]);
-    // Se eliminaron los estados de sucursales y ubicaciones
+    const [proveedores, setProveedores] = useState<{ id_proveedor: number, nombre: string }[]>([]);
 
+    // Efecto para inicializar el formulario cuando se abre el modal con un producto
     useEffect(() => {
-        const loadData = async () => {
+        if (!producto || !isOpen) return;
+
+        setFormData({
+            nombre: producto.nombre,
+            descripcion: producto.descripcion || null,
+            codigo_producto: producto.codigo_producto,
+            id_categoria: Number(producto.id_categoria),
+            id_marca: producto.id_marca !== null ? Number(producto.id_marca) : null,
+            id_proveedor: Number(producto.id_proveedor),
+            precio: Number(producto.precio) || 0,
+            unidad_medida: producto.unidad_medida,
+            stock_minimo: Number(producto.stock_minimo) || 0
+        });
+    }, [producto, isOpen]);
+
+    // Efecto para cargar los datos auxiliares cuando se abre el modal
+    useEffect(() => {
+        if (!isOpen) return;
+
+        const loadCatalogData = async () => {
             try {
                 setLoading(true);
-                
-                // Cargar todos los datos necesarios en paralelo
-                const [
-                    categoriasData,
-                    marcasData,
-                    proveedoresData
-                ] = await Promise.all([
+                const [categoriasRes, marcasRes, proveedoresRes] = await Promise.all([
                     categoriaService.getCategorias(),
                     marcaService.getMarcas(),
-                    proveedorService.getProveedores()
+                    proveedorService.getProveedoresSimple()
                 ]);
 
-                // Establecer los datos básicos
-                setCategorias(categoriasData.categorias);
-                setMarcas(marcasData.marcas);
-                setProveedores(proveedoresData.proveedores);
-            } catch {
+                setCategorias(categoriasRes.categorias || []);
+                setMarcas(marcasRes.marcas || []);
+                const proveedoresData = proveedoresRes.proveedores || [];
+                setProveedores(proveedoresData);
+                
+                // Buscar el id_proveedor basado en el nombre del proveedor
+                if (producto && producto.proveedor_nombre) {
+                    const proveedorEncontrado = proveedoresData.find(
+                        prov => prov.nombre === producto.proveedor_nombre
+                    );
+                    if (proveedorEncontrado) {
+                        setFormData(prev => ({
+                            ...prev,
+                            id_proveedor: proveedorEncontrado.id_proveedor
+                        }));
+                    }
+                }
+            } catch (error) {
+                console.error('Error al cargar datos:', error);
                 setError('Error al cargar datos necesarios');
             } finally {
                 setLoading(false);
             }
         };
 
-        if (producto) {
-            // Asegurarnos de que el id_proveedor sea un número
-            const proveedorIdNumber = Number(producto.id_proveedor);
-            if (isNaN(proveedorIdNumber)) {
-                setError('Error: ID de proveedor inválido');
-                return;
-            }
-            
-            const initialData = {
-                nombre: producto.nombre,
-                descripcion: producto.descripcion || null,
-                codigo_producto: producto.codigo_producto,
-                id_categoria: producto.id_categoria,
-                id_marca: producto.id_marca,
-                precio: Number(producto.precio) || 0,
-                unidad_medida: producto.unidad_medida,
-                stock_minimo: Number(producto.stock_minimo) || 0
-            };
-            setFormData(initialData);
-            loadData();
-        }
-    }, [producto]);
+        loadCatalogData();
+    }, [isOpen, producto]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         let parsedValue: string | number | null = value;
 
-        // Convertir a número si el campo lo requiere
         if (['precio', 'id_categoria', 'id_proveedor', 'stock_minimo'].includes(name)) {
             parsedValue = value === '' ? 0 : parseFloat(value);
         } else if (name === 'id_marca') {
@@ -111,13 +117,10 @@ export const EditProductModal = ({
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         try {
             setLoading(true);
             setError(null);
-
-            // Asegurarnos de que el id_proveedor sea un número válido
-            const id_proveedor = Number(producto.id_proveedor);
 
             // Validaciones
             if (!formData.nombre.trim()) {
@@ -139,84 +142,20 @@ export const EditProductModal = ({
                 throw new Error('La unidad de medida es requerida');
             }
 
-            // Verificar que tengamos un proveedor válido
-            if (isNaN(id_proveedor) || id_proveedor <= 0) {
-                throw new Error('ID de proveedor no válido');
-            }
-
-            // Construir el objeto de manera explícita
-            const dataToSubmit: ProductoUpdate = {
-                nombre: formData.nombre,
-                descripcion: formData.descripcion,
-                codigo_producto: formData.codigo_producto,
-                id_categoria: formData.id_categoria,
-                id_marca: formData.id_marca,
-                precio: formData.precio,
-                unidad_medida: formData.unidad_medida,
-                stock_minimo: formData.stock_minimo,
-                id_proveedor // Asegurarnos de que id_proveedor esté incluido
-            };
-
-            // Validación del objeto completo
-            const camposRequeridos = ['nombre', 'codigo_producto', 'id_categoria', 'id_proveedor', 'precio', 'unidad_medida', 'stock_minimo'];
-            const camposFaltantes = camposRequeridos.filter(campo => !dataToSubmit[campo as keyof ProductoUpdate]);
-            
-            if (camposFaltantes.length > 0) {
-                throw new Error(`Campos requeridos faltantes: ${camposFaltantes.join(', ')}`);
-            }
-
-            const productoActualizado = await productoService.updateProducto(producto.id_producto, dataToSubmit);
+            const productoActualizado = await productoService.updateProducto(producto.id_producto, formData);
             onSuccess(productoActualizado);
             onClose();
         } catch (err) {
-
-            
-            // Tipado más específico para errores de Axios
-            interface AxiosErrorResponse {
-                detail?: string;
-                message?: string;
-                [key: string]: unknown;
-            }
-
-            interface AxiosError {
-                response?: {
-                    status: number;
-                    statusText: string;
-                    data: AxiosErrorResponse;
-                    headers: Record<string, string>;
-                };
-                config?: {
-                    url?: string;
-                    method?: string;
-                    data?: string | Record<string, unknown>;
-                };
-                message: string;
-            }
-
-            // Si es un error de Axios, mostrar los detalles con mejor tipado
-            if (err && typeof err === 'object' && 'response' in err) {
-                const axiosError = err as AxiosError;
-
-                
-                // Mostrar mensaje específico del error
-                if (axiosError.response?.data?.detail) {
-                    setError(`Error del servidor: ${JSON.stringify(axiosError.response.data.detail)}`);
-                    return;
-                }
-            }
-            
-            // Si es un error estándar
+            console.error('Error al actualizar producto:', err);
             if (err instanceof Error) {
                 setError(err.message);
             } else {
-                setError(`Error al actualizar el producto: ${JSON.stringify(err)}`);
+                setError('Error al actualizar el producto');
             }
         } finally {
             setLoading(false);
         }
     };
-
-    // Se eliminaron las funciones relacionadas con sucursales y ubicaciones
 
     if (!isOpen) return null;
 
@@ -333,6 +272,7 @@ export const EditProductModal = ({
                         <select
                             id="id_categoria"
                             name="id_categoria"
+                            required
                             value={formData.id_categoria || ''}
                             onChange={handleChange}
                             className={styles.select}
@@ -370,9 +310,21 @@ export const EditProductModal = ({
                         <label className={styles.label} htmlFor="id_proveedor">
                             Proveedor
                         </label>
-                        <div className={styles.input}>
-                            {proveedores.find(p => p.id_proveedor === producto.id_proveedor)?.nombre || 'Proveedor no encontrado'}
-                        </div>
+                        <select
+                            id="id_proveedor"
+                            name="id_proveedor"
+                            required
+                            value={formData.id_proveedor?.toString() || ''}
+                            onChange={handleChange}
+                            className={styles.select}
+                        >
+                            <option value="">Seleccione un proveedor</option>
+                            {proveedores.map(proveedor => (
+                                <option key={proveedor.id_proveedor} value={proveedor.id_proveedor}>
+                                    {proveedor.nombre}
+                                </option>
+                            ))}
+                        </select>
                     </div>
 
                     {error && <div className={styles.errorText}>{error}</div>}
