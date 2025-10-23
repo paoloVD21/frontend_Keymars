@@ -143,25 +143,37 @@ export const proveedorService = {
     // Función simplificada para obtener solo ID y nombre de proveedores para el modal
     getProveedoresSimple: async (): Promise<{ proveedores: { id_proveedor: number; nombre: string }[]; total: number }> => {
         try {
-            console.log('Obteniendo proveedores...');
-            const { data } = await axios.get<Proveedor[]>(`${BASE_URL}/listarModalProveedores`, {
+            console.log('📝 [ProveedorService] Obteniendo lista de proveedores...');
+            
+            const response = await axios.get<Proveedor[]>(`${BASE_URL}/listarModalProveedores`, {
                 headers: getAuthHeaders()
             });
-            console.log('Respuesta de proveedores completa:', data);
             
-            // El backend devuelve directamente el array de proveedores
+            console.log('Respuesta completa:', response);
+            const { data } = response;
+            
+            // Validación exhaustiva de la respuesta
             if (!Array.isArray(data)) {
-                console.error('Respuesta inválida del servidor:', data);
+                console.error('❌ [ProveedorService] Formato de respuesta inválido:', data);
                 throw new Error('Formato de respuesta inválido');
             }
 
-            // Transformamos la respuesta al formato esperado por el frontend
-            const proveedores = data.filter(p => p.activo).map(p => ({
-                id_proveedor: p.id_proveedor,
-                nombre: p.nombre
-            }));
+            // Transformamos y validamos cada proveedor
+            const proveedores = data
+                .filter(p => p && typeof p === 'object' && 
+                           'id_proveedor' in p && 'nombre' in p)
+                .map(p => ({
+                    id_proveedor: Number(p.id_proveedor),
+                    nombre: String(p.nombre).trim()
+                }))
+                .filter(p => !isNaN(p.id_proveedor) && p.nombre);
+
+            console.log('Proveedores filtrados:', proveedores);
             
-            console.log('Proveedores procesados:', proveedores);
+            console.log('✅ [ProveedorService] Proveedores procesados:', {
+                total: proveedores.length,
+                muestra: proveedores.slice(0, 3)
+            });
             
             return {
                 proveedores,
