@@ -21,16 +21,18 @@ export const EditProductModal = ({
     onSuccess,
     producto
 }: EditProductModalProps): React.ReactElement | null => {
-    const [formData, setFormData] = useState<ProductoUpdate>({
+    const [formData, setFormData] = useState<Omit<ProductoUpdate, 'id_proveedor'>>({
         nombre: '',
-        descripcion: '',
+        descripcion: null,
         codigo_producto: '',
-        id_categoria: undefined,
-        id_marca: undefined,
-        id_proveedor: undefined,
-        precio: undefined,
-        unidad_medida: ''
+        id_categoria: 0,
+        id_marca: null,
+        precio: 0,
+        unidad_medida: 'UNIDAD',
+        stock_minimo: 0
     });
+
+    // Estado eliminado ya que no se necesita
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [categorias, setCategorias] = useState<Categoria[]>([]);
@@ -42,6 +44,7 @@ export const EditProductModal = ({
         const loadData = async () => {
             try {
                 setLoading(true);
+                
                 // Cargar todos los datos necesarios en paralelo
                 const [
                     categoriasData,
@@ -57,8 +60,7 @@ export const EditProductModal = ({
                 setCategorias(categoriasData.categorias);
                 setMarcas(marcasData.marcas);
                 setProveedores(proveedoresData.proveedores);
-            } catch (error) {
-                console.error('Error al cargar datos:', error);
+            } catch {
                 setError('Error al cargar datos necesarios');
             } finally {
                 setLoading(false);
@@ -66,49 +68,148 @@ export const EditProductModal = ({
         };
 
         if (producto) {
-            setFormData({
+            // Asegurarnos de que el id_proveedor sea un número
+            const proveedorIdNumber = Number(producto.id_proveedor);
+            if (isNaN(proveedorIdNumber)) {
+                setError('Error: ID de proveedor inválido');
+                return;
+            }
+            
+            const initialData = {
                 nombre: producto.nombre,
-                descripcion: producto.descripcion || '',
+                descripcion: producto.descripcion || null,
                 codigo_producto: producto.codigo_producto,
                 id_categoria: producto.id_categoria,
                 id_marca: producto.id_marca,
-                id_proveedor: producto.id_proveedor,
-                precio: producto.precio,
-                unidad_medida: producto.unidad_medida
-            });
+                precio: Number(producto.precio) || 0,
+                unidad_medida: producto.unidad_medida,
+                stock_minimo: Number(producto.stock_minimo) || 0
+            };
+            setFormData(initialData);
             loadData();
         }
     }, [producto]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
-        let parsedValue: string | number | undefined = value;
+        let parsedValue: string | number | null = value;
 
         // Convertir a número si el campo lo requiere
-        if (['precio', 'id_categoria', 'id_marca', 'id_proveedor'].includes(name) && value !== '') {
-            parsedValue = parseFloat(value);
+        if (['precio', 'id_categoria', 'id_proveedor', 'stock_minimo'].includes(name)) {
+            parsedValue = value === '' ? 0 : parseFloat(value);
+        } else if (name === 'id_marca') {
+            parsedValue = value === '' ? null : parseFloat(value);
+        } else if (name === 'descripcion') {
+            parsedValue = value === '' ? null : value;
         }
 
         setFormData(prev => ({
             ...prev,
-            [name]: parsedValue || undefined
+            [name]: parsedValue
         }));
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        
         try {
             setLoading(true);
             setError(null);
-            const productoActualizado = await productoService.updateProducto(producto.id_producto, formData);
+
+            // Asegurarnos de que el id_proveedor sea un número válido
+            const id_proveedor = Number(producto.id_proveedor);
+
+            // Validaciones
+            if (!formData.nombre.trim()) {
+                throw new Error('El nombre es requerido');
+            }
+            if (!formData.codigo_producto.trim()) {
+                throw new Error('El código de producto es requerido');
+            }
+            if (!formData.id_categoria || formData.id_categoria <= 0) {
+                throw new Error('La categoría es requerida');
+            }
+            if (formData.precio < 0) {
+                throw new Error('El precio no puede ser negativo');
+            }
+            if (formData.stock_minimo < 0) {
+                throw new Error('El stock mínimo no puede ser negativo');
+            }
+            if (!formData.unidad_medida) {
+                throw new Error('La unidad de medida es requerida');
+            }
+
+            // Verificar que tengamos un proveedor válido
+            if (isNaN(id_proveedor) || id_proveedor <= 0) {
+                throw new Error('ID de proveedor no válido');
+            }
+
+            // Construir el objeto de manera explícita
+            const dataToSubmit: ProductoUpdate = {
+                nombre: formData.nombre,
+                descripcion: formData.descripcion,
+                codigo_producto: formData.codigo_producto,
+                id_categoria: formData.id_categoria,
+                id_marca: formData.id_marca,
+                precio: formData.precio,
+                unidad_medida: formData.unidad_medida,
+                stock_minimo: formData.stock_minimo,
+                id_proveedor // Asegurarnos de que id_proveedor esté incluido
+            };
+
+            // Validación del objeto completo
+            const camposRequeridos = ['nombre', 'codigo_producto', 'id_categoria', 'id_proveedor', 'precio', 'unidad_medida', 'stock_minimo'];
+            const camposFaltantes = camposRequeridos.filter(campo => !dataToSubmit[campo as keyof ProductoUpdate]);
+            
+            if (camposFaltantes.length > 0) {
+                throw new Error(`Campos requeridos faltantes: ${camposFaltantes.join(', ')}`);
+            }
+
+            const productoActualizado = await productoService.updateProducto(producto.id_producto, dataToSubmit);
             onSuccess(productoActualizado);
             onClose();
         } catch (err) {
-            console.error('Error al actualizar producto:', err);
+
+            
+            // Tipado más específico para errores de Axios
+            interface AxiosErrorResponse {
+                detail?: string;
+                message?: string;
+                [key: string]: unknown;
+            }
+
+            interface AxiosError {
+                response?: {
+                    status: number;
+                    statusText: string;
+                    data: AxiosErrorResponse;
+                    headers: Record<string, string>;
+                };
+                config?: {
+                    url?: string;
+                    method?: string;
+                    data?: string | Record<string, unknown>;
+                };
+                message: string;
+            }
+
+            // Si es un error de Axios, mostrar los detalles con mejor tipado
+            if (err && typeof err === 'object' && 'response' in err) {
+                const axiosError = err as AxiosError;
+
+                
+                // Mostrar mensaje específico del error
+                if (axiosError.response?.data?.detail) {
+                    setError(`Error del servidor: ${JSON.stringify(axiosError.response.data.detail)}`);
+                    return;
+                }
+            }
+            
+            // Si es un error estándar
             if (err instanceof Error) {
                 setError(err.message);
             } else {
-                setError('Error al actualizar el producto');
+                setError(`Error al actualizar el producto: ${JSON.stringify(err)}`);
             }
         } finally {
             setLoading(false);
@@ -177,7 +278,26 @@ export const EditProductModal = ({
                             name="precio"
                             type="number"
                             step="0.01"
-                            value={formData.precio || ''}
+                            min="0"
+                            required
+                            value={formData.precio}
+                            onChange={handleChange}
+                            className={styles.input}
+                        />
+                    </div>
+
+                    <div className={styles.formGroup}>
+                        <label className={styles.label} htmlFor="stock_minimo">
+                            Stock Mínimo
+                        </label>
+                        <input
+                            id="stock_minimo"
+                            name="stock_minimo"
+                            type="number"
+                            step="1"
+                            min="0"
+                            required
+                            value={formData.stock_minimo}
                             onChange={handleChange}
                             className={styles.input}
                         />
@@ -250,20 +370,9 @@ export const EditProductModal = ({
                         <label className={styles.label} htmlFor="id_proveedor">
                             Proveedor
                         </label>
-                        <select
-                            id="id_proveedor"
-                            name="id_proveedor"
-                            value={formData.id_proveedor || ''}
-                            onChange={handleChange}
-                            className={styles.select}
-                        >
-                            <option value="">Seleccione un proveedor</option>
-                            {proveedores.map(proveedor => (
-                                <option key={proveedor.id_proveedor} value={proveedor.id_proveedor}>
-                                    {proveedor.nombre}
-                                </option>
-                            ))}
-                        </select>
+                        <div className={styles.input}>
+                            {proveedores.find(p => p.id_proveedor === producto.id_proveedor)?.nombre || 'Proveedor no encontrado'}
+                        </div>
                     </div>
 
                     {error && <div className={styles.errorText}>{error}</div>}

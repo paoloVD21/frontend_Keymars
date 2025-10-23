@@ -29,13 +29,14 @@ export const CreateProductModal = ({
 }: CreateProductModalProps) => {
     const [formData, setFormData] = useState<ProductoUpdate>({
         nombre: '',
-        descripcion: '',
+        descripcion: null,
         codigo_producto: '',
-        id_categoria: undefined,
-        id_marca: undefined,
-        id_proveedor: undefined,
-        precio: undefined,
-        unidad_medida: ''
+        id_categoria: 0,
+        id_marca: null,
+        id_proveedor: 0,
+        precio: 0,
+        unidad_medida: 'UNIDAD',
+        stock_minimo: 0
     });
 
     const [loading, setLoading] = useState(false);
@@ -95,29 +96,34 @@ export const CreateProductModal = ({
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
-        let parsedValue: string | number | undefined = value;
+        let parsedValue: string | number | null = value;
 
         // Convertir a número si el campo lo requiere
-        if (['precio', 'id_categoria', 'id_marca', 'id_proveedor'].includes(name) && value !== '') {
-            parsedValue = parseFloat(value);
+        if (['precio', 'id_categoria', 'id_proveedor', 'stock_minimo'].includes(name)) {
+            parsedValue = value === '' ? 0 : parseFloat(value);
+        } else if (name === 'id_marca') {
+            parsedValue = value === '' ? null : parseFloat(value);
+        } else if (name === 'descripcion') {
+            parsedValue = value === '' ? null : value;
         }
 
         setFormData(prev => ({
             ...prev,
-            [name]: parsedValue || undefined
+            [name]: parsedValue
         }));
     };
 
     const resetForm = () => {
         setFormData({
             nombre: '',
-            descripcion: '',
+            descripcion: null,
             codigo_producto: '',
-            id_categoria: undefined,
-            id_marca: undefined,
-            id_proveedor: undefined,
-            precio: undefined,
-            unidad_medida: ''
+            id_categoria: 0,
+            id_marca: null,
+            id_proveedor: 0,
+            precio: 0,
+            unidad_medida: 'UNIDAD',
+            stock_minimo: 0
         });
         setError('');
     };
@@ -130,6 +136,29 @@ export const CreateProductModal = ({
         setError('');
 
         try {
+            // Validaciones
+            if (!formData.nombre.trim()) {
+                throw new Error('El nombre es requerido');
+            }
+            if (!formData.codigo_producto.trim()) {
+                throw new Error('El código de producto es requerido');
+            }
+            if (!formData.id_categoria || formData.id_categoria <= 0) {
+                throw new Error('La categoría es requerida');
+            }
+            if (!formData.id_proveedor || formData.id_proveedor <= 0) {
+                throw new Error('El proveedor es requerido');
+            }
+            if (formData.precio < 0) {
+                throw new Error('El precio no puede ser negativo');
+            }
+            if (formData.stock_minimo < 0) {
+                throw new Error('El stock mínimo no puede ser negativo');
+            }
+            if (!formData.unidad_medida) {
+                throw new Error('La unidad de medida es requerida');
+            }
+
             await productoService.createProducto(formData);
             onProductCreated();
             resetForm();
@@ -206,7 +235,26 @@ export const CreateProductModal = ({
                             name="precio"
                             type="number"
                             step="0.01"
-                            value={formData.precio || ''}
+                            min="0"
+                            required
+                            value={formData.precio}
+                            onChange={handleChange}
+                            className={styles.input}
+                        />
+                    </div>
+
+                    <div className={styles.formGroup}>
+                        <label className={styles.label} htmlFor="stock_minimo">
+                            Stock Mínimo
+                        </label>
+                        <input
+                            id="stock_minimo"
+                            name="stock_minimo"
+                            type="number"
+                            step="1"
+                            min="0"
+                            required
+                            value={formData.stock_minimo}
                             onChange={handleChange}
                             className={styles.input}
                         />

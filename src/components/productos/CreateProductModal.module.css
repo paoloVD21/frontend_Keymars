@@ -241,3 +241,10 @@
     font-size: 0.875rem;
     margin: 0.5rem 0;
 }
+
+.helperText {
+    font-size: 0.75rem;
+    color: #666;
+    margin-top: 0.25rem;
+    font-style: italic;
+}

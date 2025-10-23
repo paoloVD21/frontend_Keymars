@@ -147,7 +147,7 @@ export const proveedorService = {
             const { data } = await axios.get<Proveedor[]>(`${BASE_URL}/listarModalProveedores`, {
                 headers: getAuthHeaders()
             });
-            console.log('Respuesta de proveedores:', data);
+            console.log('Respuesta de proveedores completa:', data);
             
             // El backend devuelve directamente el array de proveedores
             if (!Array.isArray(data)) {
@@ -156,12 +156,16 @@ export const proveedorService = {
             }
 
             // Transformamos la respuesta al formato esperado por el frontend
+            const proveedores = data.filter(p => p.activo).map(p => ({
+                id_proveedor: p.id_proveedor,
+                nombre: p.nombre
+            }));
+            
+            console.log('Proveedores procesados:', proveedores);
+            
             return {
-                proveedores: data.map(p => ({
-                    id_proveedor: p.id_proveedor,
-                    nombre: p.nombre
-                })),
-                total: data.length
+                proveedores,
+                total: proveedores.length
             };
         } catch (error) {
             if (axios.isAxiosError(error) && error.response) {

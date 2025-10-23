@@ -139,7 +139,7 @@ export const ProductList = ({ onRefresh }: ProductListProps) => {
                 </td>
                 <td className={styles.tableCell}>
                     <span className={styles.proveedorBadge}>
-                        {producto.proveedor?.nombre || 'Sin proveedor'}
+                        {producto.proveedor_nombre || 'Sin proveedor'}
                     </span>
                 </td>
                 <td className={styles.tableCell}>{producto.stock_actual}</td>
