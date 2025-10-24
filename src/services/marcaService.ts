@@ -24,8 +24,6 @@ export const marcaService = {
                 }
             );
             
-            console.log('Respuesta del servidor (marcas):', response.data);
-            
             // Asumimos que el backend devuelve directamente el array de marcas
             const marcasOrdenadas = (response.data || [])
                 .map(marca => ({

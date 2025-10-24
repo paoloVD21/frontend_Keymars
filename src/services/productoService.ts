@@ -32,11 +32,6 @@ export const productoService = {
           limit: params?.limit || 15,
         },
       });
-      console.log('Respuesta completa del servidor:', {
-        productos: data.productos,
-        total: data.total,
-        muestra: data.productos?.[0] // Mostrar el primer producto como ejemplo
-      });
 
       // Procesar y ordenar los productos
       const productosOrdenados = data.productos
@@ -70,7 +65,6 @@ export const productoService = {
       const { data } = await axios.get(`${BASE_URL}/obtenerProducto/${id}`, {
         headers: getAuthHeaders()
       });
-      console.log('Respuesta obtenerProducto:', data);
       return data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -83,8 +77,6 @@ export const productoService = {
 
   createProducto: async (productoData: ProductoUpdate): Promise<Producto> => {
     try {
-      console.log('Datos enviados al crear producto:', productoData);
-      
       // Separar el id_proveedor de los datos del producto
       const { id_proveedor, ...productoInfo } = productoData;
       
@@ -99,8 +91,6 @@ export const productoService = {
           headers: getAuthHeaders(),
         }
       );
-      
-      console.log('Respuesta del servidor:', data);
       return data;
     } catch (error) {
       console.error('Error completo:', error);
@@ -127,15 +117,6 @@ export const productoService = {
     productoData: ProductoUpdate
   ): Promise<Producto> => {
     try {
-      console.warn('🔄 [ProductoService] Datos a enviar:', JSON.stringify(productoData, null, 2));
-      
-      console.warn('🚀 [ProductoService] Datos a enviar:', {
-        url: `${BASE_URL}/actualizarProducto/${id}`,
-        data: productoData,
-        campos_presentes: Object.keys(productoData),
-        tiene_id_proveedor: Object.keys(productoData).includes('id_proveedor')
-      });
-
       // Enviar todos los datos directamente
       const { data } = await axios.put(
         `${BASE_URL}/actualizarProducto/${id}`,

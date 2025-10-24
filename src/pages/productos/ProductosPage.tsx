@@ -25,7 +25,6 @@ export const ProductosPage = () => {
     // Callback para controlar cuando se ha completado el refresh
     const handleListRefreshed = useCallback(() => {
         // Aquí podríamos agregar lógica adicional si es necesario
-        console.log('Lista de productos actualizada');
     }, []);
 
     if (isLoading) {

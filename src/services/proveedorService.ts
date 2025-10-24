@@ -25,8 +25,6 @@ export const proveedorService = {
                   limit: params?.limit || 10,
                 },
             });
-            console.log('Respuesta del servidor:', data);
-
             const proveedoresOrdenados = data.proveedores
                 .map(proveedor => ({
                     ...proveedor
@@ -52,8 +50,6 @@ export const proveedorService = {
 
     createProveedor: async (proveedorData: ProveedorCreate): Promise<Proveedor> => {
         try {
-            console.log('Datos enviados al crear proveedor:', proveedorData);
-            
             const { data } = await axios.post<Proveedor>(
               `${BASE_URL}/crearProveedor`,
               proveedorData,
@@ -61,8 +57,6 @@ export const proveedorService = {
                 headers: getAuthHeaders(),
               }
             );
-            
-            console.log('Respuesta del servidor:', data);
             return data;
         } catch (error) {
             console.error('Error completo:', error);
@@ -143,18 +137,14 @@ export const proveedorService = {
     // Función simplificada para obtener solo ID y nombre de proveedores para el modal
     getProveedoresSimple: async (): Promise<{ proveedores: { id_proveedor: number; nombre: string }[]; total: number }> => {
         try {
-            console.log('📝 [ProveedorService] Obteniendo lista de proveedores...');
-            
             const response = await axios.get<Proveedor[]>(`${BASE_URL}/listarModalProveedores`, {
                 headers: getAuthHeaders()
             });
             
-            console.log('Respuesta completa:', response);
             const { data } = response;
             
             // Validación exhaustiva de la respuesta
             if (!Array.isArray(data)) {
-                console.error('❌ [ProveedorService] Formato de respuesta inválido:', data);
                 throw new Error('Formato de respuesta inválido');
             }
 
@@ -167,13 +157,6 @@ export const proveedorService = {
                     nombre: String(p.nombre).trim()
                 }))
                 .filter(p => !isNaN(p.id_proveedor) && p.nombre);
-
-            console.log('Proveedores filtrados:', proveedores);
-            
-            console.log('✅ [ProveedorService] Proveedores procesados:', {
-                total: proveedores.length,
-                muestra: proveedores.slice(0, 3)
-            });
             
             return {
                 proveedores,

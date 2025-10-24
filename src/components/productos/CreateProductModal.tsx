@@ -47,59 +47,40 @@ export const CreateProductModal = ({
     // Se eliminaron los estados de sucursales y ubicaciones
 
     useEffect(() => {
-        console.log('🔄 [CreateProductModal] useEffect triggered:', { isOpen, shouldRefreshData });
-        
         const loadData = async () => {
             if (!isOpen && !shouldRefreshData) {
-                console.log('⏭️ [CreateProductModal] Skipping data load:', { isOpen, shouldRefreshData });
                 return;
             }
             
-            console.log('🚀 [CreateProductModal] Iniciando carga de datos...');
             setLoading(true);
             try {
                 const token = localStorage.getItem('token');
                 if (!token) {
-                    console.error('❌ [CreateProductModal] No token found');
                     setError('No hay sesión activa. Por favor, inicia sesión nuevamente.');
                     return;
                 }
-
-                console.log('🔄 [CreateProductModal] Iniciando carga de datos...');
                 
                 const [proveedoresRes, categoriasRes, marcasRes] = await Promise.all([
                     proveedorService.getProveedoresSimple(),
                     categoriaService.getCategorias(),
                     marcaService.getMarcas()
                 ]);
-
-                console.log('📥 [CreateProductModal] Datos recibidos:', { 
-                    proveedores: proveedoresRes, 
-                    categorias: categoriasRes, 
-                    marcas: marcasRes 
-                });
                 
                 if (proveedoresRes?.proveedores && Array.isArray(proveedoresRes.proveedores)) {
-                    console.log('✅ [CreateProductModal] Proveedores cargados:', proveedoresRes.proveedores.length);
                     setProveedores(proveedoresRes.proveedores);
                 } else {
-                    console.error('❌ [CreateProductModal] Respuesta de proveedores inválida:', proveedoresRes);
                     throw new Error('No se pudieron cargar los proveedores correctamente');
                 }
 
                 if (categoriasRes?.categorias && Array.isArray(categoriasRes.categorias)) {
-                    console.log('✅ [CreateProductModal] Categorías cargadas:', categoriasRes.categorias.length);
                     setCategorias(categoriasRes.categorias);
                 } else {
-                    console.error('❌ [CreateProductModal] Respuesta de categorías inválida:', categoriasRes);
                     throw new Error('No se pudieron cargar las categorías correctamente');
                 }
                 
                 if (marcasRes?.marcas && Array.isArray(marcasRes.marcas)) {
-                    console.log('✅ [CreateProductModal] Marcas cargadas:', marcasRes.marcas.length);
                     setMarcas(marcasRes.marcas);
                 } else {
-                    console.error('❌ [CreateProductModal] Respuesta de marcas inválida:', marcasRes);
                     throw new Error('No se pudieron cargar las marcas correctamente');
                 }
             } catch (error) {
@@ -187,7 +168,6 @@ export const CreateProductModal = ({
             resetForm();
             onClose();
         } catch (error) {
-            console.error('Error al crear producto:', error);
             if (error instanceof Error) {
                 setError(error.message);
             } else {

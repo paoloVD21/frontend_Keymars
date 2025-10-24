@@ -20,22 +20,15 @@ export const ProveedoresPage = () => {
     // Callback para controlar cuando se ha completado el refresh
     const handleListRefreshed = useCallback(() => {
         // Aquí podríamos agregar lógica adicional si es necesario
-        console.log('Lista de proveedores actualizada');
     }, []);
-
-    // Debugging
-    console.log('Estado de autenticación:', { isLoading, user });
 
     if (isLoading) {
         return <div>Cargando...</div>;
     }
 
     if (!user) {
-        console.log('No hay usuario autenticado');
         return <div>No tienes acceso a esta página</div>;
     }
-
-    console.log('Usuario autenticado:', { email: user.email, role: user.role });
 
     return (
         <div className={styles.container}>

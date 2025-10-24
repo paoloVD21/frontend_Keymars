@@ -24,8 +24,6 @@ export const categoriaService = {
                 }
             );
             
-            console.log('Respuesta del servidor (categorías):', response.data);
-            
             // Asumimos que el backend devuelve directamente el array de categorías
             const categoriasOrdenadas = (response.data || [])
                 .map(categoria => ({
