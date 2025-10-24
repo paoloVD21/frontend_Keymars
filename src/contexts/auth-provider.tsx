@@ -10,9 +10,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const loadUser = async () => {
       try {
-        console.log('Intentando cargar usuario...');
         const userData = await authService.getCurrentUser();
-        console.log('Usuario cargado:', userData);
         setUser(userData.user);
       } catch (error) {
         console.error('Error loading user:', error);
