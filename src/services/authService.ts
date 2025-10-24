@@ -5,17 +5,12 @@ const API_URL = 'http://localhost:8000/api/auth';
 
 export const authService = {
     getCurrentUser: async (): Promise<AuthResponse> => {
-        console.log("📡 Iniciando getCurrentUser");
-        console.log("LocalStorage items:", Object.keys(localStorage));
         const token = localStorage.getItem('token');
         if (!token) {
-            console.error("❌ No se encontró token en localStorage");
             throw new Error('No token found');
         }
-        console.log("Token encontrado en localStorage");
 
         try {
-            console.log("🔄 Realizando petición a /session");
             const response = await axios.get(`${API_URL}/session`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -24,18 +19,14 @@ export const authService = {
                 }
             });
 
-            console.log("✅ Respuesta del backend:", response.data);
-
             // Verificar si la sesión está activa
             if (!response.data.activa) {
-                console.error("❌ Sesión no activa");
                 throw new Error('Sesión no activa');
             }
 
             // Obtener la información del usuario almacenada
             const storedUser = localStorage.getItem('user');
             if (!storedUser) {
-                console.error("❌ No se encontró información del usuario");
                 throw new Error('No user information found');
             }
 
@@ -50,10 +41,6 @@ export const authService = {
                 token
             };
 
-            console.log("✅ Datos de usuario procesados:", {
-                ...userData,
-                token: "OCULTO"
-            });
             return userData;
 
         } catch (error) {
@@ -70,8 +57,6 @@ export const authService = {
     },
     login: async (credentials: LoginCredentials): Promise<AuthResponse> => {
         try {
-            console.log('Intentando login con credenciales:', { email: credentials.email });
-            
             // Crear FormData con el formato correcto
             const formData = new URLSearchParams();
             // Enviar tanto 'username' como 'email' para compatibilidad con distintos backends
@@ -79,16 +64,13 @@ export const authService = {
             formData.append('email', credentials.email);
             formData.append('password', credentials.password);
 
-            console.log('Enviando petición al backend...');
             const response = await axios.post(`${API_URL}/login`, formData, {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 }
             });
 
-            console.log('Respuesta del backend (status):', response.status);
-            console.log('Respuesta del backend (headers):', response.headers);
-            console.log('Respuesta del backend (body):', response.data);
+
 
             // Intentar extraer el token desde varias claves comunes
             const possibleTokenKeys = ['access_token', 'accessToken', 'token', 'auth_token', 'id_token'];
@@ -158,7 +140,6 @@ export const authService = {
                 token
             };
             
-            console.log('Respuesta procesada:', authResponse);
             return authResponse;
         } catch (error) {
             console.error('Error durante el login:', error);

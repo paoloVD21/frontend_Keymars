@@ -15,14 +15,11 @@ interface AuthState {
 export const useAuthStore = create<AuthState>((set) => {
     // Función para inicializar el store
     const initializeStore = async () => {
-        console.log('🚀 Iniciando inicialización del store');
         set({ isLoading: true }); // Establecer loading al inicio
         
         const token = localStorage.getItem('token');
-        console.log('🔑 Token encontrado:', token ? 'Sí' : 'No');
         
         if (!token) {
-            console.log('❌ No hay token, estableciendo estado inicial');
             set({
                 user: null,
                 token: null,
@@ -34,9 +31,7 @@ export const useAuthStore = create<AuthState>((set) => {
         }
 
         try {
-            console.log('🔄 Intentando obtener usuario actual');
             const response = await authService.getCurrentUser();
-            console.log('✅ Usuario obtenido:', response.user);
             
             set({
                 user: response.user,
@@ -44,12 +39,6 @@ export const useAuthStore = create<AuthState>((set) => {
                 isAuthenticated: true,
                 isLoading: false,
                 error: null
-            });
-            
-            console.log('💫 Estado actualizado:', {
-                isAuthenticated: true,
-                isLoading: false,
-                user: response.user
             });
         } catch (error) {
             console.error('❌ Error al inicializar la sesión:', error);

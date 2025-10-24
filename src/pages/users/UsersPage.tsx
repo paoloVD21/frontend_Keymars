@@ -17,8 +17,7 @@ export const UsersPage = () => {
 
     // Callback para controlar cuando se ha completado el refresh
     const handleListRefreshed = useCallback(() => {
-        // Aquí podríamos agregar lógica adicional si es necesario
-        console.log('Lista de usuarios actualizada');
+        
     }, []);
 
     return (

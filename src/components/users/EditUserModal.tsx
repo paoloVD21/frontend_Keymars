@@ -32,13 +32,11 @@ export const EditUserModal: FC<EditUserModalProps> = ({ isOpen, onClose, onUserU
 
             setLoading(true);
             try {
-                console.log('Iniciando carga de datos...');
                 const sucursalesRes = await sucursalService.getSucursales();
 
                 if (sucursalesRes?.sucursales) {
                     setSucursales(sucursalesRes.sucursales);
                 } else {
-                    console.error('Respuesta de sucursales inválida:', sucursalesRes);
                     setError('Error: No se pudieron cargar las sucursales');
                 }
             } catch (error) {
@@ -55,11 +53,6 @@ export const EditUserModal: FC<EditUserModalProps> = ({ isOpen, onClose, onUserU
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const target = e.target as HTMLInputElement;
         const { name, value, type, checked } = target;
-        console.log(`Actualizando ${name}:`, {
-            valor: type === 'checkbox' ? checked : value,
-            tipo: type,
-            esRol: name === 'id_rol'
-        });
         setFormData(prev => ({
             ...prev,
             [name]: type === 'checkbox' ? checked : value

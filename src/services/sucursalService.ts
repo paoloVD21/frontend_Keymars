@@ -17,15 +17,12 @@ const getAuthHeaders = () => {
 export const sucursalService = {
     getSucursales: async (): Promise<{ sucursales: Sucursal[]; total: number }> => {
         try {
-            console.log('Obteniendo sucursales...');
             const { data } = await axios.get<Sucursal[]>(`${BASE_URL}/sucursales`, {
                 headers: getAuthHeaders()
             });
-            console.log('Respuesta de sucursales:', data);
             
             // El backend devuelve directamente el array de sucursales
             if (!Array.isArray(data)) {
-                console.error('Respuesta inválida del servidor:', data);
                 throw new Error('Formato de respuesta inválido');
             }
 

@@ -25,7 +25,6 @@ export const userService = {
                     limit: params?.limit || 10
                 }
             });
-            console.log('Respuesta del servidor:', data); // Para depuración
             
             // Mapear temporalmente los roles mientras el backend se actualiza
             const rolesMap: Record<number, string> = {
