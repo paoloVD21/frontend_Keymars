@@ -13,3 +13,9 @@
     overflow: auto;
     margin: 10px 0;
 }
+
+.title {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}

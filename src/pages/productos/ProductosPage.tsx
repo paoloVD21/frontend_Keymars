@@ -39,7 +39,6 @@ export const ProductosPage = () => {
     return (
         <div className={styles.container}>
             <h1 className={styles.title}>Productos</h1>
-            <h2 className={styles.subtitle}>Gestiona los Productos</h2>
 
             <div className={styles.buttonContainer}>
                 <button
