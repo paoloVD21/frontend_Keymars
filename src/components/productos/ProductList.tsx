@@ -129,12 +129,12 @@ export const ProductList = ({ onRefresh }: ProductListProps) => {
                 <td className={styles.tableCell}>{producto.nombre}</td>
                 <td className={styles.tableCell}>
                     <span className={styles.categoryBadge}>
-                        {producto.categoria?.nombre || 'Sin categoría'}
+                        {producto.categoria_nombre || 'Sin categoría'}
                     </span>
                 </td>
                 <td className={styles.tableCell}>
                     <span className={styles.brandBadge}>
-                        {producto.marca?.nombre || 'Sin marca'}
+                        {producto.marca_nombre || 'Sin marca'}
                     </span>
                 </td>
                 <td className={styles.tableCell}>
