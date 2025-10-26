@@ -56,8 +56,24 @@ export const CreateEntradaModal: React.FC<CreateEntradaModalProps> = ({
         detalles: []
     });
 
+    const resetForm = () => {
+        setFormData({
+            id_motivo: undefined,
+            id_sucursal: undefined,
+            observacion: '',
+            detalles: []
+        });
+        setFecha(new Date().toISOString().split('T')[0]);
+        setIdProveedor(undefined);
+        setSelectedSucursal(null);
+        setProductosSeleccionados([]);
+        setError(null);
+        setUbicaciones([]);
+    };
+
     useEffect(() => {
         if (isOpen) {
+            resetForm();
             loadInitialData();
         }
     }, [isOpen]);
@@ -278,12 +294,13 @@ export const CreateEntradaModal: React.FC<CreateEntradaModalProps> = ({
                 id_motivo: formData.id_motivo,
                 id_sucursal: formData.id_sucursal,
                 id_proveedor: idProveedor,
-                observacion: `Fecha: ${fecha} - ${formData.observacion || ''}`,
+                observacion: formData.observacion || '',
                 detalles: detalles
             };
 
             await entradaService.registrarIngreso(entrada);
 
+            resetForm();
             onSuccess();
             onClose();
         } catch (err) {
@@ -364,6 +381,23 @@ export const CreateEntradaModal: React.FC<CreateEntradaModalProps> = ({
                                 </option>
                             ))}
                         </select>
+                    </div>
+
+                    <div className={styles.formGroup}>
+                        <label className={styles.label} htmlFor="observacion">
+                            Observación
+                        </label>
+                        <textarea
+                            id="observacion"
+                            value={formData.observacion || ''}
+                            onChange={(e) => setFormData(prev => ({
+                                ...prev,
+                                observacion: e.target.value
+                            }))}
+                            className={`${styles.input} ${styles.textarea}`}
+                            placeholder="Ingrese observaciones adicionales..."
+                            rows={3}
+                        />
                     </div>
 
                     <div className={`${styles.sucursalesSection} ${styles.fullWidth}`}>
@@ -563,7 +597,10 @@ export const CreateEntradaModal: React.FC<CreateEntradaModalProps> = ({
                     <div className={styles.buttonGroup}>
                         <button
                             type="button"
-                            onClick={onClose}
+                            onClick={() => {
+                                resetForm();
+                                onClose();
+                            }}
                             className={`${styles.button} ${styles.cancelButton}`}
                             disabled={loading}
                         >
