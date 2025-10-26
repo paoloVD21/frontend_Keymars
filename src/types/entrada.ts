@@ -18,21 +18,18 @@ export interface Entrada {
 }
 
 export interface EntradaCreate {
-    fecha: string;
-    tipo_movimiento: string;
-    cantidad_productos: number;
-    id_proveedor: number;
-    id_usuario: number;
+    id_motivo: number;
     id_sucursal: number;
-    ubicaciones: number[];
-    productos: ProductoEntrada[];
+    id_usuario: number;
+    numero_documento?: string;
+    observacion?: string;
+    detalles: DetalleEntrada[];
 }
 
-export interface ProductoEntrada {
+export interface DetalleEntrada {
     id_producto: number;
-    cantidad: number;
-    precio_unitario: number;
     id_ubicacion: number;
+    cantidad: number;
 }
 
 export interface EntradaResponse {

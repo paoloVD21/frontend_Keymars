@@ -5,10 +5,10 @@ import { productoService } from '../../services/productoService';
 import { proveedorService } from '../../services/proveedorService';
 import { sucursalService } from '../../services/sucursalService';
 import { ubicacionService } from '../../services/ubicacionService';
-import type { EntradaCreate, ProductoEntrada } from '../../types/entrada';
+import type { EntradaCreate, DetalleEntrada } from '../../types/entrada';
 import type { Producto } from '../../types/producto';
 import type { Sucursal } from '../../types/sucursal';
-import type { Ubicacion } from '../../types/ubicacion';
+import type { Ubicacion, CreateUbicacion } from '../../types/ubicacion';
 
 interface CreateEntradaModalProps {
     isOpen: boolean;
@@ -16,9 +16,10 @@ interface CreateEntradaModalProps {
     onSuccess: () => void;
 }
 
-interface ProductoSeleccionado extends ProductoEntrada {
+interface ProductoSeleccionado extends DetalleEntrada {
     nombre: string;
     ubicacion_nombre?: string;
+    precio_unitario?: number;
 }
 
 export const CreateEntradaModal: React.FC<CreateEntradaModalProps> = ({
@@ -34,16 +35,23 @@ export const CreateEntradaModal: React.FC<CreateEntradaModalProps> = ({
     const [ubicaciones, setUbicaciones] = useState<Ubicacion[]>([]);
     const [selectedSucursal, setSelectedSucursal] = useState<Sucursal | null>(null);
     const [productosSeleccionados, setProductosSeleccionados] = useState<ProductoSeleccionado[]>([]);
+    const [showNewUbicacionInput, setShowNewUbicacionInput] = useState(false);
+    const [newUbicacionData, setNewUbicacionData] = useState<CreateUbicacion>({
+        nombre: '',
+        codigo_ubicacion: '',
+        tipo_ubicacion: '',
+        id_sucursal: 0
+    });
+
+    const [fecha, setFecha] = useState(new Date().toISOString().split('T')[0]);
+    const [idProveedor, setIdProveedor] = useState<number>();
 
     const [formData, setFormData] = useState<Partial<EntradaCreate>>({
-        fecha: new Date().toISOString().split('T')[0],
-        tipo_movimiento: 'INGRESO',
-        cantidad_productos: 0,
-        id_proveedor: undefined,
-        id_usuario: 1, // Esto debería venir del contexto de autenticación
+        id_motivo: 1, // 1 = Compra
         id_sucursal: undefined,
-        ubicaciones: [],
-        productos: []
+        numero_documento: '',
+        observacion: '',
+        detalles: []
     });
 
     useEffect(() => {
@@ -72,6 +80,56 @@ export const CreateEntradaModal: React.FC<CreateEntradaModalProps> = ({
         }
     };
 
+    const isValidUbicacion = () => {
+        return (
+            newUbicacionData.nombre.trim() !== '' &&
+            newUbicacionData.codigo_ubicacion.trim() !== '' &&
+            newUbicacionData.tipo_ubicacion !== '' &&
+            selectedSucursal !== null
+        );
+    };
+
+    const resetNewUbicacionForm = () => {
+        setNewUbicacionData({
+            nombre: '',
+            codigo_ubicacion: '',
+            tipo_ubicacion: '',
+            id_sucursal: 0
+        });
+    };
+
+    const handleCreateUbicacion = async () => {
+        if (!selectedSucursal || !isValidUbicacion()) return;
+        
+        try {
+            setLoading(true);
+            setError(null);
+            
+            await ubicacionService.createUbicacion({
+                ...newUbicacionData,
+                id_sucursal: selectedSucursal.id_sucursal
+            });
+            
+            // Recargar ubicaciones
+            const response = await ubicacionService.getUbicacionesPorSucursal(selectedSucursal.id_sucursal);
+            if (response?.ubicaciones) {
+                setUbicaciones(response.ubicaciones.filter(u => u.activo));
+            }
+            
+            // Limpiar el formulario
+            resetNewUbicacionForm();
+            setShowNewUbicacionInput(false);
+        } catch (error) {
+            if (error instanceof Error) {
+                setError(error.message);
+            } else {
+                setError('Error al crear la ubicación');
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const handleSucursalClick = async (id_sucursal: number) => {
         const selectedSuc = sucursales.find(s => s.id_sucursal === id_sucursal);
         if (!selectedSuc) return;
@@ -83,21 +141,32 @@ export const CreateEntradaModal: React.FC<CreateEntradaModalProps> = ({
             setError('');
             
             const response = await ubicacionService.getUbicacionesPorSucursal(id_sucursal);
-            if (response?.ubicaciones) {
-                const ubicacionesActivas = response.ubicaciones.filter(u => u.activo);
-                if (ubicacionesActivas.length === 0) {
-                    setError('Esta sucursal no tiene ubicaciones activas disponibles');
-                } else {
-                    setUbicaciones(ubicacionesActivas);
-                }
-            } else {
+            console.log('Respuesta del servidor:', response); // Para diagnóstico
+
+            if (!response) {
+                console.error('No se recibió respuesta del servidor');
                 setError('No se pudieron cargar las ubicaciones de esta sucursal');
+                return;
+            }
+
+            if (!response.ubicaciones) {
+                console.error('La respuesta no contiene ubicaciones:', response);
+                setError('No se pudieron cargar las ubicaciones de esta sucursal');
+                return;
+            }
+
+            const ubicacionesActivas = response.ubicaciones.filter(u => u.activo);
+            console.log('Ubicaciones activas encontradas:', ubicacionesActivas.length);
+            
+            setUbicaciones(ubicacionesActivas);
+            
+            if (ubicacionesActivas.length === 0) {
+                setError('Esta sucursal no tiene ubicaciones activas disponibles');
             }
 
             setFormData(prev => ({
                 ...prev,
-                id_sucursal: id_sucursal,
-                ubicaciones: []
+                id_sucursal: id_sucursal
             }));
         } catch (error) {
             console.error('Error al cargar ubicaciones:', error);
@@ -163,7 +232,7 @@ export const CreateEntradaModal: React.FC<CreateEntradaModalProps> = ({
             return;
         }
 
-        if (!formData.id_proveedor) {
+        if (!idProveedor) {
             setError('Por favor, seleccione un proveedor');
             return;
         }
@@ -173,10 +242,16 @@ export const CreateEntradaModal: React.FC<CreateEntradaModalProps> = ({
             return;
         }
 
-        // Validar que todos los productos tengan ubicación asignada
+        // Validar que todos los productos tengan ubicación asignada y cantidad positiva
         const productosSinUbicacion = productosSeleccionados.some(p => !p.id_ubicacion);
         if (productosSinUbicacion) {
             setError('Todos los productos deben tener una ubicación asignada');
+            return;
+        }
+
+        const productosCantidadInvalida = productosSeleccionados.some(p => p.cantidad <= 0);
+        if (productosCantidadInvalida) {
+            setError('La cantidad debe ser mayor a 0 para todos los productos');
             return;
         }
 
@@ -184,16 +259,19 @@ export const CreateEntradaModal: React.FC<CreateEntradaModalProps> = ({
             setLoading(true);
             setError(null);
 
-            const productosLimpios = productosSeleccionados.map(({ id_producto, cantidad, precio_unitario, id_ubicacion }) => ({
+            const detalles = productosSeleccionados.map(({ id_producto, cantidad, id_ubicacion }) => ({
                 id_producto,
                 cantidad,
-                precio_unitario,
                 id_ubicacion
             }));
             
+            const proveedor = proveedores.find(p => p.id_proveedor === idProveedor);
+            const observacion = `Fecha: ${fecha} - Proveedor: ${proveedor?.nombre || 'No especificado'}`;
+
             await entradaService.createEntrada({
                 ...formData as EntradaCreate,
-                productos: productosLimpios
+                observacion,
+                detalles
             });
 
             onSuccess();
@@ -224,8 +302,8 @@ export const CreateEntradaModal: React.FC<CreateEntradaModalProps> = ({
                         <input
                             id="fecha"
                             type="date"
-                            value={formData.fecha}
-                            onChange={(e) => setFormData(prev => ({ ...prev, fecha: e.target.value }))}
+                            value={fecha}
+                            onChange={(e) => setFecha(e.target.value)}
                             className={styles.input}
                             required
                         />
@@ -237,8 +315,8 @@ export const CreateEntradaModal: React.FC<CreateEntradaModalProps> = ({
                         </label>
                         <select
                             id="id_proveedor"
-                            value={formData.id_proveedor || ''}
-                            onChange={(e) => setFormData(prev => ({ ...prev, id_proveedor: Number(e.target.value) }))}
+                            value={idProveedor || ''}
+                            onChange={(e) => setIdProveedor(Number(e.target.value))}
                             className={styles.select}
                             required
                         >
@@ -268,7 +346,94 @@ export const CreateEntradaModal: React.FC<CreateEntradaModalProps> = ({
 
                     {selectedSucursal && (
                         <div className={styles.productosSection}>
-                            <h3 className={styles.subtitle}>Agregar Productos</h3>
+                            <div className={styles.sectionHeader}>
+                                <h3 className={styles.subtitle}>Agregar Productos</h3>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowNewUbicacionInput(true)}
+                                    className={styles.addButton}
+                                >
+                                    + Nueva Ubicación
+                                </button>
+                            </div>
+
+                            {showNewUbicacionInput && (
+                                <div className={styles.modalOverlay}>
+                                    <div className={`${styles.modalContent} ${styles.smallModal}`}>
+                                        <h2 className={styles.modalTitle}>Nueva Ubicación</h2>
+                                        <div className={styles.newUbicacionForm}>
+                                            <div className={styles.formInputs}>
+                                                <div className={styles.formGroup}>
+                                                    <label className={styles.label}>Nombre</label>
+                                                    <input
+                                                        type="text"
+                                                        value={newUbicacionData.nombre}
+                                                        onChange={(e) => setNewUbicacionData((prev: CreateUbicacion) => ({
+                                                            ...prev,
+                                                            nombre: e.target.value
+                                                        }))}
+                                                        placeholder="Nombre de la ubicación"
+                                                        className={styles.input}
+                                                    />
+                                                </div>
+                                                <div className={styles.formGroup}>
+                                                    <label className={styles.label}>Código</label>
+                                                    <input
+                                                        type="text"
+                                                        value={newUbicacionData.codigo_ubicacion}
+                                                        onChange={(e) => setNewUbicacionData((prev: CreateUbicacion) => ({
+                                                            ...prev,
+                                                            codigo_ubicacion: e.target.value
+                                                        }))}
+                                                        placeholder="Código (ej: EST-A1)"
+                                                        className={styles.input}
+                                                    />
+                                                </div>
+                                                <div className={styles.formGroup}>
+                                                    <label className={styles.label}>Tipo de Ubicación</label>
+                                                    <select
+                                                        value={newUbicacionData.tipo_ubicacion}
+                                                        onChange={(e) => setNewUbicacionData((prev: CreateUbicacion) => ({
+                                                            ...prev,
+                                                            tipo_ubicacion: e.target.value as CreateUbicacion['tipo_ubicacion']
+                                                        }))}
+                                                        className={styles.select}
+                                                        required
+                                                    >
+                                                        <option value="">Seleccione un tipo</option>
+                                                        <option value="ESTANTERIA">Estantería</option>
+                                                        <option value="REFRIGERADO">Refrigerado</option>
+                                                        <option value="SECO">Seco</option>
+                                                        <option value="LIQUIDOS">Líquidos</option>
+                                                        <option value="OTROS">Otros</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div className={styles.formButtons}>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        setShowNewUbicacionInput(false);
+                                                        resetNewUbicacionForm();
+                                                    }}
+                                                    className={styles.cancelButton}
+                                                >
+                                                    Cancelar
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={handleCreateUbicacion}
+                                                    className={styles.saveButton}
+                                                    disabled={!isValidUbicacion() || loading}
+                                                >
+                                                    {loading ? 'Guardando...' : 'Guardar'}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
                             <div className={styles.productSelector}>
                                 <select
                                     className={styles.select}
@@ -326,17 +491,17 @@ export const CreateEntradaModal: React.FC<CreateEntradaModalProps> = ({
                                                     </td>
                                                     <td>
                                                         <select
-                                                            value={producto.id_ubicacion || ''}
-                                                            onChange={(e) => handleProductoChange(index, 'id_ubicacion', Number(e.target.value))}
-                                                            className={styles.select}
-                                                        >
-                                                            <option value="">Seleccione ubicación</option>
-                                                            {ubicaciones.map(ubicacion => (
-                                                                <option key={ubicacion.id_ubicacion} value={ubicacion.id_ubicacion}>
-                                                                    {ubicacion.nombre}
-                                                                </option>
-                                                            ))}
-                                                        </select>
+                                                    value={producto.id_ubicacion || ''}
+                                                    onChange={(e) => handleProductoChange(index, 'id_ubicacion', Number(e.target.value))}
+                                                    className={styles.select}
+                                                >
+                                                    <option value="">Seleccione ubicación</option>
+                                                    {ubicaciones.map(ubicacion => (
+                                                        <option key={ubicacion.id_ubicacion} value={ubicacion.id_ubicacion}>
+                                                            {ubicacion.nombre}
+                                                        </option>
+                                                    ))}
+                                                </select>
                                                     </td>
                                                     <td>
                                                         <button

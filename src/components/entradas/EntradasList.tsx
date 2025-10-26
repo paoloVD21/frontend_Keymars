@@ -60,7 +60,6 @@ export const EntradasList: React.FC = () => {
     return (
         <div className={styles.container}>
             <div className={styles.header}>
-                <h2>Movimientos de Entrada</h2>
                 <div className={styles.filters}>
                     <div className={styles.dateFilter}>
                         <label htmlFor="date">Fecha:</label>

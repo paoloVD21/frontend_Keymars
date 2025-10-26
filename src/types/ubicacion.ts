@@ -12,5 +12,7 @@ export interface UbicacionResponse {
 
 export interface CreateUbicacion {
     nombre: string;
+    codigo_ubicacion: string;
+    tipo_ubicacion: 'ESTANTERIA' | 'REFRIGERADO' | 'SECO' | 'LIQUIDOS' | 'OTROS' | '';
     id_sucursal: number;
 }

@@ -20,6 +20,12 @@
     max-height: 90vh;
     overflow-y: auto;
     position: relative;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.smallModal {
+    max-width: 500px !important;
+    width: 95% !important;
 }
 
 .modalTitle {
@@ -63,10 +69,46 @@
     margin-top: 20px;
 }
 
+.sectionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    background: white;
+    padding: 8px 0;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
 .subtitle {
     margin-bottom: 12px;
     color: #444;
     font-size: 1.1rem;
+}
+
+.ubicacionesList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+    padding: 12px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+.ubicacionItem {
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.noUbicaciones {
+    color: #6c757d;
+    font-style: italic;
+    margin-bottom: 20px;
 }
 
 .sucursalList {
@@ -97,10 +139,13 @@
 
 .productosSection {
     margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
 .productSelector {
-    margin-bottom: 20px;
+    margin-top: 8px;
 }
 
 .productosTable {
@@ -195,4 +240,68 @@
 
 .select {
     min-width: 150px;
+}
+
+.ubicacionColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.addButton {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.addButton:hover {
+    background: #45a049;
+}
+
+.newUbicacionForm {
+    width: 100%;
+}
+
+.formInputs {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.formButtons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.newUbicacionForm .input,
+.newUbicacionForm .select {
+    width: 100%;
+}
+
+.saveButton {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.saveButton:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+}
+
+.saveButton:hover:not(:disabled) {
+    background: #45a049;
 }
