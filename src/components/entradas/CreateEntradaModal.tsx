@@ -9,6 +9,8 @@ import type { EntradaCreate, DetalleEntrada } from '../../types/entrada';
 import type { Producto } from '../../types/producto';
 import type { Sucursal } from '../../types/sucursal';
 import type { Ubicacion, CreateUbicacion } from '../../types/ubicacion';
+import type { Motivo } from '../../types/motivo';
+import { motivoService } from '../../services/motivoService';
 
 interface CreateEntradaModalProps {
     isOpen: boolean;
@@ -31,6 +33,7 @@ export const CreateEntradaModal: React.FC<CreateEntradaModalProps> = ({
     const [error, setError] = useState<string | null>(null);
     const [proveedores, setProveedores] = useState<{ id_proveedor: number; nombre: string }[]>([]);
     const [productos, setProductos] = useState<Producto[]>([]);
+    const [motivos, setMotivos] = useState<Motivo[]>([]);
     const [sucursales, setSucursales] = useState<Sucursal[]>([]);
     const [ubicaciones, setUbicaciones] = useState<Ubicacion[]>([]);
     const [selectedSucursal, setSelectedSucursal] = useState<Sucursal | null>(null);
@@ -47,9 +50,8 @@ export const CreateEntradaModal: React.FC<CreateEntradaModalProps> = ({
     const [idProveedor, setIdProveedor] = useState<number>();
 
     const [formData, setFormData] = useState<Partial<EntradaCreate>>({
-        id_motivo: 1, // 1 = Compra
+        id_motivo: undefined,
         id_sucursal: undefined,
-        numero_documento: '',
         observacion: '',
         detalles: []
     });
@@ -63,15 +65,17 @@ export const CreateEntradaModal: React.FC<CreateEntradaModalProps> = ({
     const loadInitialData = async () => {
         try {
             setLoading(true);
-            const [proveedoresData, productosData, sucursalesData] = await Promise.all([
+            const [proveedoresData, productosData, sucursalesData, motivosEntrada] = await Promise.all([
                 proveedorService.getProveedores(),
                 productoService.getProductos(),
-                sucursalService.getSucursales()
+                sucursalService.getSucursales(),
+                motivoService.getMotivosEntrada()
             ]);
 
             setProveedores(proveedoresData.proveedores);
             setProductos(productosData.productos);
             setSucursales(sucursalesData.sucursales);
+            setMotivos(motivosEntrada);
         } catch (error) {
             console.error('Error al cargar datos iniciales:', error);
             setError('Error al cargar los datos necesarios');
@@ -237,6 +241,11 @@ export const CreateEntradaModal: React.FC<CreateEntradaModalProps> = ({
             return;
         }
 
+        if (!formData.id_motivo) {
+            setError('Por favor, seleccione un motivo de ingreso');
+            return;
+        }
+
         if (productosSeleccionados.length === 0) {
             setError('Por favor, agregue al menos un producto');
             return;
@@ -261,25 +270,30 @@ export const CreateEntradaModal: React.FC<CreateEntradaModalProps> = ({
 
             const detalles = productosSeleccionados.map(({ id_producto, cantidad, id_ubicacion }) => ({
                 id_producto,
-                cantidad,
-                id_ubicacion
+                id_ubicacion,
+                cantidad
             }));
-            
-            const proveedor = proveedores.find(p => p.id_proveedor === idProveedor);
-            const observacion = `Fecha: ${fecha} - Proveedor: ${proveedor?.nombre || 'No especificado'}`;
 
-            await entradaService.createEntrada({
-                ...formData as EntradaCreate,
-                observacion,
-                detalles
-            });
+            const entrada = {
+                id_motivo: formData.id_motivo,
+                id_sucursal: formData.id_sucursal,
+                id_proveedor: idProveedor,
+                observacion: `Fecha: ${fecha} - ${formData.observacion || ''}`,
+                detalles: detalles
+            };
+
+            await entradaService.registrarIngreso(entrada);
 
             onSuccess();
             onClose();
         } catch (err) {
             console.error('Error al crear entrada:', err);
             if (err instanceof Error) {
-                setError(err.message);
+                if (err.message === 'No se encontró información del usuario' || err.message === 'ID de usuario no encontrado') {
+                    setError('Sesión no válida. Por favor, inicie sesión nuevamente.');
+                } else {
+                    setError(err.message);
+                }
             } else {
                 setError('Error al crear la entrada');
             }
@@ -324,6 +338,29 @@ export const CreateEntradaModal: React.FC<CreateEntradaModalProps> = ({
                             {proveedores.map(proveedor => (
                                 <option key={proveedor.id_proveedor} value={proveedor.id_proveedor}>
                                     {proveedor.nombre}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className={styles.formGroup}>
+                        <label className={styles.label} htmlFor="id_motivo">
+                            Motivo de Ingreso
+                        </label>
+                        <select
+                            id="id_motivo"
+                            value={formData.id_motivo || ''}
+                            onChange={(e) => setFormData(prev => ({
+                                ...prev,
+                                id_motivo: Number(e.target.value)
+                            }))}
+                            className={styles.select}
+                            required
+                        >
+                            <option value="">Seleccione un motivo</option>
+                            {motivos.map(motivo => (
+                                <option key={motivo.id_motivo} value={motivo.id_motivo}>
+                                    {motivo.nombre}
                                 </option>
                             ))}
                         </select>

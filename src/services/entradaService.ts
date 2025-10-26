@@ -35,10 +35,15 @@ export const entradaService = {
         }
     },
 
-    createEntrada: async (entrada: EntradaCreate): Promise<EntradaResponse> => {
+    registrarIngreso: async (entrada: EntradaCreate): Promise<EntradaResponse> => {
         try {
+            console.log('Iniciando registro de ingreso...');
+            console.log('Datos recibidos del formulario:', entrada);
+
             const token = localStorage.getItem('token');
             if (!token) throw new Error('No token found');
+            
+            console.log('Token encontrado');
             
             // Extraer el ID del usuario del token
             const parts = token.split('.');
@@ -49,6 +54,8 @@ export const entradaService = {
             let userId: number;
             try {
                 const payload = JSON.parse(atob(parts[1]));
+                console.log('Payload del token:', payload);
+                
                 if (!payload.sub) {
                     throw new Error('ID de usuario no encontrado en el token');
                 }
@@ -56,17 +63,59 @@ export const entradaService = {
                 if (isNaN(userId)) {
                     throw new Error('ID de usuario inválido en el token');
                 }
+                console.log('ID de usuario extraído:', userId);
             } catch (tokenError) {
                 console.error('Error al decodificar el token:', tokenError);
                 throw new Error('Error al obtener el ID de usuario del token');
             }
+            // Si llegamos aquí, tenemos un userId válido
+
+            const datosAEnviar = {
+                ...entrada,
+                id_usuario: userId
+            };
+            
+            console.log('Datos completos a enviar al backend:', datosAEnviar);
+            console.log('URL de destino:', `${BASE_URL}/registrarIngreso`);
+            console.log('Headers:', getAuthHeaders());
 
             const { data } = await axios.post<EntradaResponse>(
                 `${BASE_URL}/registrarIngreso`,
+                datosAEnviar,
                 {
-                    ...entrada,
-                    id_usuario: userId
-                },
+                    headers: getAuthHeaders()
+                }
+            );
+            console.log('Respuesta exitosa del backend:', data);
+            return data;
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                console.error('Error de Axios:', {
+                    status: error.response?.status,
+                    statusText: error.response?.statusText,
+                    data: error.response?.data,
+                    headers: error.response?.headers
+                });
+                if (error.response?.data) {
+                    console.error('Detalle del error del backend:', error.response.data);
+                    throw new Error(error.response.data.detail || 'Error al crear entrada');
+                }
+            } else if (error instanceof Error) {
+                console.error('Error no relacionado con Axios:', error.message);
+                throw error;
+            } else {
+                console.error('Error desconocido:', error);
+                throw new Error('Error desconocido al crear entrada');
+            }
+            throw new Error('Error en el registro de ingreso'); // Return final para satisfacer TypeScript
+        }
+    },
+
+    createEntrada: async (entrada: EntradaCreate): Promise<EntradaResponse> => {
+        try {
+            const { data } = await axios.post<EntradaResponse>(
+                `${BASE_URL}/entradas`,
+                entrada,
                 {
                     headers: getAuthHeaders()
                 }
@@ -76,11 +125,8 @@ export const entradaService = {
             if (axios.isAxiosError(error) && error.response?.data) {
                 console.error('Error al crear entrada:', error.response.data);
                 throw new Error(error.response.data.detail || 'Error al crear entrada');
-            } else if (error instanceof Error) {
-                throw error;
-            } else {
-                throw new Error('Error desconocido al crear entrada');
             }
+            throw new Error('Error al crear entrada');
         }
     },
 

@@ -20,8 +20,8 @@ export interface Entrada {
 export interface EntradaCreate {
     id_motivo: number;
     id_sucursal: number;
-    id_usuario: number;
-    numero_documento?: string;
+    id_usuario?: number;
+    id_proveedor?: number;
     observacion?: string;
     detalles: DetalleEntrada[];
 }
