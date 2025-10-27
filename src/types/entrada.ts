@@ -36,3 +36,16 @@ export interface EntradaResponse {
     entrada: Entrada;
     mensaje: string;
 }
+
+export interface MovimientoHistorial {
+    id_movimiento: number;
+    motivo_nombre: string;
+    cantidad_total: number;
+    proveedor_nombre: string | null;
+    nombre_usuario: string;
+    sucursal_nombre: string;
+}
+
+export interface HistorialResponse {
+    movimientos: MovimientoHistorial[];
+}

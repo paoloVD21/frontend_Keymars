@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { Entrada, EntradaCreate, EntradaResponse } from '../types/entrada';
+import type { Entrada, EntradaCreate, EntradaResponse, HistorialResponse } from '../types/entrada';
 
 const BASE_URL = "http://localhost:8000/api/movements";
 
@@ -17,20 +17,31 @@ const getAuthHeaders = () => {
 export const entradaService = {
     getEntradas: async (fecha?: string): Promise<{ entradas: Entrada[] }> => {
         try {
+            const url = fecha ? `${BASE_URL}/historial/${fecha}` : `${BASE_URL}/entradas`;
+            console.log('Solicitando entradas con URL:', url);
+            
             const { data } = await axios.get<{ entradas: Entrada[] }>(
-                `${BASE_URL}/entradas${fecha ? `?fecha=${fecha}` : ''}`,
+                url,
                 {
                     headers: getAuthHeaders()
                 }
             );
+            
+            console.log('Respuesta recibida:', data);
             return {
                 entradas: data.entradas || []
             };
         } catch (error) {
-            if (axios.isAxiosError(error) && error.response) {
-                console.error('Error al obtener entradas:', error.response.data);
-                throw new Error(error.response.data.detail || 'Error al obtener entradas');
+            if (axios.isAxiosError(error)) {
+                console.error('Error al obtener entradas:', {
+                    status: error.response?.status,
+                    statusText: error.response?.statusText,
+                    data: error.response?.data,
+                    url: error.config?.url
+                });
+                throw new Error(error.response?.data?.detail || `Error al obtener entradas${fecha ? ' para la fecha ' + fecha : ''}`);
             }
+            console.error('Error no relacionado con Axios:', error);
             throw error;
         }
     },
@@ -143,6 +154,32 @@ export const entradaService = {
             if (axios.isAxiosError(error) && error.response) {
                 console.error('Error al obtener entrada:', error.response.data);
                 throw new Error(error.response.data.detail || 'Error al obtener entrada');
+            }
+            throw error;
+        }
+    },
+
+    getHistorialMovimientos: async (fecha: string): Promise<HistorialResponse> => {
+        try {
+            console.log('Solicitando historial de movimientos para fecha:', fecha);
+            const { data } = await axios.get(
+                `${BASE_URL}/historial/${fecha}`,
+                {
+                    headers: getAuthHeaders()
+                }
+            );
+            console.log('Respuesta del historial:', data);
+            // Si los datos vienen directamente como un array, los envolvemos en el formato esperado
+            if (Array.isArray(data)) {
+                return {
+                    movimientos: data
+                };
+            }
+            return data;
+        } catch (error) {
+            console.error('Error al obtener historial:', error);
+            if (axios.isAxiosError(error) && error.response) {
+                throw new Error(error.response.data.detail || 'Error al obtener el historial de movimientos');
             }
             throw error;
         }

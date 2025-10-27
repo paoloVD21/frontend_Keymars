@@ -1,24 +1,31 @@
 import React, { useState } from 'react';
 import styles from './EntradasList.module.css';
 import { entradaService } from '../../services/entradaService';
-import type { Entrada } from '../../types/entrada';
+import type { MovimientoHistorial } from '../../types/entrada';
 import { CreateEntradaModal } from './CreateEntradaModal';
+import { DetallesMovimientoModal } from './DetallesMovimientoModal';
 
 export const EntradasList: React.FC = () => {
-    const [entradas, setEntradas] = useState<Entrada[]>([]);
+    const [entradas, setEntradas] = useState<MovimientoHistorial[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [selectedDate, setSelectedDate] = useState<string>(
         new Date().toISOString().split('T')[0]
     );
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [selectedMovimiento, setSelectedMovimiento] = useState<MovimientoHistorial | null>(null);
+    const [isDetallesModalOpen, setIsDetallesModalOpen] = useState(false);
 
     const loadEntradas = React.useCallback(async () => {
         try {
             setLoading(true);
             setError(null);
-            const data = await entradaService.getEntradas(selectedDate);
-            setEntradas(data.entradas || []);
+            console.log('Cargando entradas para fecha:', selectedDate);
+            const data = await entradaService.getHistorialMovimientos(selectedDate);
+            console.log('Datos recibidos:', data);
+            console.log('Movimientos:', data.movimientos);
+            setEntradas(data.movimientos || []);
+            console.log('Estado de entradas actualizado:', data.movimientos || []);
         } catch (error) {
             console.error('Error al cargar entradas:', error);
             setError('Error al cargar las entradas');
@@ -44,18 +51,19 @@ export const EntradasList: React.FC = () => {
         loadEntradas();
     };
 
+    const handleVerDetalles = (movimiento: MovimientoHistorial) => {
+        setSelectedMovimiento(movimiento);
+        setIsDetallesModalOpen(true);
+    };
+
+    const handleCloseDetalles = () => {
+        setIsDetallesModalOpen(false);
+        setSelectedMovimiento(null);
+    };
+
     React.useEffect(() => {
         loadEntradas();
     }, [loadEntradas]);
-
-    const formatDate = (dateString: string) => {
-        const date = new Date(dateString);
-        return date.toLocaleDateString('es-ES', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
-    };
 
     return (
         <div className={styles.container}>
@@ -93,24 +101,31 @@ export const EntradasList: React.FC = () => {
                 <table className={styles.table}>
                     <thead>
                         <tr>
-                            <th>Fecha</th>
-                            <th>Tipo de Movimiento</th>
-                            <th>Cantidad de Productos</th>
+                            <th>Motivo</th>
+                            <th>Cantidad Total</th>
                             <th>Proveedor</th>
                             <th>Usuario</th>
                             <th>Sucursal</th>
+                            <th>Detalles</th>
                         </tr>
                     </thead>
                     <tbody>
                         {entradas.length > 0 ? (
-                            entradas.map((entrada) => (
-                                <tr key={entrada.id_entrada}>
-                                    <td>{formatDate(entrada.fecha)}</td>
-                                    <td>{entrada.tipo_movimiento}</td>
-                                    <td>{entrada.cantidad_productos}</td>
-                                    <td>{entrada.proveedor.nombre}</td>
-                                    <td>{entrada.usuario.nombre}</td>
-                                    <td>{entrada.sucursal.nombre}</td>
+                            entradas.map((movimiento) => (
+                                <tr key={movimiento.id_movimiento}>
+                                    <td>{movimiento.motivo_nombre}</td>
+                                    <td>{movimiento.cantidad_total}</td>
+                                    <td>{movimiento.proveedor_nombre}</td>
+                                    <td>{movimiento.nombre_usuario}</td>
+                                    <td>{movimiento.sucursal_nombre}</td>
+                                    <td>
+                                        <button
+                                            onClick={() => handleVerDetalles(movimiento)}
+                                            className={styles.detallesButton}
+                                        >
+                                            Ver detalles
+                                        </button>
+                                    </td>
                                 </tr>
                             ))
                         ) : (
@@ -128,6 +143,12 @@ export const EntradasList: React.FC = () => {
                 isOpen={isCreateModalOpen}
                 onClose={handleCloseCreateModal}
                 onSuccess={handleEntradaCreated}
+            />
+
+            <DetallesMovimientoModal
+                isOpen={isDetallesModalOpen}
+                onClose={handleCloseDetalles}
+                movimiento={selectedMovimiento}
             />
         </div>
     );

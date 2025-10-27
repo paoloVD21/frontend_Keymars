@@ -1,0 +1,87 @@
+.modalOverlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.modalContent {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 42rem;
+}
+
+.modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.modalTitle {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.closeButton {
+    color: #6B7280;
+    font-size: 1.5rem;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0.25rem;
+}
+
+.closeButton:hover {
+    color: #374151;
+}
+
+.modalBody {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.modalField {
+    margin-bottom: 0.5rem;
+}
+
+.fieldLabel {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.fieldValue {
+    color: #374151;
+}
+
+.modalFooter {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.cerrarButton {
+    padding: 0.5rem 1rem;
+    background-color: #E5E7EB;
+    color: #374151;
+    border: none;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.cerrarButton:hover {
+    background-color: #D1D5DB;
+}
+
+.fullWidth {
+    grid-column: span 2;
+}
