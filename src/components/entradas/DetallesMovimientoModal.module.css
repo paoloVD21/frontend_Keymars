@@ -14,7 +14,9 @@
     border-radius: 0.5rem;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 42rem;
+    max-width: 75rem;
+    max-height: 85vh;
+    overflow-y: auto;
 }
 
 .modalHeader {
@@ -43,28 +45,114 @@
 }
 
 .modalBody {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 0.5rem;
+}
+
+.modalSection {
+    background-color: #F9FAFB;
+    border-radius: 0.5rem;
+    padding: 1.25rem;
+}
+
+.sectionTitle {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #E5E7EB;
+}
+
+.modalGrid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
 }
 
 .modalField {
-    margin-bottom: 0.5rem;
+    background-color: white;
+    padding: 0.75rem;
+    border-radius: 0.375rem;
+    border: 1px solid #E5E7EB;
 }
 
 .fieldLabel {
     font-weight: 600;
+    font-size: 0.875rem;
+    color: #6B7280;
     margin-bottom: 0.25rem;
 }
 
 .fieldValue {
+    color: #111827;
+    font-size: 1rem;
+}
+
+.observacion {
+    background-color: white;
+    padding: 1rem;
+    border-radius: 0.375rem;
+    border: 1px solid #E5E7EB;
     color: #374151;
+    line-height: 1.5;
+}
+
+.detallesTable {
+    margin-top: 0.5rem;
+}
+
+.tableWrapper {
+    background-color: white;
+    border-radius: 0.375rem;
+    border: 1px solid #E5E7EB;
+    overflow-x: auto;
+}
+
+.detallesTable table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+}
+
+.detallesTable th {
+    background-color: #F3F4F6;
+    padding: 0.75rem;
+    text-align: left;
+    font-weight: 600;
+    color: #374151;
+    font-size: 0.875rem;
+}
+
+.detallesTable td {
+    padding: 0.75rem;
+    border-top: 1px solid #E5E7EB;
+    color: #4B5563;
+}
+
+.detallesTable tr:hover {
+    background-color: #F9FAFB;
+}
+
+.detallesTable tfoot tr {
+    background-color: #F3F4F6;
+    font-size: 1rem;
+}
+
+.detallesTable tfoot td {
+    border-top: 2px solid #E5E7EB;
+    color: #111827;
+    padding: 1rem 0.75rem;
 }
 
 .modalFooter {
     margin-top: 1.5rem;
     display: flex;
     justify-content: flex-end;
+    padding-top: 1rem;
+    border-top: 1px solid #E5E7EB;
 }
 
 .cerrarButton {
@@ -75,13 +163,24 @@
     border-radius: 0.375rem;
     font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: all 0.2s;
 }
 
 .cerrarButton:hover {
     background-color: #D1D5DB;
 }
 
-.fullWidth {
-    grid-column: span 2;
+.loadingContainer {
+    text-align: center;
+    padding: 2rem;
+    color: #6B7280;
+}
+
+.errorMessage {
+    color: #DC2626;
+    padding: 1rem;
+    text-align: center;
+    background-color: #FEE2E2;
+    border-radius: 0.375rem;
+    margin: 1rem 0;
 }

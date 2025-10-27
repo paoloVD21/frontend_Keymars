@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { Entrada, EntradaCreate, EntradaResponse, HistorialResponse } from '../types/entrada';
+import type { Entrada, EntradaCreate, EntradaResponse, HistorialResponse, MovimientoHistorial } from '../types/entrada';
 
 const BASE_URL = "http://localhost:8000/api/movements";
 
@@ -180,6 +180,26 @@ export const entradaService = {
             console.error('Error al obtener historial:', error);
             if (axios.isAxiosError(error) && error.response) {
                 throw new Error(error.response.data.detail || 'Error al obtener el historial de movimientos');
+            }
+            throw error;
+        }
+    },
+
+    getDetallesMovimiento: async (movimientoId: number): Promise<MovimientoHistorial> => {
+        try {
+            console.log('Solicitando detalles del movimiento:', movimientoId);
+            const { data } = await axios.get(
+                `${BASE_URL}/${movimientoId}`,
+                {
+                    headers: getAuthHeaders()
+                }
+            );
+            console.log('Respuesta de detalles:', data);
+            return data;
+        } catch (error) {
+            console.error('Error al obtener detalles del movimiento:', error);
+            if (axios.isAxiosError(error) && error.response) {
+                throw new Error(error.response.data.detail || 'Error al obtener los detalles del movimiento');
             }
             throw error;
         }

@@ -37,6 +37,18 @@ export interface EntradaResponse {
     mensaje: string;
 }
 
+export interface MovimientoDetalle {
+    id_movimiento_detalle: number;
+    nombre_producto: string;
+    codigo_producto: string;
+    ubicacion_nombre: string;
+    cantidad: number;
+    precio_unitario: string;
+    precio_total: string;
+    id_producto: number;
+    id_ubicacion: number;
+}
+
 export interface MovimientoHistorial {
     id_movimiento: number;
     motivo_nombre: string;
@@ -44,6 +56,7 @@ export interface MovimientoHistorial {
     proveedor_nombre: string | null;
     nombre_usuario: string;
     sucursal_nombre: string;
+    detalles?: MovimientoDetalle[];
 }
 
 export interface HistorialResponse {
