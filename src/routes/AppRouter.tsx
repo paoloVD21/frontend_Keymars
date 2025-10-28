@@ -10,6 +10,8 @@ import { UsersPage } from '../pages/users/UsersPage';
 import { ProveedoresPage } from '../pages/proveedores/ProveedoresPage';
 import { ProductosPage } from '../pages/productos/ProductosPage';
 import { EntradaPage } from '../pages/entradas/EntradaPage';
+import { SalidaPage } from '../pages/salidas/SalidaPage';
+import { ReportesPage } from '../pages/reportes/ReportesPage';
 
 
 export const AppRouter = () => {
@@ -48,33 +50,32 @@ export const AppRouter = () => {
                             element: <ProveedoresPage />
                         },
                         {
-                            path: 'entries',
+                            path: 'entradas',
                             element: <EntradaPage />
                         },
                         {
-                            path: '*',
-                            element: <div>En construcción</div>
+                            path: 'salidas',
+                            element: <SalidaPage />
                         }
                     ]
                 },
                 {
-                    // Rutas solo para supervisores - TODO: Implementar
+                    // Rutas solo para supervisores
                     element: <PrivateRoute allowedRoles={['supervisor']} />,
                     children: [
                         {
                             path: 'users',
                             element: <UsersPage />
                         },
-                        // TODO: Implementar estas páginas
-                        /*{
-                            path: 'reports',
-                            element: <ReportsPage />
-                        }*/
                         {
-                            path: '*',
-                            element: <div>En construcción</div>
+                            path: 'reportes',
+                            element: <ReportesPage />
                         }
                     ]
+                },
+                {
+                    path: '*',
+                    element: <div>En construcción</div>
                 }
             ]
         },

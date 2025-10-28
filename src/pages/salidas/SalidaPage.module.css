@@ -1,0 +1,21 @@
+.pageContainer {
+    padding: 10px;
+    height: 40rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.content {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    height: 1000px;
+    overflow: auto;
+    margin: 10px 0;
+}
+
+.title {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}

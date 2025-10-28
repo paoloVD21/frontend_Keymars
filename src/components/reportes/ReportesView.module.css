@@ -1,0 +1,226 @@
+.reportesContainer {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    background: #fff;
+}
+
+.title {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 2rem;
+    font-weight: 400;
+}
+
+.filtrosSection {
+    margin-bottom: 2rem;
+}
+
+.tipoReporteSelector {
+    margin-bottom: 2rem;
+}
+
+.tiposReporte {
+    display: flex;
+    gap: 1rem;
+}
+
+.tipoButton {
+    padding: 0.5rem 1rem;
+    border: none;
+    background: #f5f5f5;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #666;
+    transition: all 0.2s ease;
+}
+
+.tipoButton:hover {
+    background: #e8e8e8;
+}
+
+.tipoButton.active {
+    background: #3b82f6;
+    color: white;
+}
+
+.reportesList {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.reporteCard {
+    padding: 1rem;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.reporteCard:hover {
+    border-color: #333;
+}
+
+.reporteCard.selected {
+    border-color: #333;
+    background: #f9f9f9;
+}
+
+.reporteCard h4 {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #333;
+    font-weight: 400;
+}
+
+.filtrosAdicionales {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #eee;
+}
+
+.filtrosGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.filtroItem {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.input,
+.select {
+    padding: 0.5rem;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.input:focus,
+.select:focus {
+    outline: none;
+    border-color: #333;
+}
+
+.exportButtons {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #eee;
+}
+
+.exportButton {
+    padding: 0.5rem 1rem;
+    border: none;
+    background: #f5f5f5;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+    color: #666;
+}
+
+.exportButton:hover {
+    transform: translateY(-1px);
+}
+
+.excelButton {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.excelButton:hover {
+    background: #bbf7d0;
+}
+
+.pdfButton {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.pdfButton:hover {
+    background: #fecaca;
+}
+
+.subtitle {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.sucursalesSection {
+    margin-bottom: 2rem;
+}
+
+.sucursalList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.sucursalCard {
+    padding: 1rem;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #fff;
+}
+
+.sucursalCard h4 {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: normal;
+}
+
+.sucursalCard:hover {
+    border-color: #3b82f6;
+    background: #f9fafb;
+}
+
+.sucursalCard.selected {
+    border-color: #3b82f6;
+    background: #f0f7ff;
+}
+
+.sucursalCard.selected h4 {
+    color: #3b82f6;
+}
+
+.sucursalCard.error {
+    border-color: #dc2626;
+    background: #fef2f2;
+    cursor: not-allowed;
+}
+
+.sucursalCard.error h4 {
+    color: #dc2626;
+}
+
+.loadingText {
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 0.5rem;
+    font-style: italic;
+}
+
+.errorText {
+    font-size: 0.8rem;
+    color: #dc2626;
+    margin-top: 0.5rem;
+}
