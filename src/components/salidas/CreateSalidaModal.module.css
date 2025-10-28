@@ -416,6 +416,24 @@
     font-style: italic;
 }
 
+.stockCell {
+    font-weight: 600;
+    text-align: center;
+    color: #059669;
+}
+
+.stockButtons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.disabledButton {
+    background-color: #E5E7EB !important;
+    color: #9CA3AF !important;
+    cursor: not-allowed !important;
+}
+
 .selectedIndicator {
     position: absolute;
     bottom: -10px;

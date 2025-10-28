@@ -161,15 +161,16 @@ export const entradaService = {
 
     getHistorialMovimientos: async (fecha: string): Promise<HistorialResponse> => {
         try {
-            console.log('Solicitando historial de movimientos para fecha:', fecha);
+            console.log('Solicitando historial de entradas para fecha:', fecha);
             const { data } = await axios.get(
-                `${BASE_URL}/historial/${fecha}`,
+                `${BASE_URL}/historial/entradas/${fecha}`,
                 {
                     headers: getAuthHeaders()
                 }
             );
             console.log('Respuesta del historial:', data);
-            // Si los datos vienen directamente como un array, los envolvemos en el formato esperado
+
+            // Formatear la respuesta según su estructura
             if (Array.isArray(data)) {
                 return {
                     movimientos: data
@@ -177,9 +178,9 @@ export const entradaService = {
             }
             return data;
         } catch (error) {
-            console.error('Error al obtener historial:', error);
+            console.error('Error al obtener historial de entradas:', error);
             if (axios.isAxiosError(error) && error.response) {
-                throw new Error(error.response.data.detail || 'Error al obtener el historial de movimientos');
+                throw new Error(error.response.data.detail || 'Error al obtener el historial de entradas');
             }
             throw error;
         }

@@ -29,7 +29,9 @@ interface CreateSalidaModalProps {
 
 interface ProductoSeleccionado extends DetalleSalida {
     nombre: string;
-    ubicacion_nombre?: string;
+    codigo_producto: string;
+    ubicacion_nombre: string;
+    stock_actual: number;
 }
 
 interface State {
@@ -194,14 +196,14 @@ export const CreateSalidaModal: React.FC<CreateSalidaModalProps> = ({
         });
     };
 
-    const handleProductoSelect = (producto: ProductoBusqueda) => {
+    const handleProductoSelect = (producto: ProductoBusqueda, ubicacion: { id_ubicacion: number; nombre_ubicacion: string; stock_actual: number }) => {
         const productoExistente = state.productosSeleccionados.find(
-            (p: ProductoSeleccionado) => p.id_producto === producto.id_producto
+            (p: ProductoSeleccionado) => p.id_producto === producto.id_producto && p.id_ubicacion === ubicacion.id_ubicacion
         );
         
         if (productoExistente) {
             updateState({
-                error: 'Este producto ya ha sido seleccionado'
+                error: 'Este producto ya ha sido seleccionado de esta ubicación'
             });
             return;
         }
@@ -210,8 +212,11 @@ export const CreateSalidaModal: React.FC<CreateSalidaModalProps> = ({
             productosSeleccionados: [...state.productosSeleccionados, {
                 id_producto: producto.id_producto,
                 nombre: producto.nombre_producto,
+                codigo_producto: producto.codigo_producto,
                 cantidad: 1,
-                id_ubicacion: 0
+                id_ubicacion: ubicacion.id_ubicacion,
+                ubicacion_nombre: ubicacion.nombre_ubicacion,
+                stock_actual: ubicacion.stock_actual
             }],
             searchTerm: '',
             searchResults: [],
@@ -225,28 +230,29 @@ export const CreateSalidaModal: React.FC<CreateSalidaModalProps> = ({
         });
     };
 
-    const handleProductoChange = (
-        index: number,
-        campo: keyof Pick<ProductoSeleccionado, 'cantidad' | 'id_ubicacion'>,
-        valor: number
-    ) => {
-        const nuevosProductos = state.productosSeleccionados.map((producto, i) => {
-            if (i === index) {
-                if (campo === 'id_ubicacion') {
-                    const ubicacion = state.ubicaciones.find(u => u.id_ubicacion === valor);
-                    return {
-                        ...producto,
-                        [campo]: valor,
-                        ubicacion_nombre: ubicacion?.nombre
-                    };
-                }
-                return { ...producto, [campo]: valor };
-            }
-            return producto;
-        });
+    const handleProductoChange = (index: number, cantidad: number) => {
+        if (cantidad <= 0) {
+            updateState({
+                error: 'La cantidad debe ser mayor a 0'
+            });
+            return;
+        }
+
+        const producto = state.productosSeleccionados[index];
+        if (cantidad > producto.stock_actual) {
+            updateState({
+                error: 'La cantidad no puede ser mayor al stock disponible'
+            });
+            return;
+        }
+
+        const nuevosProductos = state.productosSeleccionados.map((p, i) => 
+            i === index ? { ...p, cantidad } : p
+        );
 
         updateState({
-            productosSeleccionados: nuevosProductos
+            productosSeleccionados: nuevosProductos,
+            error: null
         });
     };
 
@@ -490,14 +496,23 @@ export const CreateSalidaModal: React.FC<CreateSalidaModalProps> = ({
                                                         ))}
                                                     </div>
                                                 </div>
-                                                <button
-                                                    type="button"
-                                                    className={styles.addButton}
-                                                    onClick={() => handleProductoSelect(producto)}
-                                                    disabled={state.productosSeleccionados.some(p => p.id_producto === producto.id_producto)}
-                                                >
-                                                    Agregar
-                                                </button>
+                                                <div className={styles.stockButtons}>
+                                                    {producto.stock_ubicaciones.map(ubicacion => (
+                                                        <button
+                                                            key={ubicacion.id_ubicacion}
+                                                            type="button"
+                                                            className={`${styles.addButton} ${ubicacion.stock_actual <= 0 ? styles.disabledButton : ''}`}
+                                                            onClick={() => handleProductoSelect(producto, ubicacion)}
+                                                            disabled={ubicacion.stock_actual <= 0 || 
+                                                                    state.productosSeleccionados.some(p => 
+                                                                        p.id_producto === producto.id_producto && 
+                                                                        p.id_ubicacion === ubicacion.id_ubicacion
+                                                                    )}
+                                                        >
+                                                            Agregar
+                                                        </button>
+                                                    ))}
+                                                </div>
                                             </div>
                                         ))}
                                     </div>
@@ -509,8 +524,10 @@ export const CreateSalidaModal: React.FC<CreateSalidaModalProps> = ({
                                         <thead>
                                             <tr>
                                                 <th>Producto</th>
-                                                <th>Cantidad</th>
+                                                <th>Código</th>
                                                 <th>Ubicación</th>
+                                                <th>Stock Disponible</th>
+                                                <th>Cantidad a Retirar</th>
                                                 <th>Acciones</th>
                                             </tr>
                                         </thead>
@@ -518,32 +535,18 @@ export const CreateSalidaModal: React.FC<CreateSalidaModalProps> = ({
                                             {state.productosSeleccionados.map((producto: ProductoSeleccionado, index: number) => (
                                                 <tr key={index}>
                                                     <td>{producto.nombre}</td>
+                                                    <td>{producto.codigo_producto}</td>
+                                                    <td>{producto.ubicacion_nombre}</td>
+                                                    <td className={styles.stockCell}>{producto.stock_actual}</td>
                                                     <td>
                                                         <input
                                                             type="number"
                                                             min="1"
+                                                            max={producto.stock_actual}
                                                             value={producto.cantidad}
-                                                            onChange={(e) => handleProductoChange(index, 'cantidad', Number(e.target.value))}
+                                                            onChange={(e) => handleProductoChange(index, Number(e.target.value))}
                                                             className={styles.input}
                                                         />
-                                                    </td>
-                                                    <td>
-                                                        <select
-                                                            value={producto.id_ubicacion}
-                                                            onChange={(e) => handleProductoChange(index, 'id_ubicacion', Number(e.target.value))}
-                                                            className={styles.select}
-                                                            required
-                                                        >
-                                                            <option value={0}>Seleccione ubicación</option>
-                                                            {state.ubicaciones.map((ubicacion: Ubicacion) => (
-                                                                <option
-                                                                    key={ubicacion.id_ubicacion}
-                                                                    value={ubicacion.id_ubicacion}
-                                                                >
-                                                                    {ubicacion.nombre}
-                                                                </option>
-                                                            ))}
-                                                        </select>
                                                     </td>
                                                     <td>
                                                         <button
