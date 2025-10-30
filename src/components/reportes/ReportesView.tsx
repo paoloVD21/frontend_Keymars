@@ -1,18 +1,19 @@
 import { useState, useEffect } from 'react';
 import styles from './ReportesView.module.css';
 import { useSucursales } from '../../hooks/useSucursales';
+import { reportService } from '../../services/reportService';
 
 interface FiltrosReporte {
-    periodoTiempo: 'mes' | 'trimestre' | 'año';
+    periodo: 'ultimo_mes' | 'ultimo_trimestre' | 'ultimo_anio';
     sucursal?: number;
-    tipoReporte: 'resumen' | 'stockBajo' | 'movimientos';
+    tipo_reporte: 'resumen_inventario' | 'stock_bajo' | 'mayores_movimientos';
 }
 
 export const ReportesView = () => {
     const { sucursales, isLoading, error } = useSucursales();
     const [filtros, setFiltros] = useState<FiltrosReporte>({
-        tipoReporte: 'resumen',
-        periodoTiempo: 'mes',
+        tipo_reporte: 'resumen_inventario',
+        periodo: 'ultimo_mes',
         sucursal: undefined
     });
 
@@ -27,31 +28,84 @@ export const ReportesView = () => {
     }, [sucursales, filtros.sucursal]);
 
     const tiposReporte = [
-        { id: 'resumen', nombre: 'Resumen de Inventario' },
-        { id: 'stockBajo', nombre: 'Stock Bajo' },
-        { id: 'movimientos', nombre: 'Mayores Movimientos' }
+        { id: 'resumen_inventario', nombre: 'Resumen de Inventario' },
+        { id: 'stock_bajo', nombre: 'Stock Bajo' },
+        { id: 'mayores_movimientos', nombre: 'Mayores Movimientos' }
     ];
 
     const periodosTiempo = [
-        { id: 'mes', nombre: 'Último Mes' },
-        { id: 'trimestre', nombre: 'Último Trimestre' },
-        { id: 'año', nombre: 'Último Año' }
+        { id: 'ultimo_mes', nombre: 'Último Mes' },
+        { id: 'ultimo_trimestre', nombre: 'Último Trimestre' },
+        { id: 'ultimo_anio', nombre: 'Último Año' }
     ];
 
+    const [loading, setLoading] = useState(false);
+    const [exportError, setExportError] = useState<string | null>(null);
+
     const handleExportExcel = async () => {
-        // Implementar exportación a Excel
-        console.log('Exportando a Excel...', {
-            ...filtros,
-            formato: 'excel'
-        });
+        try {
+            setLoading(true);
+            setExportError(null);
+
+            const params = {
+                tipo_reporte: filtros.tipo_reporte,
+                periodo: filtros.periodo,
+                id_sucursal: filtros.sucursal
+            };
+
+            const blob = await reportService.exportToExcel(params);
+            
+            // Crear nombre de archivo basado en los filtros
+            const fileName = `reporte-${filtros.tipo_reporte}-${filtros.periodo}.xlsx`;
+            
+            // Descargar archivo
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        } catch (error) {
+            console.error('Error al exportar a Excel:', error);
+            setExportError('Error al generar el reporte Excel');
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleExportPDF = async () => {
-        // Implementar exportación a PDF
-        console.log('Exportando a PDF...', {
-            ...filtros,
-            formato: 'pdf'
-        });
+        try {
+            setLoading(true);
+            setExportError(null);
+
+            const params = {
+                tipo_reporte: filtros.tipo_reporte,
+                periodo: filtros.periodo,
+                id_sucursal: filtros.sucursal
+            };
+
+            const blob = await reportService.exportToPDF(params);
+            
+            // Crear nombre de archivo basado en los filtros
+            const fileName = `reporte-${filtros.tipo_reporte}-${filtros.periodo}.pdf`;
+            
+            // Descargar archivo
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        } catch (error) {
+            console.error('Error al exportar a PDF:', error);
+            setExportError('Error al generar el reporte PDF');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -65,8 +119,8 @@ export const ReportesView = () => {
                         {tiposReporte.map(tipo => (
                             <button
                                 key={tipo.id}
-                                className={`${styles.tipoButton} ${filtros.tipoReporte === tipo.id ? styles.active : ''}`}
-                                onClick={() => setFiltros(prev => ({ ...prev, tipoReporte: tipo.id as FiltrosReporte['tipoReporte'] }))}
+                                className={`${styles.tipoButton} ${filtros.tipo_reporte === tipo.id ? styles.active : ''}`}
+                                onClick={() => setFiltros(prev => ({ ...prev, tipo_reporte: tipo.id as FiltrosReporte['tipo_reporte'] }))}
                             >
                                 {tipo.nombre}
                             </button>
@@ -80,8 +134,8 @@ export const ReportesView = () => {
                         {periodosTiempo.map(periodo => (
                             <button
                                 key={periodo.id}
-                                className={`${styles.tipoButton} ${filtros.periodoTiempo === periodo.id ? styles.active : ''}`}
-                                onClick={() => setFiltros(prev => ({ ...prev, periodoTiempo: periodo.id as FiltrosReporte['periodoTiempo'] }))}
+                                className={`${styles.tipoButton} ${filtros.periodo === periodo.id ? styles.active : ''}`}
+                                onClick={() => setFiltros(prev => ({ ...prev, periodo: periodo.id as FiltrosReporte['periodo'] }))}
                             >
                                 {periodo.nombre}
                             </button>
@@ -117,16 +171,23 @@ export const ReportesView = () => {
                 <button
                     onClick={handleExportExcel}
                     className={`${styles.exportButton} ${styles.excelButton}`}
+                    disabled={loading}
                 >
-                    Exportar a Excel
+                    {loading ? 'Generando Excel...' : 'Exportar a Excel'}
                 </button>
                 <button
                     onClick={handleExportPDF}
                     className={`${styles.exportButton} ${styles.pdfButton}`}
+                    disabled={loading}
                 >
-                    Exportar a PDF
+                    {loading ? 'Generando PDF...' : 'Exportar a PDF'}
                 </button>
             </div>
+            {exportError && (
+                <div className={styles.errorMessage}>
+                    {exportError}
+                </div>
+            )}
         </div>
     );
 };
