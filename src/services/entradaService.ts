@@ -48,13 +48,8 @@ export const entradaService = {
 
     registrarIngreso: async (entrada: EntradaCreate): Promise<EntradaResponse> => {
         try {
-            console.log('Iniciando registro de ingreso...');
-            console.log('Datos recibidos del formulario:', entrada);
-
             const token = localStorage.getItem('token');
             if (!token) throw new Error('No token found');
-            
-            console.log('Token encontrado');
             
             // Extraer el ID del usuario del token
             const parts = token.split('.');
@@ -65,7 +60,6 @@ export const entradaService = {
             let userId: number;
             try {
                 const payload = JSON.parse(atob(parts[1]));
-                console.log('Payload del token:', payload);
                 
                 if (!payload.sub) {
                     throw new Error('ID de usuario no encontrado en el token');
@@ -74,21 +68,14 @@ export const entradaService = {
                 if (isNaN(userId)) {
                     throw new Error('ID de usuario inválido en el token');
                 }
-                console.log('ID de usuario extraído:', userId);
-            } catch (tokenError) {
-                console.error('Error al decodificar el token:', tokenError);
+            } catch {
                 throw new Error('Error al obtener el ID de usuario del token');
             }
-            // Si llegamos aquí, tenemos un userId válido
 
             const datosAEnviar = {
                 ...entrada,
                 id_usuario: userId
             };
-            
-            console.log('Datos completos a enviar al backend:', datosAEnviar);
-            console.log('URL de destino:', `${BASE_URL}/registrarIngreso`);
-            console.log('Headers:', getAuthHeaders());
 
             const { data } = await axios.post<EntradaResponse>(
                 `${BASE_URL}/registrarIngreso`,
@@ -97,7 +84,6 @@ export const entradaService = {
                     headers: getAuthHeaders()
                 }
             );
-            console.log('Respuesta exitosa del backend:', data);
             return data;
         } catch (error) {
             if (axios.isAxiosError(error)) {
@@ -161,14 +147,12 @@ export const entradaService = {
 
     getHistorialMovimientos: async (fecha: string): Promise<HistorialResponse> => {
         try {
-            console.log('Solicitando historial de entradas para fecha:', fecha);
             const { data } = await axios.get(
                 `${BASE_URL}/historial/entradas/${fecha}`,
                 {
                     headers: getAuthHeaders()
                 }
             );
-            console.log('Respuesta del historial:', data);
 
             // Formatear la respuesta según su estructura
             if (Array.isArray(data)) {
@@ -188,17 +172,14 @@ export const entradaService = {
 
     getDetallesMovimiento: async (movimientoId: number): Promise<MovimientoHistorial> => {
         try {
-            console.log('Solicitando detalles del movimiento:', movimientoId);
             const { data } = await axios.get(
                 `${BASE_URL}/${movimientoId}`,
                 {
                     headers: getAuthHeaders()
                 }
             );
-            console.log('Respuesta de detalles:', data);
             return data;
         } catch (error) {
-            console.error('Error al obtener detalles del movimiento:', error);
             if (axios.isAxiosError(error) && error.response) {
                 throw new Error(error.response.data.detail || 'Error al obtener los detalles del movimiento');
             }

@@ -1,5 +1,7 @@
+import React from 'react';
 import { Bar } from 'react-chartjs-2';
 import styles from './MovimientosChart.module.css';
+import type { DashboardMovimientos } from '../../types/dashboard';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -19,43 +21,63 @@ ChartJS.register(
     Legend
 );
 
-const options = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-        legend: {
-            position: 'bottom' as const,
-        },
-        title: {
-            display: false
-        }
-    },
-    scales: {
-        y: {
-            beginAtZero: true
-        }
-    }
-};
+interface MovimientosChartProps {
+    data: DashboardMovimientos | null;
+    isLoading?: boolean;
+}
 
-const data = {
-    labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
-    datasets: [
-        {
-            label: 'Ingresos',
-            data: [120, 150, 180, 190, 170, 185],
-            backgroundColor: '#3b82f6',
-            borderRadius: 4,
-        },
-        {
-            label: 'Salidas',
-            data: [80, 90, 120, 140, 110, 130],
-            backgroundColor: '#94a3b8',
-            borderRadius: 4,
-        }
-    ]
-};
+export const MovimientosChart: React.FC<MovimientosChartProps> = ({ data, isLoading }) => {
+    const chartData = {
+        labels: data?.labels || [],
+        datasets: [
+            {
+                label: 'Ingresos',
+                data: data?.entradas || [],
+                backgroundColor: '#3b82f6',
+                borderRadius: 4,
+            },
+            {
+                label: 'Salidas',
+                data: data?.salidas || [],
+                backgroundColor: '#94a3b8',
+                borderRadius: 4,
+            }
+        ]
+    };
 
-export const MovimientosChart = () => {
+    const options = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom' as const,
+                labels: {
+                    padding: 20,
+                    usePointStyle: true,
+                    font: {
+                        size: 12
+                    }
+                }
+            },
+            title: {
+                display: false
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                grid: {
+                    color: 'rgba(0, 0, 0, 0.1)'
+                }
+            },
+            x: {
+                grid: {
+                    display: false
+                }
+            }
+        }
+    };
+
     return (
         <div className={styles.chartContainer}>
             <div className={styles.header}>
@@ -65,7 +87,13 @@ export const MovimientosChart = () => {
                 </div>
             </div>
             <div className={styles.chart}>
-                <Bar options={options} data={data} height={250} />
+                {isLoading ? (
+                    <div className={styles.loading}>Cargando...</div>
+                ) : data ? (
+                    <Bar options={options} data={chartData} height={250} />
+                ) : (
+                    <div className={styles.noData}>No hay datos disponibles</div>
+                )}
             </div>
         </div>
     );

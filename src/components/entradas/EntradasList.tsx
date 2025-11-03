@@ -20,12 +20,8 @@ export const EntradasList: React.FC = () => {
         try {
             setLoading(true);
             setError(null);
-            console.log('Cargando entradas para fecha:', selectedDate);
             const data = await entradaService.getHistorialMovimientos(selectedDate);
-            console.log('Datos recibidos:', data);
-            console.log('Movimientos:', data.movimientos);
             setEntradas(data.movimientos || []);
-            console.log('Estado de entradas actualizado:', data.movimientos || []);
         } catch (error) {
             console.error('Error al cargar entradas:', error);
             setError('Error al cargar las entradas');

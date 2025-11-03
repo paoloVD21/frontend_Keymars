@@ -31,12 +31,9 @@ export const ubicacionService = {
 
     getUbicacionesPorSucursal: async (id_sucursal: number): Promise<UbicacionResponse> => {
         try {
-            console.log('Solicitando ubicaciones para sucursal:', id_sucursal);
             const { data } = await axios.get(`${BASE_URL}/sucursal/${id_sucursal}/ubicaciones`, {
                 headers: getAuthHeaders()
             });
-            
-            console.log('Respuesta recibida:', data);
             
             // Si la respuesta es un array directamente
             if (Array.isArray(data)) {

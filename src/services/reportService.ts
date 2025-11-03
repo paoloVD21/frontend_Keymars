@@ -22,7 +22,6 @@ export interface ReportParams {
 export const reportService = {
     exportToExcel: async (params: ReportParams): Promise<Blob> => {
         try {
-            console.log('Solicitando reporte Excel con parámetros:', params);
             const response = await axios.post(
                 `${BASE_URL}/excel`,
                 params,
@@ -34,7 +33,6 @@ export const reportService = {
                     responseType: 'blob'
                 }
             );
-            console.log('Reporte Excel generado exitosamente');
             return response.data;
         } catch (error) {
             console.error('Error al generar reporte Excel:', error);
@@ -47,7 +45,6 @@ export const reportService = {
 
     exportToPDF: async (params: ReportParams): Promise<Blob> => {
         try {
-            console.log('Solicitando reporte PDF con parámetros:', params);
             const response = await axios.post(
                 `${BASE_URL}/pdf`,
                 params,
@@ -59,7 +56,6 @@ export const reportService = {
                     responseType: 'blob'
                 }
             );
-            console.log('Reporte PDF generado exitosamente');
             return response.data;
         } catch (error) {
             console.error('Error al generar reporte PDF:', error);

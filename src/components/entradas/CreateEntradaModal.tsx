@@ -161,22 +161,18 @@ export const CreateEntradaModal: React.FC<CreateEntradaModalProps> = ({
             setError('');
             
             const response = await ubicacionService.getUbicacionesPorSucursal(id_sucursal);
-            console.log('Respuesta del servidor:', response); // Para diagnóstico
 
             if (!response) {
-                console.error('No se recibió respuesta del servidor');
                 setError('No se pudieron cargar las ubicaciones de esta sucursal');
                 return;
             }
 
             if (!response.ubicaciones) {
-                console.error('La respuesta no contiene ubicaciones:', response);
                 setError('No se pudieron cargar las ubicaciones de esta sucursal');
                 return;
             }
 
             const ubicacionesActivas = response.ubicaciones.filter(u => u.activo);
-            console.log('Ubicaciones activas encontradas:', ubicacionesActivas.length);
             
             setUbicaciones(ubicacionesActivas);
             

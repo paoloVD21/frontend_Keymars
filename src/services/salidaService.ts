@@ -34,13 +34,8 @@ export const salidaService = {
 
     registrarSalida: async (salida: SalidaCreate): Promise<SalidaResponse> => {
         try {
-            console.log('Iniciando registro de salida...');
-            console.log('Datos recibidos del formulario:', salida);
-
             const token = localStorage.getItem('token');
             if (!token) throw new Error('No token found');
-            
-            console.log('Token encontrado');
             
             // Extraer el ID del usuario del token
             const parts = token.split('.');
@@ -51,7 +46,6 @@ export const salidaService = {
             let userId: number;
             try {
                 const payload = JSON.parse(atob(parts[1]));
-                console.log('Payload del token:', payload);
                 
                 if (!payload.sub) {
                     throw new Error('ID de usuario no encontrado en el token');
@@ -60,9 +54,7 @@ export const salidaService = {
                 if (isNaN(userId)) {
                     throw new Error('ID de usuario inválido en el token');
                 }
-                console.log('ID de usuario extraído:', userId);
-            } catch (tokenError) {
-                console.error('Error al decodificar el token:', tokenError);
+            } catch {
                 throw new Error('Error al obtener el ID de usuario del token');
             }
 
@@ -70,10 +62,6 @@ export const salidaService = {
                 ...salida,
                 id_usuario: userId
             };
-            
-            console.log('Datos completos a enviar al backend:', datosAEnviar);
-            console.log('URL de destino:', `${BASE_URL}/registrarSalida`);
-            console.log('Headers:', getAuthHeaders());
 
             const { data } = await axios.post<SalidaResponse>(
                 `${BASE_URL}/registrarSalida`,
@@ -82,7 +70,6 @@ export const salidaService = {
                     headers: getAuthHeaders()
                 }
             );
-            console.log('Respuesta exitosa del backend:', data);
             return data;
         } catch (error) {
             if (axios.isAxiosError(error)) {
@@ -109,14 +96,12 @@ export const salidaService = {
 
     getHistorialMovimientos: async (fecha: string): Promise<HistorialSalidaResponse> => {
         try {
-            console.log('Solicitando historial de salidas para fecha:', fecha);
             const { data } = await axios.get(
                 `${BASE_URL}/historial/salidas/${fecha}`,
                 {
                     headers: getAuthHeaders()
                 }
             );
-            console.log('Respuesta del historial:', data);
 
             // Formatear la respuesta según su estructura
             if (Array.isArray(data)) {
