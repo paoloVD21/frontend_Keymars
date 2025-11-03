@@ -48,13 +48,10 @@ export const ubicacionService = {
                 return data;
             }
 
-            console.error('Estructura de respuesta inesperada:', data);
             throw new Error('No se encontraron ubicaciones para esta sucursal');
         } catch (error) {
-            console.error('Error al obtener ubicaciones:', error);
             if (axios.isAxiosError(error)) {
                 const mensaje = error.response?.data?.detail || 'Error al obtener ubicaciones de la sucursal';
-                console.error('Detalle del error:', error.response?.data);
                 throw new Error(mensaje);
             }
             throw error;

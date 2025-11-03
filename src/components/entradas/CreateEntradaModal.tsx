@@ -81,7 +81,7 @@ export const CreateEntradaModal: React.FC<CreateEntradaModalProps> = ({
     const loadInitialData = async () => {
         try {
             setLoading(true);
-            const [proveedoresData, productosData, sucursalesData, motivosEntrada] = await Promise.all([
+            const [proveedoresData, productosData, sucursalesData, motivosData] = await Promise.all([
                 proveedorService.getProveedores(),
                 productoService.getProductos(),
                 sucursalService.getSucursales(),
@@ -91,9 +91,8 @@ export const CreateEntradaModal: React.FC<CreateEntradaModalProps> = ({
             setProveedores(proveedoresData.proveedores);
             setProductos(productosData.productos);
             setSucursales(sucursalesData.sucursales);
-            setMotivos(motivosEntrada);
-        } catch (error) {
-            console.error('Error al cargar datos iniciales:', error);
+            setMotivos(motivosData);
+        } catch {
             setError('Error al cargar los datos necesarios');
         } finally {
             setLoading(false);
@@ -185,7 +184,6 @@ export const CreateEntradaModal: React.FC<CreateEntradaModalProps> = ({
                 id_sucursal: id_sucursal
             }));
         } catch (error) {
-            console.error('Error al cargar ubicaciones:', error);
             if (error instanceof Error) {
                 setError(error.message);
             } else {
@@ -300,7 +298,6 @@ export const CreateEntradaModal: React.FC<CreateEntradaModalProps> = ({
             onSuccess();
             onClose();
         } catch (err) {
-            console.error('Error al crear entrada:', err);
             if (err instanceof Error) {
                 if (err.message === 'No se encontró información del usuario' || err.message === 'ID de usuario no encontrado') {
                     setError('Sesión no válida. Por favor, inicie sesión nuevamente.');
