@@ -1,0 +1,25 @@
+.chartContainer {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+    margin-bottom: 1.5rem;
+}
+
+.title {
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: #111827;
+    margin: 0;
+}
+
+.chart {
+    height: 250px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

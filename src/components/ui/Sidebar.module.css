@@ -1,10 +1,119 @@
 .sidebar {
-    width: 16rem;
+    width: 260px;
     background-color: rgb(31, 41, 55);
     color: white;
     height: 100vh;
     display: flex;
     flex-direction: column;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.sidebar.collapsed {
+    width: 80px;
+}
+
+.sidebar.collapsed .brandContainer,
+.sidebar.collapsed .navText {
+    display: none;
+}
+
+.sidebar.collapsed .navLink {
+    justify-content: center;
+    padding: 0.75rem;
+}
+
+.sidebar.collapsed .icon {
+    margin: 0;
+}
+
+/* Aseguramos que el logo tenga un tamaño fijo */
+.logo {
+    min-width: 0;
+    flex-shrink: 1;
+    overflow: hidden;
+}
+
+/* Mantenemos el tamaño del contenedor principal */
+.main {
+    flex-grow: 1;
+    min-width: 0;
+    overflow-x: hidden;
+}
+
+.header {
+    padding: 1.5rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.toggleButton {
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+    margin-right: 0.5rem;
+}
+
+.toggleButton:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.toggleButton:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+.toggleButton .icon {
+    font-size: 1.5rem;
+    transition: transform 0.2s ease;
+    color: white;
+}
+
+.toggleButton:hover .icon {
+    transform: scale(1.1);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.logoImage {
+    width: 2.5rem;
+    height: 2.5rem;
+}
+
+.brandContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.brandName {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: white;
+}
+
+.brandTitle {
+    font-size: 0.875rem;
+    color: rgb(156, 163, 175);
 }
 
 .navigation {
@@ -13,12 +122,20 @@
 }
 
 .navLink {
-    display: block;
-    padding: 0.5rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    transition: background-color 0.2s ease;
 }
 
 .navLink:hover {
     background-color: rgb(55, 65, 81);
+}
+
+.icon {
+    font-size: 1.25rem;
+    min-width: 1.25rem;
 }
 
 .logoutContainer {
@@ -28,11 +145,16 @@
 
 .logoutButton {
     width: 100%;
-    padding: 0.5rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
     background-color: rgb(220, 38, 38);
     color: white;
-    border-radius: 0.25rem;
-    text-align: center;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.2s ease;
 }
 
 .logoutButton:hover {

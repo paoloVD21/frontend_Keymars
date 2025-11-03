@@ -12,6 +12,8 @@ import { ProductosPage } from '../pages/productos/ProductosPage';
 import { EntradaPage } from '../pages/entradas/EntradaPage';
 import { SalidaPage } from '../pages/salidas/SalidaPage';
 import { ReportesPage } from '../pages/reportes/ReportesPage';
+import { AlertasPage } from '../pages/alertas/AlertasPage';
+import DashboardView from '../pages/dashboard/DashboardView';
 
 
 export const AppRouter = () => {
@@ -26,7 +28,7 @@ export const AppRouter = () => {
                 },
                 {
                     path: '/',
-                    element: <Navigate to="/productos" replace />
+                    element: <Navigate to="/dashboard" replace />
                 }
             ]
         },
@@ -38,8 +40,8 @@ export const AppRouter = () => {
                     element: <PrivateRoute />,
                     children: [
                         {
-                            index: true,
-                            element: <ProductosPage />
+                            path: 'dashboard',
+                            element: <DashboardView />
                         },
                         {
                             path: 'productos',
@@ -56,6 +58,10 @@ export const AppRouter = () => {
                         {
                             path: 'salidas',
                             element: <SalidaPage />
+                        },
+                        {
+                            path: 'alertas',
+                            element: <AlertasPage />
                         }
                     ]
                 },

@@ -1,0 +1,47 @@
+.dashboardContainer {
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.filters {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.filterSelect {
+    padding: 0.5rem 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    background-color: white;
+    color: #374151;
+    min-width: 200px;
+    font-size: 0.875rem;
+}
+
+.statsGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    overflow-x: auto;
+}
+
+/* Asegurar que las tarjetas mantengan un ancho mínimo */
+.statsGrid > * {
+    min-width: 220px;
+}
+
+.chartsGrid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+@media (max-width: 1024px) {
+    .chartsGrid {
+        grid-template-columns: 1fr;
+    }
+}
