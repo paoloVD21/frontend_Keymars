@@ -16,3 +16,20 @@
     gap: 1rem;
     align-items: center;
 }
+
+@media (max-width: 768px) {
+    .container {
+        padding: 0.75rem;
+    }
+
+    .header {
+        font-size: 1.25rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .flexRow {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+}

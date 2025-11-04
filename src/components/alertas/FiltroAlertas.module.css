@@ -70,3 +70,57 @@
 .buttonSecondary:hover {
     background-color: #d1d5db;
 }
+
+@media (max-width: 768px) {
+    .filterContainer {
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .form {
+        gap: 0.75rem;
+    }
+
+    .formGroup {
+        min-width: 100%;
+    }
+
+    .select {
+        padding: 0.75rem;
+        font-size: 1rem;
+        height: 45px;
+    }
+
+    .button {
+        width: 100%;
+        padding: 0.75rem;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .filterContainer {
+        padding: 0.5rem;
+        margin: 0 -0.5rem 1rem -0.5rem;
+        border-radius: 0;
+    }
+
+    .form {
+        gap: 0.5rem;
+    }
+
+    .label {
+        font-size: 0.813rem;
+    }
+
+    .select {
+        padding: 0.5rem;
+        font-size: 0.938rem;
+        height: 42px;
+    }
+
+    .button {
+        padding: 0.6rem;
+        font-size: 0.938rem;
+    }
+}

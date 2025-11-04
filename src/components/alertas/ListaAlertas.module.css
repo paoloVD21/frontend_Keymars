@@ -97,3 +97,68 @@
     color: #6b7280;
     font-style: italic;
 }
+
+@media (max-width: 768px) {
+    .tableContainer {
+        height: calc(100vh - 300px);
+    }
+
+    .table th,
+    .table td {
+        display: none;
+        padding: 0.5rem;
+    }
+
+    /* Mostrar solo nombre producto, sucursal y estado */
+    .table th:nth-child(2), /* Producto */
+    .table td:nth-child(2),
+    .table th:nth-child(4), /* Sucursal */
+    .table td:nth-child(4),
+    .table th:last-child,    /* Estado */
+    .table td:last-child {
+        display: table-cell;
+        font-size: 0.875rem;
+    }
+
+    .table td:nth-child(2) { /* Producto */
+        width: 40%;
+    }
+
+    .table td:nth-child(4) { /* Sucursal */
+        width: 30%;
+        text-align: left;
+    }
+
+    .table td:last-child { /* Estado */
+        width: 30%;
+    }
+
+    .status {
+        padding: 0.2rem 0.4rem;
+        font-size: 0.813rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .tableContainer {
+        height: calc(100vh - 280px);
+        margin: 0 -0.5rem;
+        border-radius: 0;
+    }
+
+    .table th,
+    .table td {
+        padding: 0.4rem;
+        font-size: 0.813rem;
+    }
+
+    .status {
+        padding: 0.15rem 0.35rem;
+        font-size: 0.75rem;
+    }
+
+    .empty {
+        padding: 1.5rem;
+        font-size: 0.875rem;
+    }
+}

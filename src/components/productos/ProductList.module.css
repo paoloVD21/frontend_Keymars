@@ -250,6 +250,33 @@
 
     .tableContainer {
         height: calc(100vh - 200px);
+        overflow-x: auto;
+    }
+
+    /* Primero, ocultar TODAS las columnas */
+    .table th,
+    .table td {
+        display: none !important;
+    }
+
+    /* Luego, mostrar SOLO las columnas específicas que queremos */
+    .table th:nth-child(2),
+    .table td:nth-child(2) {  /* Nombre */
+        display: table-cell !important;
+        width: 40%;
+    }
+
+    .table th:nth-child(6),
+    .table td:nth-child(6) {  /* Stock */
+        display: table-cell !important;
+        width: 25%;
+        text-align: center;
+    }
+
+    .table th:nth-child(9),
+    .table td:nth-child(9) {  /* Acciones */
+        display: table-cell !important;
+        width: 35%;
     }
 
     .table th,
@@ -258,36 +285,18 @@
         min-width: 80px;
     }
 
-    /* Ocultar columnas menos importantes en móvil */
-    .table th:not(:nth-child(2)):not(:nth-child(3)):not(:last-child),
-    .table td:not(:nth-child(2)):not(:nth-child(3)):not(:last-child) {
-        display: none;
-    }
-
-    /* Ajustar anchos de columnas visibles */
-    .table td:nth-child(2) { /* Nombre producto */
-        width: 40%;
-    }
-    
-    .table td:nth-child(3) { /* Stock */
-        width: 25%;
-        text-align: center;
-    }
-    
-    .table td:last-child { /* Acciones */
-        width: 35%;
-    }
-
+    /* Estilos específicos para mejorar la visualización */
     .actionButtons {
-        flex-direction: row;
+        display: flex;
+        flex-direction: column;
         gap: 0.5rem;
         justify-content: flex-end;
     }
 
     .actionButton {
+        width: 100%;
         padding: 0.4rem 0.6rem;
         font-size: 0.75rem;
-        width: auto;
     }
 
     .paginationContainer {
