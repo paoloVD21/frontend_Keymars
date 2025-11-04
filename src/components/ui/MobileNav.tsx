@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { HiMenu, HiX } from 'react-icons/hi';
 import { MdDashboard, MdNotifications, MdAssessment, MdLogout } from 'react-icons/md';
 import { FaShoppingCart, FaArrowCircleDown, FaArrowCircleUp, FaTruck, FaUsers } from 'react-icons/fa';
+import logo from '../../assets/images/Logo-pequeño.png';
 import { useAuthStore } from '../../store/authStore';
 import type { User } from '../../types/auth';
 import styles from './MobileNav.module.css';
@@ -44,17 +45,23 @@ export const MobileNav = ({ user }: MobileNavProps) => {
 
     return (
         <nav className={styles.mobileNav}>
-            <button 
-                className={`${styles.menuButton} ${isMenuOpen ? styles.active : ''}`}
-                onClick={toggleMenu}
-                aria-label="Menú principal"
-            >
-                {isMenuOpen ? (
-                    <HiX size={24} color="white" />
-                ) : (
-                    <HiMenu size={24} color="white" />
-                )}
-            </button>
+            <div className={styles.navContent}>
+                <button 
+                    className={`${styles.menuButton} ${isMenuOpen ? styles.active : ''}`}
+                    onClick={toggleMenu}
+                    aria-label="Menú principal"
+                >
+                    {isMenuOpen ? (
+                        <HiX size={24} color="white" />
+                    ) : (
+                        <HiMenu size={24} color="white" />
+                    )}
+                </button>
+                <div className={styles.brandContainer}>
+                    <img src={logo} alt="Logo Keymars" className={styles.logo} />
+                    <p className={styles.title}>I y R Keymars</p>
+                </div>
+            </div>
 
             <div className={`${styles.dropdown} ${isMenuOpen ? styles.show : ''}`}>
                 {menuItems.map((item, index) => (
