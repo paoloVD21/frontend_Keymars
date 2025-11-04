@@ -248,3 +248,95 @@
     margin-top: 0.25rem;
     font-style: italic;
 }
+
+@media (max-width: 768px) {
+    .modalContent {
+        padding: 1.25rem;
+        width: 100%;
+        max-height: 95vh;
+        margin: 0.5rem;
+        gap: 1.5rem;
+    }
+
+    .modalTitle {
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+    }
+
+    .form {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .formSection {
+        gap: 0.75rem;
+    }
+
+    .sucursalList {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 0.75rem;
+    }
+
+    .sucursalCard {
+        padding: 0.75rem;
+    }
+
+    .sucursalCard h4 {
+        font-size: 0.938rem;
+    }
+
+    .ubicacionesList {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 0.5rem;
+    }
+
+    .ubicacionCard {
+        padding: 0.5rem;
+        font-size: 0.813rem;
+    }
+
+    .buttonGroup {
+        flex-direction: column-reverse;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+
+    .button {
+        width: 100%;
+        padding: 0.75rem;
+    }
+
+    .input,
+    .select {
+        font-size: 1rem;
+        padding: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .modalContent {
+        padding: 1rem;
+        margin: 0;
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+    }
+
+    .modalTitle {
+        font-size: 1.125rem;
+    }
+
+    .sucursalList,
+    .ubicacionesList {
+        grid-template-columns: 1fr;
+    }
+
+    .input,
+    .select {
+        font-size: 0.938rem;
+    }
+
+    .label {
+        font-size: 0.875rem;
+    }
+}

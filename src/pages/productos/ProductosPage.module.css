@@ -41,3 +41,39 @@
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
     overflow: hidden;
 }
+
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+        width: 100%;
+    }
+
+    .title {
+        font-size: 1.75rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .subtitle {
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .buttonContainer {
+        position: fixed;
+        bottom: 1rem;
+        left: 0;
+        right: 0;
+        padding: 0 1rem;
+        margin: 0;
+        z-index: 100;
+        background: transparent;
+    }
+
+    .registerButton {
+        width: 100%;
+        max-width: none;
+        padding: 0.75rem;
+        font-size: 1rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+}
