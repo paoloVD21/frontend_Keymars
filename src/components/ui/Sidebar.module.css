@@ -160,3 +160,30 @@
 .logoutButton:hover {
     background-color: rgb(185, 28, 28);
 }
+
+/* Ocultar el sidebar en dispositivos móviles */
+@media screen and (max-width: 768px) {
+    .sidebar {
+        display: none !important; /* Forzar ocultamiento */
+        visibility: hidden; /* Asegurar que está oculto */
+        width: 0; /* Eliminar espacio */
+        overflow: hidden; /* Prevenir desbordamiento */
+    }
+    
+    .sidebar * {
+        display: none !important; /* Ocultar todos los elementos hijos */
+    }
+}
+
+/* Media queries adicionales para diferentes tamaños de móvil */
+@media screen and (max-width: 480px) {
+    .sidebar {
+        display: none !important;
+    }
+}
+
+@media screen and (max-width: 360px) {
+    .sidebar {
+        display: none !important;
+    }
+}
