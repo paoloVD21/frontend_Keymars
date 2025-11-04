@@ -184,3 +184,127 @@
     border-radius: 0.375rem;
     margin: 1rem 0;
 }
+
+@media (max-width: 768px) {
+    .modalContent {
+        padding: 1rem;
+        width: 95%;
+        max-width: 360px;
+        margin: 1rem;
+        border-radius: 8px;
+        max-height: 90vh;
+    }
+
+    .modalHeader {
+        margin-bottom: 0.75rem;
+    }
+
+    .modalTitle {
+        font-size: 1.1rem;
+    }
+
+    .modalBody {
+        gap: 1rem;
+        padding: 0;
+    }
+
+    .modalSection {
+        padding: 1rem;
+    }
+
+    .sectionTitle {
+        font-size: 1rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .modalGrid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+
+    .modalField {
+        padding: 0.5rem;
+    }
+
+    .fieldLabel {
+        font-size: 0.75rem;
+    }
+
+    .fieldValue {
+        font-size: 0.875rem;
+    }
+
+    .observacion {
+        padding: 0.75rem;
+        font-size: 0.875rem;
+    }
+
+    .tableWrapper {
+        border-radius: 4px;
+        margin: 0.5rem 0;
+    }
+
+    .detallesTable table {
+        min-width: auto;
+        font-size: 0.875rem;
+    }
+
+    /* Ajustar tabla para móvil */
+    .detallesTable th,
+    .detallesTable td {
+        padding: 0.5rem;
+    }
+
+    /* Ocultar columnas menos importantes en móvil */
+    .detallesTable th:not(:nth-child(1)):not(:nth-child(2)):not(:nth-child(3)),
+    .detallesTable td:not(:nth-child(1)):not(:nth-child(2)):not(:nth-child(3)) {
+        display: none;
+    }
+
+    /* Ajustar las columnas visibles */
+    .detallesTable th:nth-child(1),
+    .detallesTable td:nth-child(1) {
+        width: 50%;
+    }
+
+    .detallesTable th:nth-child(2),
+    .detallesTable td:nth-child(2) {
+        width: 25%;
+    }
+
+    .detallesTable th:nth-child(3),
+    .detallesTable td:nth-child(3) {
+        width: 25%;
+    }
+
+    .detallesTable tfoot {
+        font-size: 0.875rem;
+    }
+
+    .detallesTable tfoot td {
+        padding: 0.75rem 0.5rem;
+    }
+
+    .modalFooter {
+        margin-top: 1rem;
+        padding-top: 0.75rem;
+    }
+
+    .cerrarButton {
+        width: 100%;
+        padding: 0.75rem;
+        font-size: 0.875rem;
+        display: block;
+    }
+
+    .loadingContainer {
+        padding: 1rem;
+        font-size: 0.875rem;
+    }
+
+    .errorMessage {
+        padding: 0.75rem;
+        font-size: 0.875rem;
+        margin: 0.75rem 0;
+    }
+}

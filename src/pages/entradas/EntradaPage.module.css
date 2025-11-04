@@ -19,3 +19,25 @@
     font-weight: bold;
     margin-bottom: 1rem;
 }
+
+@media (max-width: 768px) {
+    .pageContainer {
+        padding: 0.5rem;
+        height: auto;
+        min-height: calc(100vh - 60px); /* altura total menos el header */
+    }
+
+    .content {
+        border-radius: 0;
+        box-shadow: none;
+        margin: 0;
+        height: auto;
+        min-height: calc(100vh - 120px);
+    }
+
+    .title {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        padding: 0 0.5rem;
+    }
+}

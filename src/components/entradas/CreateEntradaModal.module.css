@@ -16,7 +16,7 @@
     padding: 20px;
     border-radius: 8px;
     width: 90%;
-    max-width: 1000px;
+    max-width: 360px; /* Ajustado para que coincida con el contenido interno (300px + padding) */
     max-height: 90vh;
     overflow-y: auto;
     position: relative;
@@ -24,7 +24,7 @@
 }
 
 .smallModal {
-    max-width: 500px !important;
+    max-width: 340px !important;
     width: 95% !important;
 }
 
@@ -38,12 +38,15 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
+    max-width: 450px;
+    width: 100%;
 }
 
 .formGroup {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    width: 100%;
 }
 
 .label {
@@ -57,6 +60,8 @@
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 14px;
+    max-width: 300px;
+    width: 100%;
 }
 
 .textarea {
@@ -64,6 +69,12 @@
     resize: vertical;
     font-family: inherit;
     line-height: 1.5;
+    width: 100%;
+    max-width: 300px;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
 }
 
 .input:focus,
@@ -124,6 +135,8 @@
     padding: 1rem;
     background-color: #F9FAFB;
     border-radius: 0.5rem;
+    max-width: 300px;
+    width: 100%;
 }
 
 .sucursalList {
@@ -131,15 +144,16 @@
     gap: 1rem;
     flex-wrap: wrap;
     margin-bottom: 1.5rem;
+    width: 100%;
 }
 
 .sucursalCard {
-    padding: 1rem 1.5rem;
+    padding: 0.75rem 1rem;
     border: 1px solid #E5E7EB;
     border-radius: 0.5rem;
     cursor: pointer;
     transition: all 0.2s ease;
-    min-width: 150px;
+    width: calc(50% - 0.5rem); /* 2 tarjetas por fila con espacio entre ellas */
     text-align: center;
     background-color: white;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
@@ -198,12 +212,15 @@
 .productosTable {
     margin-top: 20px;
     overflow-x: auto;
+    max-width: 450px;
+    width: 100%;
 }
 
 .table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
+    font-size: 0.9rem;
 }
 
 .table th,
@@ -252,6 +269,7 @@
     cursor: pointer;
     font-size: 14px;
     transition: background-color 0.3s;
+    width: 100%;
 }
 
 .button:disabled {
@@ -275,6 +293,16 @@
 
 .submitButton:hover:not(:disabled) {
     background-color: #45a049;
+}
+
+/* Ajustar el contenedor de botones */
+.buttonGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+    max-width: 300px;
+    width: 100%;
 }
 
 .fullWidth {
@@ -355,6 +383,8 @@
 
 .searchSection {
     margin-top: 1rem;
+    max-width: 400px;
+    width: 100%;
 }
 
 .searchInputContainer {
@@ -369,6 +399,7 @@
     border: 1px solid #E5E7EB;
     border-radius: 6px;
     font-size: 0.875rem;
+    max-width: 300px;
 }
 
 .searchButton {
@@ -380,6 +411,7 @@
     font-weight: 500;
     cursor: pointer;
     transition: background-color 0.2s;
+    max-width: 120px; /* Ancho máximo más compacto */
 }
 
 .searchButton:hover {
@@ -443,4 +475,182 @@
     font-size: 0.875rem;
     margin-top: 0.5rem;
     font-style: italic;
+}
+
+@media (max-width: 768px) {
+    .modalContent {
+        padding: 1rem;
+        width: 90%;
+        height: 90%;
+        max-height: 90%;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        margin: auto;
+    }
+
+    .button {
+        width: auto; /* Asegurar que los botones no sean de ancho completo en móvil */
+        min-width: 100px; /* Ancho mínimo para mejor toque */
+    }
+
+    .buttonGroup {
+        flex-wrap: wrap; /* Permitir que los botones se envuelvan si es necesario */
+    }
+
+    .smallModal {
+        height: auto !important;
+        margin: 1rem;
+        border-radius: 8px !important;
+    }
+
+    .modalTitle {
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+    }
+
+    .form {
+        flex: 1;
+        overflow-y: auto;
+        gap: 1rem;
+    }
+
+    .formGroup {
+        gap: 0.5rem;
+    }
+
+    .sucursalesSection {
+        margin-top: 1rem;
+        padding: 0.75rem;
+    }
+
+    .sucursalList {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .sucursalCard {
+        padding: 0.75rem;
+        min-width: auto;
+    }
+
+    .selectedIndicator {
+        font-size: 0.7rem;
+        padding: 2px 6px;
+    }
+
+    .productosSection {
+        margin-top: 1rem;
+    }
+
+    .searchSection {
+        margin-top: 0.5rem;
+    }
+
+    .searchInputContainer {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .searchButton {
+        width: 100%;
+    }
+
+    .productosTable {
+        margin-top: 1rem;
+        overflow-x: auto;
+    }
+
+    .table {
+        font-size: 0.875rem;
+    }
+
+    /* Ajustar la tabla de productos */
+    .table th,
+    .table td {
+        padding: 0.5rem;
+    }
+
+    .table input[type="number"],
+    .table select {
+        width: 100%;
+        min-width: 80px;
+    }
+
+    .buttonGroup {
+        flex-direction: column-reverse;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+
+    .button {
+        width: 100%;
+        padding: 0.75rem;
+    }
+
+    /* Ajustes para el modal de nueva ubicación */
+    .newUbicacionForm {
+        padding: 0;
+    }
+
+    .formInputs {
+        gap: 0.75rem;
+    }
+
+    .formButtons {
+        flex-direction: column-reverse;
+        gap: 0.5rem;
+    }
+
+    .formButtons button {
+        width: 100%;
+        padding: 0.75rem;
+    }
+
+    /* Ajustes para los resultados de búsqueda */
+    .searchResults {
+        max-height: 200px;
+    }
+
+    .productCard {
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 0.75rem;
+    }
+
+    .productInfo {
+        width: 100%;
+    }
+
+    .productMeta {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .addButton {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Ajustes para la tabla de productos seleccionados */
+    .productosTable .table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .removeButton {
+        padding: 0.5rem;
+        width: 100%;
+    }
+
+    /* Mantener visible el mensaje de error */
+    .errorText {
+        position: sticky;
+        bottom: 0;
+        background: white;
+        padding: 0.5rem;
+        margin: 0;
+        border-top: 1px solid #fee2e2;
+    }
 }

@@ -458,3 +458,138 @@
     text-align: center;
     border: 1px solid #C8E6C9;
 }
+
+@media (max-width: 768px) {
+    .modalContent {
+        padding: 1rem;
+        width: 95%;
+        max-width: 360px; /* Ajustado al mismo ancho que el modal de entradas */
+        margin: 1rem;
+        border-radius: 8px;
+    }
+
+    .modalTitle {
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+    }
+
+    .form {
+        gap: 1rem;
+    }
+
+    .formGroup {
+        width: 100%;
+    }
+
+    .input,
+    .select,
+    .textarea {
+        width: 100%;
+        max-width: 300px;
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .textarea {
+        min-height: 80px;
+    }
+
+    .sucursalesSection {
+        margin-top: 1rem;
+        padding: 0.75rem;
+        max-width: 300px;
+        width: 100%;
+    }
+
+    .sucursalList {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .sucursalCard {
+        width: 100%;
+        min-width: auto;
+        padding: 0.75rem;
+    }
+
+    .searchSection {
+        max-width: 300px;
+        width: 100%;
+    }
+
+    .searchInputContainer {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .searchInput {
+        max-width: 300px;
+        width: 100%;
+    }
+
+    .searchButton {
+        width: 100%;
+        padding: 0.75rem;
+    }
+
+    .productCard {
+        flex-direction: column;
+        padding: 0.75rem;
+        gap: 0.75rem;
+    }
+
+    .productInfo {
+        width: 100%;
+    }
+
+    .productMeta {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .addButton {
+        width: 100%;
+        text-align: center;
+    }
+
+    .stockGrid {
+        font-size: 14px;
+    }
+
+    .stockHeader,
+    .stockRow {
+        padding: 0.5rem;
+    }
+
+    .buttonGroup {
+        flex-direction: column;
+        max-width: 300px;
+        width: 100%;
+        margin-top: 1rem;
+        gap: 0.5rem;
+    }
+
+    .submitButton,
+    .cancelButton {
+        width: 100%;
+        padding: 0.75rem;
+        font-size: 14px;
+    }
+
+    .table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+        font-size: 14px;
+    }
+
+    .table th,
+    .table td {
+        padding: 0.5rem;
+    }
+
+    .removeButton {
+        width: 100%;
+        padding: 0.5rem;
+    }
+}
