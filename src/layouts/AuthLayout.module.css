@@ -57,3 +57,42 @@
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     border-radius: 0.5rem;
 }
+
+/* Media queries para dispositivos móviles */
+@media screen and (max-width: 480px) {
+    .content {
+        padding: 0.5rem;
+    }
+
+    .title {
+        font-size: 1.75rem;
+    }
+
+    .subtitle {
+        font-size: 2.5rem;
+    }
+
+    .logo {
+        height: 8rem;
+    }
+
+    .formContainer {
+        padding: 1rem;
+        margin-top: -1rem;
+    }
+}
+
+/* Media queries para tablets */
+@media screen and (min-width: 481px) and (max-width: 768px) {
+    .title {
+        font-size: 2.25rem;
+    }
+
+    .subtitle {
+        font-size: 3rem;
+    }
+
+    .logo {
+        height: 10rem;
+    }
+}
