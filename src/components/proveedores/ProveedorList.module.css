@@ -295,3 +295,122 @@
     font-size: 0.875rem;
     border-top: 1px solid #e5e7eb;
 }
+
+@media (max-width: 768px) {
+    .container {
+        padding: 0.5rem;
+        position: relative;
+        padding-bottom: 1px; /* Espacio para el botón flotante y la navegación */
+    }
+
+    .searchContainer {
+        margin-bottom: 0.75rem;
+    }
+
+    .searchInput {
+        max-width: none;
+        width: 100%;
+    }
+
+    .tableContainer {
+        height: calc(100vh - 200px);
+        overflow-x: auto;
+    }
+
+    /* Ocultar todas las columnas por defecto */
+    .table th,
+    .table td {
+        display: none !important;
+    }
+
+    /* Mostrar solo las columnas importantes */
+    .table th:nth-child(1),
+    .table td:nth-child(1),      /* Nombre del proveedor */
+    .table th:nth-child(4),
+    .table td:nth-child(4),      /* Teléfono */
+    .table th:nth-child(5),
+    .table td:nth-child(5),      /* Estado */
+    .table th:nth-child(6),
+    .table td:nth-child(6) {     /* Acciones (solo para supervisor) */
+        display: table-cell !important;
+    }
+
+    /* Ajustar ancho de las columnas visibles */
+    .table td:nth-child(1) {
+        width: 20%;
+    }
+
+    .table td:nth-child(4) {
+        width: 25%;
+    }
+
+    .table td:nth-child(5) {
+        width: 15%;
+    }
+
+    .table td:nth-child(6) {
+        width: 20%;
+    }
+
+    .table th,
+    .table td {
+        padding: 0.5rem;
+        font-size: 0.875rem;
+        min-width: 80px;
+    }
+
+    /* Ajustar botones de acción */
+    .actionButtons {
+        display: flex;
+        flex-direction: column;
+        gap: 0.15rem;
+    }
+
+    .actionButton {
+        width:80%;
+        margin: 0;
+        padding: 0.35rem;
+        font-size: 0.75rem;
+    }
+
+    /* Ajustar la paginación */
+    .paginationContainer {
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 0.75rem;
+        margin-bottom: 60px;  /* Espacio para la navegación móvil */
+    }
+
+    .paginationInfo {
+        order: 2;
+        text-align: center;
+    }
+
+    .paginationButtons {
+        order: 1;
+        justify-content: center;
+        width: 100%;
+    }
+
+    /* Mejorar la visualización de los badges de estado */
+    .statusBadge {
+        padding: 0.15rem 0.35rem;
+        min-width: 60px;
+        font-size: 0.75rem;
+    }
+
+    /* Estilo para el botón de crear flotante */
+    .createButton {
+        position: fixed;
+        bottom: 80px; /* Por encima de la navegación móvil */
+        left: 50%;
+        transform: translateX(-50%);
+        width: calc(100% - 2rem);
+        max-width: 300px;
+        padding: 0.75rem;
+        font-size: 1rem;
+        z-index: 100;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+}

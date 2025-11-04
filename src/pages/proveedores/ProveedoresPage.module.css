@@ -39,3 +39,49 @@
     color: #6b7280;
     margin-bottom: 0.1rem;
 }
+
+@media (max-width: 768px) {
+    .container {
+        padding: 0.5rem;
+        padding-bottom: 65px; /* Reducido el espacio para la navegación móvil */
+        display: flex;
+        flex-direction: column;
+        min-height: calc(100vh - 60px);
+    }
+
+    .title {
+        font-size: 1.5rem;
+        margin-bottom: 0.25rem;
+        padding: 0 0.5rem;
+    }
+
+    .buttonContainer {
+        margin-bottom: 0;
+        margin-top: auto;
+        padding: 0.75rem;
+        background-color: white;
+        border-top: 1px solid #e5e7eb;
+        order: 3;
+    }
+
+    .registerButton {
+        width: 100%;
+        padding: 0.75rem;
+        font-size: 1rem;
+        background-color: #2563eb;
+        border-radius: 4px;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .tableContainer {
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+        flex: 1;
+        order: 2;
+        margin-bottom: 0; /* Eliminar margen inferior si existe */
+    }
+}
