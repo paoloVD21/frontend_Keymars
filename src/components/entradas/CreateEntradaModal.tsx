@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import styles from './CreateEntradaModal.module.css';
 import { entradaService } from '../../services/entradaService';
-import { productoService } from '../../services/productoService';
 import { proveedorService } from '../../services/proveedorService';
 import { sucursalService } from '../../services/sucursalService';
 import { ubicacionService } from '../../services/ubicacionService';
+import { motivoService } from '../../services/motivoService';
+import { movimientoService, type ProductoBusqueda } from '../../services/movimientoService';
 import type { EntradaCreate, DetalleEntrada } from '../../types/entrada';
-import type { Producto } from '../../types/producto';
 import type { Sucursal } from '../../types/sucursal';
 import type { Ubicacion, CreateUbicacion } from '../../types/ubicacion';
 import type { Motivo } from '../../types/motivo';
-import { motivoService } from '../../services/motivoService';
 
 interface CreateEntradaModalProps {
     isOpen: boolean;
@@ -20,6 +19,7 @@ interface CreateEntradaModalProps {
 
 interface ProductoSeleccionado extends DetalleEntrada {
     nombre: string;
+    codigo_producto: string;
     ubicacion_nombre?: string;
     precio_unitario?: number;
 }
@@ -32,7 +32,8 @@ export const CreateEntradaModal: React.FC<CreateEntradaModalProps> = ({
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [proveedores, setProveedores] = useState<{ id_proveedor: number; nombre: string }[]>([]);
-    const [productos, setProductos] = useState<Producto[]>([]);
+    const [tempSearchTerm, setTempSearchTerm] = useState('');
+    const [searchResults, setSearchResults] = useState<ProductoBusqueda[]>([]);
     const [motivos, setMotivos] = useState<Motivo[]>([]);
     const [sucursales, setSucursales] = useState<Sucursal[]>([]);
     const [ubicaciones, setUbicaciones] = useState<Ubicacion[]>([]);
@@ -78,18 +79,43 @@ export const CreateEntradaModal: React.FC<CreateEntradaModalProps> = ({
         }
     }, [isOpen]);
 
+    const handleSearch = async () => {
+        if (!tempSearchTerm || tempSearchTerm.length < 3 || !selectedSucursal) {
+            setError('Ingrese al menos 3 caracteres para buscar y seleccione una sucursal');
+            setSearchResults([]);
+            return;
+        }
+
+        try {
+            setLoading(true);
+            setError(null);
+
+            const productos = await movimientoService.buscarProductosEntrada(
+                selectedSucursal.id_sucursal,
+                tempSearchTerm
+            );
+            
+            setSearchResults(productos);
+            setError(null);
+        } catch (error) {
+            console.error('Error al buscar productos:', error);
+            setError('Error al buscar productos');
+            setSearchResults([]);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const loadInitialData = async () => {
         try {
             setLoading(true);
-            const [proveedoresData, productosData, sucursalesData, motivosData] = await Promise.all([
+            const [proveedoresData, sucursalesData, motivosData] = await Promise.all([
                 proveedorService.getProveedores(),
-                productoService.getProductos(),
                 sucursalService.getSucursales(),
                 motivoService.getMotivosEntrada()
             ]);
 
             setProveedores(proveedoresData.proveedores);
-            setProductos(productosData.productos);
             setSucursales(sucursalesData.sucursales);
             setMotivos(motivosData);
         } catch {
@@ -195,15 +221,25 @@ export const CreateEntradaModal: React.FC<CreateEntradaModalProps> = ({
         }
     };
 
-    const handleAddProducto = (producto: Producto) => {
+    const handleAddProducto = (producto: ProductoBusqueda) => {
         if (!selectedSucursal) {
             setError('Por favor, seleccione primero una sucursal');
             return;
         }
 
+        const productoExistente = productosSeleccionados.find(
+            p => p.id_producto === producto.id_producto
+        );
+
+        if (productoExistente) {
+            setError('Este producto ya ha sido seleccionado');
+            return;
+        }
+
         const nuevoProducto: ProductoSeleccionado = {
             id_producto: producto.id_producto,
-            nombre: producto.nombre,
+            nombre: producto.nombre_producto,
+            codigo_producto: producto.codigo_producto,
             cantidad: 1,
             precio_unitario: producto.precio || 0,
             id_ubicacion: 0
@@ -211,6 +247,9 @@ export const CreateEntradaModal: React.FC<CreateEntradaModalProps> = ({
 
         setProductosSeleccionados(prev => [...prev, nuevoProducto]);
         actualizarCantidadTotal([...productosSeleccionados, nuevoProducto]);
+        setSearchResults([]); // Limpiar resultados de búsqueda
+        setTempSearchTerm(''); // Limpiar el campo de búsqueda
+        setError(null);
     };
 
     const handleRemoveProducto = (index: number) => {
@@ -393,7 +432,7 @@ export const CreateEntradaModal: React.FC<CreateEntradaModalProps> = ({
                         />
                     </div>
 
-                    <div className={`${styles.sucursalesSection} ${styles.fullWidth}`}>
+                    <div className={styles.sucursalesSection}>
                         <h3 className={styles.subtitle}>Seleccionar Sucursal</h3>
                         <div className={styles.sucursalList}>
                             {sucursales.map(sucursal => (
@@ -403,9 +442,19 @@ export const CreateEntradaModal: React.FC<CreateEntradaModalProps> = ({
                                     onClick={() => handleSucursalClick(sucursal.id_sucursal)}
                                 >
                                     <h4>{sucursal.nombre}</h4>
+                                    {selectedSucursal?.id_sucursal === sucursal.id_sucursal && (
+                                        <div className={styles.selectedIndicator}>
+                                            Sucursal Seleccionada ✓
+                                        </div>
+                                    )}
                                 </div>
                             ))}
                         </div>
+                        {selectedSucursal && (
+                            <div className={styles.selectedSucursalInfo}>
+                                <p>Registrando productos en: {selectedSucursal.nombre}</p>
+                            </div>
+                        )}
                     </div>
 
                     {selectedSucursal && (
@@ -498,24 +547,57 @@ export const CreateEntradaModal: React.FC<CreateEntradaModalProps> = ({
                                 </div>
                             )}
 
-                            <div className={styles.productSelector}>
-                                <select
-                                    className={styles.select}
-                                    onChange={(e) => {
-                                        const producto = productos.find(p => p.id_producto === Number(e.target.value));
-                                        if (producto) {
-                                            handleAddProducto(producto);
-                                        }
-                                    }}
-                                    value=""
-                                >
-                                    <option value="">Seleccione un producto</option>
-                                    {productos.map(producto => (
-                                        <option key={producto.id_producto} value={producto.id_producto}>
-                                            {producto.nombre}
-                                        </option>
-                                    ))}
-                                </select>
+                            <div className={styles.searchSection}>
+                                <div className={styles.searchInputContainer}>
+                                    <input
+                                        type="text"
+                                        placeholder="Buscar productos..."
+                                        className={styles.searchInput}
+                                        value={tempSearchTerm}
+                                        onChange={(e) => setTempSearchTerm(e.target.value)}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter') {
+                                                e.preventDefault();
+                                                handleSearch();
+                                            }
+                                        }}
+                                    />
+                                    <button
+                                        type="button"
+                                        className={styles.searchButton}
+                                        onClick={handleSearch}
+                                        disabled={loading}
+                                    >
+                                        Buscar
+                                    </button>
+                                </div>
+                                {loading && (
+                                    <p className={styles.loadingText}>Buscando productos...</p>
+                                )}
+                                {searchResults.length > 0 && (
+                                    <div className={styles.searchResults}>
+                                        {searchResults.map((producto) => (
+                                            <div key={producto.id_producto} className={styles.productCard}>
+                                                <div className={styles.productInfo}>
+                                                    <div className={styles.productHeader}>
+                                                        <h4 className={styles.productName}>{producto.nombre_producto}</h4>
+                                                        <div className={styles.productMeta}>
+                                                            <span>Código: {producto.codigo_producto}</span>
+                                                            <span>Precio: ${producto.precio.toFixed(2)}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <button
+                                                    type="button"
+                                                    className={styles.addButton}
+                                                    onClick={() => handleAddProducto(producto)}
+                                                >
+                                                    Agregar
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
 
                             {productosSeleccionados.length > 0 && (

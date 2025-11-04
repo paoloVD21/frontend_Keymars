@@ -4,22 +4,13 @@ import { salidaService } from '../../services/salidaService';
 import { sucursalService } from '../../services/sucursalService';
 import { ubicacionService } from '../../services/ubicacionService';
 import { motivoService } from '../../services/motivoService';
+import { movimientoService } from '../../services/movimientoService';
 import type { SalidaCreate, DetalleSalida } from '../../types/salida';
 import type { Sucursal } from '../../types/sucursal';
 import type { Ubicacion } from '../../types/ubicacion';
 import type { Motivo } from '../../types/motivo';
 
-interface ProductoBusqueda {
-    id_producto: number;
-    nombre_producto: string;
-    codigo_producto: string;
-    precio: number;
-    stock_ubicaciones: {
-        id_ubicacion: number;
-        nombre_ubicacion: string;
-        stock_actual: number;
-    }[];
-}
+import type { ProductoBusqueda } from '../../services/movimientoService';
 
 interface CreateSalidaModalProps {
     isOpen: boolean;
@@ -156,20 +147,10 @@ export const CreateSalidaModal: React.FC<CreateSalidaModalProps> = ({
             }
 
             // Buscar productos
-            const response = await fetch(
-                `http://localhost:8000/api/movements/productos/buscar/${state.formData.id_sucursal}?buscar=${encodeURIComponent(state.tempSearchTerm)}`,
-                {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    }
-                }
+            const productos = await movimientoService.buscarProductos(
+                state.formData.id_sucursal,
+                state.tempSearchTerm
             );
-
-            if (!response.ok) {
-                throw new Error('Error al buscar productos');
-            }
-
-            const productos: ProductoBusqueda[] = await response.json();
 
             updateState({
                 searchResults: productos,

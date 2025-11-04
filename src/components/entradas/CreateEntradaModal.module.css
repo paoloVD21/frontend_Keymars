@@ -119,30 +119,69 @@
     margin-bottom: 20px;
 }
 
+.sucursalesSection {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background-color: #F9FAFB;
+    border-radius: 0.5rem;
+}
+
 .sucursalList {
     display: flex;
-    gap: 12px;
+    gap: 1rem;
     flex-wrap: wrap;
-    margin-bottom: 20px;
+    margin-bottom: 1.5rem;
 }
 
 .sucursalCard {
-    padding: 12px 20px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    padding: 1rem 1.5rem;
+    border: 1px solid #E5E7EB;
+    border-radius: 0.5rem;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
+    min-width: 150px;
+    text-align: center;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    position: relative;
 }
 
 .sucursalCard:hover {
     border-color: #4CAF50;
-    background-color: #f9f9f9;
+    background-color: #F3F4F6;
+    transform: translateY(-1px);
 }
 
 .sucursalCard.selected {
-    background-color: #4CAF50;
+    background-color: #10B981;
     color: white;
-    border-color: #4CAF50;
+    border-color: #10B981;
+    box-shadow: 0 3px 6px rgba(16, 185, 129, 0.2);
+}
+
+.selectedIndicator {
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #059669;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.selectedSucursalInfo {
+    background-color: #E8F5E9;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    margin-top: 1rem;
+    color: #059669;
+    font-weight: 500;
+    text-align: center;
+    border: 1px solid #10B981;
 }
 
 .productosSection {
@@ -312,4 +351,96 @@
 
 .saveButton:hover:not(:disabled) {
     background: #45a049;
+}
+
+.searchSection {
+    margin-top: 1rem;
+}
+
+.searchInputContainer {
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.searchInput {
+    flex: 1;
+    padding: 0.75rem;
+    border: 1px solid #E5E7EB;
+    border-radius: 6px;
+    font-size: 0.875rem;
+}
+
+.searchButton {
+    padding: 0.75rem 1.5rem;
+    background-color: #10B981;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.searchButton:hover {
+    background-color: #059669;
+}
+
+.searchButton:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.searchResults {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.productCard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border: 1px solid #E5E7EB;
+    border-radius: 6px;
+    background: white;
+}
+
+.productInfo {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.productHeader {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.productName {
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+.productMeta {
+    display: flex;
+    gap: 1rem;
+    color: #6B7280;
+    font-size: 0.875rem;
+    flex-wrap: wrap;
+}
+
+.loadingText {
+    color: #6B7280;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    font-style: italic;
 }
