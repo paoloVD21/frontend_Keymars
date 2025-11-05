@@ -60,7 +60,7 @@ export const ubicacionService = {
 
     createUbicacion: async (ubicacion: { nombre: string; codigo_ubicacion: string; tipo_ubicacion: string; id_sucursal: number }): Promise<void> => {
         try {
-            await axios.post(`${BASE_URL}/ubicaciones`, ubicacion, {
+            await axios.post(`${BASE_URL}/crearUbicacion`, ubicacion, {
                 headers: getAuthHeaders()
             });
         } catch (error) {

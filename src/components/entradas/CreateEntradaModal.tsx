@@ -358,103 +358,109 @@ export const CreateEntradaModal: React.FC<CreateEntradaModalProps> = ({
             <div className={styles.modalContent}>
                 <h2 className={styles.modalTitle}>Registrar Ingreso</h2>
                 <form onSubmit={handleSubmit} className={styles.form}>
-                    <div className={styles.formGroup}>
-                        <label className={styles.label} htmlFor="fecha">
-                            Fecha
-                        </label>
-                        <input
-                            id="fecha"
-                            type="date"
-                            value={fecha}
-                            onChange={(e) => setFecha(e.target.value)}
-                            className={styles.input}
-                            required
-                        />
-                    </div>
-
-                    <div className={styles.formGroup}>
-                        <label className={styles.label} htmlFor="id_proveedor">
-                            Proveedor
-                        </label>
-                        <select
-                            id="id_proveedor"
-                            value={idProveedor || ''}
-                            onChange={(e) => setIdProveedor(Number(e.target.value))}
-                            className={styles.select}
-                            required
-                        >
-                            <option value="">Seleccione un proveedor</option>
-                            {proveedores.map(proveedor => (
-                                <option key={proveedor.id_proveedor} value={proveedor.id_proveedor}>
-                                    {proveedor.nombre}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-
-                    <div className={styles.formGroup}>
-                        <label className={styles.label} htmlFor="id_motivo">
-                            Motivo de Ingreso
-                        </label>
-                        <select
-                            id="id_motivo"
-                            value={formData.id_motivo || ''}
-                            onChange={(e) => setFormData(prev => ({
-                                ...prev,
-                                id_motivo: Number(e.target.value)
-                            }))}
-                            className={styles.select}
-                            required
-                        >
-                            <option value="">Seleccione un motivo</option>
-                            {motivos.map(motivo => (
-                                <option key={motivo.id_motivo} value={motivo.id_motivo}>
-                                    {motivo.nombre}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-
-                    <div className={styles.formGroup}>
-                        <label className={styles.label} htmlFor="observacion">
-                            Observación
-                        </label>
-                        <textarea
-                            id="observacion"
-                            value={formData.observacion || ''}
-                            onChange={(e) => setFormData(prev => ({
-                                ...prev,
-                                observacion: e.target.value
-                            }))}
-                            className={`${styles.input} ${styles.textarea}`}
-                            placeholder="Ingrese observaciones adicionales..."
-                            rows={3}
-                        />
-                    </div>
-
-                    <div className={styles.sucursalesSection}>
-                        <h3 className={styles.subtitle}>Seleccionar Sucursal</h3>
-                        <div className={styles.sucursalList}>
-                            {sucursales.map(sucursal => (
-                                <div
-                                    key={sucursal.id_sucursal}
-                                    className={`${styles.sucursalCard} ${selectedSucursal?.id_sucursal === sucursal.id_sucursal ? styles.selected : ''}`}
-                                    onClick={() => handleSucursalClick(sucursal.id_sucursal)}
-                                >
-                                    <h4>{sucursal.nombre}</h4>
-                                    {selectedSucursal?.id_sucursal === sucursal.id_sucursal && (
-                                        <div className={styles.selectedIndicator}>
-                                            Sucursal Seleccionada ✓
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-                        {selectedSucursal && (
-                            <div className={styles.selectedSucursalInfo}>
-                                <p>Registrando productos en: {selectedSucursal.nombre}</p>
+                    <div className={styles.formGrid}>
+                        <div>
+                            <div className={styles.formGroup}>
+                                <label className={styles.label} htmlFor="fecha">
+                                    Fecha
+                                </label>
+                                <input
+                                    id="fecha"
+                                    type="date"
+                                    value={fecha}
+                                    onChange={(e) => setFecha(e.target.value)}
+                                    className={styles.input}
+                                    required
+                                />
                             </div>
-                        )}
+
+                            <div className={styles.formGroup}>
+                                <label className={styles.label} htmlFor="id_proveedor">
+                                    Proveedor
+                                </label>
+                                <select
+                                    id="id_proveedor"
+                                    value={idProveedor || ''}
+                                    onChange={(e) => setIdProveedor(Number(e.target.value))}
+                                    className={styles.select}
+                                    required
+                                >
+                                    <option value="">Seleccione un proveedor</option>
+                                    {proveedores.map(proveedor => (
+                                        <option key={proveedor.id_proveedor} value={proveedor.id_proveedor}>
+                                            {proveedor.nombre}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div className={styles.formGroup}>
+                                <label className={styles.label} htmlFor="id_motivo">
+                                    Motivo de Ingreso
+                                </label>
+                                <select
+                                    id="id_motivo"
+                                    value={formData.id_motivo || ''}
+                                    onChange={(e) => setFormData(prev => ({
+                                        ...prev,
+                                        id_motivo: Number(e.target.value)
+                                    }))}
+                                    className={styles.select}
+                                    required
+                                >
+                                    <option value="">Seleccione un motivo</option>
+                                    {motivos.map(motivo => (
+                                        <option key={motivo.id_motivo} value={motivo.id_motivo}>
+                                            {motivo.nombre}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div className={styles.formGroup}>
+                                <label className={styles.label} htmlFor="observacion">
+                                    Observación
+                                </label>
+                                <textarea
+                                    id="observacion"
+                                    value={formData.observacion || ''}
+                                    onChange={(e) => setFormData(prev => ({
+                                        ...prev,
+                                        observacion: e.target.value
+                                    }))}
+                                    className={`${styles.input} ${styles.textarea}`}
+                                    placeholder="Ingrese observaciones adicionales..."
+                                    rows={3}
+                                />
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div className={styles.sucursalesSection}>
+                                <h3 className={styles.subtitle}>Seleccionar Sucursal</h3>
+                                <div className={styles.sucursalList}>
+                                    {sucursales.map(sucursal => (
+                                        <div
+                                            key={sucursal.id_sucursal}
+                                            className={`${styles.sucursalCard} ${selectedSucursal?.id_sucursal === sucursal.id_sucursal ? styles.selected : ''}`}
+                                            onClick={() => handleSucursalClick(sucursal.id_sucursal)}
+                                        >
+                                            <h4>{sucursal.nombre}</h4>
+                                            {selectedSucursal?.id_sucursal === sucursal.id_sucursal && (
+                                                <div className={styles.selectedIndicator}>
+                                                    Sucursal Seleccionada ✓
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                                {selectedSucursal && (
+                                    <div className={styles.selectedSucursalInfo}>
+                                        <p>Registrando productos en: {selectedSucursal.nombre}</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
                     </div>
 
                     {selectedSucursal && (

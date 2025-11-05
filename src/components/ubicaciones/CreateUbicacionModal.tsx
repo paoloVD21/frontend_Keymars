@@ -20,13 +20,15 @@ export const CreateUbicacionModal = ({
 }: CreateUbicacionModalProps) => {
     const [formData, setFormData] = useState<CreateUbicacion>({
         nombre: '',
+        codigo_ubicacion: '',
+        tipo_ubicacion: '',
         id_sucursal: id_sucursal
     });
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({
             ...prev,
@@ -42,7 +44,12 @@ export const CreateUbicacionModal = ({
         try {
             await ubicacionService.createUbicacion(formData);
             onUbicacionCreated();
-            setFormData({ ...formData, nombre: '' });
+            setFormData({
+                nombre: '',
+                codigo_ubicacion: '',
+                tipo_ubicacion: '',
+                id_sucursal: id_sucursal
+            });
             onClose();
         } catch (error) {
             console.error('Error al crear ubicación:', error);
@@ -80,6 +87,43 @@ export const CreateUbicacionModal = ({
                             className={styles.input}
                             placeholder="Ej: Almacén A, Estante 1, etc."
                         />
+                    </div>
+
+                    <div className={styles.formGroup}>
+                        <label className={styles.label} htmlFor="codigo_ubicacion">
+                            Código de Ubicación
+                        </label>
+                        <input
+                            id="codigo_ubicacion"
+                            name="codigo_ubicacion"
+                            type="text"
+                            required
+                            value={formData.codigo_ubicacion}
+                            onChange={handleChange}
+                            className={styles.input}
+                            placeholder="Ej: EST-01, ALM-A, etc."
+                        />
+                    </div>
+
+                    <div className={styles.formGroup}>
+                        <label className={styles.label} htmlFor="tipo_ubicacion">
+                            Tipo de Ubicación
+                        </label>
+                        <select
+                            id="tipo_ubicacion"
+                            name="tipo_ubicacion"
+                            required
+                            value={formData.tipo_ubicacion}
+                            onChange={handleChange}
+                            className={styles.input}
+                        >
+                            <option value="">Seleccione un tipo</option>
+                            <option value="ESTANTERIA">Estantería</option>
+                            <option value="REFRIGERADO">Refrigerado</option>
+                            <option value="SECO">Seco</option>
+                            <option value="LIQUIDOS">Líquidos</option>
+                            <option value="OTROS">Otros</option>
+                        </select>
                     </div>
 
                     {error && <p className={styles.errorText}>{error}</p>}

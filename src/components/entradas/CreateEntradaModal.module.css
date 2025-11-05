@@ -13,14 +13,28 @@
 
 .modalContent {
     background: white;
-    padding: 20px;
+    padding: 32px;
     border-radius: 8px;
     width: 90%;
-    max-width: 360px; /* Ajustado para que coincida con el contenido interno (300px + padding) */
+    max-width: 75rem;
     max-height: 90vh;
     overflow-y: auto;
     position: relative;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.formGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .formGrid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
 }
 
 .smallModal {
@@ -38,7 +52,6 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
-    max-width: 450px;
     width: 100%;
 }
 
@@ -60,7 +73,6 @@
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 14px;
-    max-width: 300px;
     width: 100%;
 }
 
@@ -70,7 +82,6 @@
     font-family: inherit;
     line-height: 1.5;
     width: 100%;
-    max-width: 300px;
     padding: 8px 12px;
     border: 1px solid #ddd;
     border-radius: 4px;
@@ -135,7 +146,6 @@
     padding: 1rem;
     background-color: #F9FAFB;
     border-radius: 0.5rem;
-    max-width: 300px;
     width: 100%;
 }
 
@@ -212,8 +222,8 @@
 .productosTable {
     margin-top: 20px;
     overflow-x: auto;
-    max-width: 450px;
     width: 100%;
+    grid-column: 1 / -1; /* Hace que ocupe todo el ancho del grid */
 }
 
 .table {
@@ -221,32 +231,72 @@
     border-collapse: collapse;
     margin-bottom: 20px;
     font-size: 0.9rem;
+    background-color: white;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
 }
 
 .table th,
 .table td {
-    padding: 12px;
+    padding: 16px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #E5E7EB;
 }
 
 .table th {
-    background-color: #f5f5f5;
+    background-color: #F9FAFB;
     font-weight: 600;
+    color: #374151;
+}
+
+.table td {
+    vertical-align: middle;
 }
 
 .removeButton {
     background-color: #dc3545;
     color: white;
     border: none;
-    padding: 6px 12px;
+    padding: 8px 16px;
     border-radius: 4px;
     cursor: pointer;
     font-size: 14px;
+    transition: all 0.2s ease;
+    white-space: nowrap;
 }
 
 .removeButton:hover {
     background-color: #c82333;
+    transform: translateY(-1px);
+}
+
+@media (min-width: 769px) {
+    .productosTable {
+        background-color: #F9FAFB;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-top: 2rem;
+    }
+
+    .table th {
+        font-size: 1rem;
+        padding: 1rem;
+    }
+
+    .table td {
+        padding: 1rem;
+    }
+
+    .table input[type="number"],
+    .table select {
+        padding: 0.5rem;
+        font-size: 1rem;
+    }
+
+    .removeButton {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
 }
 
 .errorText {
@@ -298,10 +348,9 @@
 /* Ajustar el contenedor de botones */
 .buttonGroup {
     display: flex;
-    flex-direction: column;
     gap: 12px;
     margin-top: 20px;
-    max-width: 300px;
+    justify-content: flex-end;
     width: 100%;
 }
 
@@ -309,12 +358,21 @@
     width: 100%;
 }
 
-.input[type="number"] {
-    width: 100px;
+.table input[type="number"] {
+    width: 120px;
+    padding: 8px;
+    border: 1px solid #E5E7EB;
+    border-radius: 4px;
+    font-size: 0.9rem;
 }
 
-.select {
-    min-width: 150px;
+.table select {
+    min-width: 200px;
+    padding: 8px;
+    border: 1px solid #E5E7EB;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    background-color: white;
 }
 
 .ubicacionColumn {
@@ -383,8 +441,8 @@
 
 .searchSection {
     margin-top: 1rem;
-    max-width: 400px;
     width: 100%;
+    grid-column: 1 / -1; /* Hace que ocupe todo el ancho del grid */
 }
 
 .searchInputContainer {
@@ -399,7 +457,6 @@
     border: 1px solid #E5E7EB;
     border-radius: 6px;
     font-size: 0.875rem;
-    max-width: 300px;
 }
 
 .searchButton {
@@ -411,7 +468,7 @@
     font-weight: 500;
     cursor: pointer;
     transition: background-color 0.2s;
-    max-width: 120px; /* Ancho máximo más compacto */
+    min-width: 120px;
 }
 
 .searchButton:hover {
@@ -425,11 +482,13 @@
 
 .searchResults {
     margin-top: 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    max-height: 300px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 1rem;
+    max-height: 400px;
     overflow-y: auto;
+    width: 100%;
+    padding: 0.5rem;
 }
 
 .productCard {
@@ -440,6 +499,12 @@
     border: 1px solid #E5E7EB;
     border-radius: 6px;
     background: white;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.productCard:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .productInfo {
@@ -481,12 +546,23 @@
     .modalContent {
         padding: 1rem;
         width: 90%;
-        height: 90%;
-        max-height: 90%;
+        height: auto;
+        max-width: 360px; /* Ancho máximo reducido para móvil */
+        max-height: 90vh;
         border-radius: 8px;
         display: flex;
         flex-direction: column;
         margin: auto;
+    }
+
+    .formGrid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .searchResults {
+        grid-template-columns: 1fr;
+        max-height: 300px;
     }
 
     .button {
