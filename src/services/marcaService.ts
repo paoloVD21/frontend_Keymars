@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { Marca } from '../types/marca';
 
-const BASE_URL = 'http://localhost:8000/api/brands';
+const BASE_URL = `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/brands`;
 
 const getAuthHeaders = () => {
     const token = localStorage.getItem('token');

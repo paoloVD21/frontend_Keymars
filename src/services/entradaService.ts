@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { Entrada, EntradaCreate, EntradaResponse, HistorialResponse, MovimientoHistorial } from '../types/entrada';
 
-const BASE_URL = "http://localhost:8000/api/movements";
+const BASE_URL = `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/movements`;
 
 const getAuthHeaders = () => {
     const token = localStorage.getItem('token');

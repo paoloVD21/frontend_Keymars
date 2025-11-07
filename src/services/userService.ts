@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { User, UserCreate, UserUpdate, UserListResponse, GetUsersParams } from '../types/user';
 
-const BASE_URL = 'http://localhost:8000/api/users';
+const BASE_URL = `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/users`;
 
 const getAuthHeaders = () => {
     const token = localStorage.getItem('token');

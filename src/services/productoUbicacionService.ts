@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { ProductoUbicacionResponse } from '../types/productoUbicacion';
 
-const BASE_URL = 'http://localhost:8000/api/products/ubicaciones';
+const BASE_URL = `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/products/ubicaciones`;
 
 const getAuthHeaders = () => {
     const token = localStorage.getItem('token');

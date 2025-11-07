@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { DashboardStats, DashboardMovimientos, DashboardDistribucion } from '../types/dashboard';
 
-const BASE_URL = 'http://localhost:8000/api/dashboard';
+const BASE_URL = `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/dashboard`;
 
 const getAuthHeaders = () => {
     const token = localStorage.getItem('token');

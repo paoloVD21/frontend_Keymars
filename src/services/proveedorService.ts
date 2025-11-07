@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { Proveedor, ProveedorCreate, ProveedorUpdate, ProveedorListResponse, GetProveedoresParams } from '../types/proveedor';
 
-const BASE_URL = 'http://localhost:8000/api/suppliers';
+const BASE_URL = `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/suppliers`;
 
 const getAuthHeaders = () => {
     const token = localStorage.getItem('token');

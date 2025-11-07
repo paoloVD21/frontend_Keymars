@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { Categoria } from '../types/categoria';
 
-const BASE_URL = 'http://localhost:8000/api/categories';
+const BASE_URL = `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/categories`;
 
 const getAuthHeaders = () => {
     const token = localStorage.getItem('token');
