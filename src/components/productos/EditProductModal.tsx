@@ -162,7 +162,7 @@ export const EditProductModal = ({
         label: string,
         name: string,
         options: { id: string | number; nombre: string }[] | undefined,
-        value: string | number,
+        value: string | number | null,
         placeholder: string
     ) => (
         <div className={styles.formGroup}>

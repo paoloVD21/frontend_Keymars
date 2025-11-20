@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import styles from './CreateProductModal.module.css';
 import { productoService } from '../../services/productoService';
 import { categoriaService } from '../../services/categoriaService';
@@ -65,27 +65,34 @@ export const CreateProductModal = ({
         return 'marcas';
     };
 
-    const validateResponseData = (res: any, type: string): boolean => {
+    const validateResponseData = useCallback((res: unknown, type: string): boolean => {
         const key = getResponseKey(type);
-        if (res?.[key] && Array.isArray(res[key])) {
-            return true;
+        if (res && typeof res === 'object' && key in res) {
+            const data = res as Record<string, unknown>;
+            if (Array.isArray(data[key])) {
+                return true;
+            }
         }
         throw new Error(`No se pudieron cargar los ${type} correctamente`);
-    };
+    }, []);
 
-    const handleDataResponse = (
-        proveedoresRes: any,
-        categoriasRes: any,
-        marcasRes: any
+    const handleDataResponse = useCallback((
+        proveedoresRes: unknown,
+        categoriasRes: unknown,
+        marcasRes: unknown
     ): void => {
         validateResponseData(proveedoresRes, 'proveedores');
         validateResponseData(categoriasRes, 'categorias');
         validateResponseData(marcasRes, 'marcas');
 
-        setProveedores(proveedoresRes.proveedores);
-        setCategorias(categoriasRes.categorias);
-        setMarcas(marcasRes.marcas);
-    };
+        const proveedoresData = proveedoresRes as { proveedores: ProveedorSelect[] };
+        const categoriasData = categoriasRes as { categorias: Categoria[] };
+        const marcasData = marcasRes as { marcas: Marca[] };
+
+        setProveedores(proveedoresData.proveedores);
+        setCategorias(categoriasData.categorias);
+        setMarcas(marcasData.marcas);
+    }, [validateResponseData]);
 
     const handleLoadError = (error: unknown): void => {
         console.error('Error al cargar datos:', error);
@@ -123,7 +130,7 @@ export const CreateProductModal = ({
         };
 
         loadData();
-    }, [isOpen, shouldRefreshData]);
+    }, [isOpen, shouldRefreshData, handleDataResponse]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -207,7 +214,7 @@ export const CreateProductModal = ({
         label: string,
         name: string,
         options: { id: string | number; nombre: string }[] | undefined,
-        value: string | number,
+        value: string | number | null,
         placeholder: string,
         emptyMessage?: string
     ) => (
