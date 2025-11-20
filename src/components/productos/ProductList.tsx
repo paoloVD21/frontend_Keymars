@@ -80,6 +80,13 @@ export const ProductList = ({ onRefresh }: ProductListProps) => {
         setCurrentPage(1);
     }, [searchTerm]);
 
+    const getButtonText = (isLoading: boolean, isActive: boolean): string => {
+        if (isLoading) {
+            return 'Procesando...';
+        }
+        return isActive ? 'Desactivar' : 'Activar';
+    };
+
     const renderTableContent = () => {
         if (loading) {
             return (
@@ -167,9 +174,7 @@ export const ProductList = ({ onRefresh }: ProductListProps) => {
                             disabled={loadingProducto === producto.id_producto}
                             title={producto.activo ? 'Desactivar producto' : 'Activar producto'}
                         >
-                            {loadingProducto === producto.id_producto 
-                                ? 'Procesando...' 
-                                : (producto.activo ? 'Desactivar' : 'Activar')}
+                            {getButtonText(loadingProducto === producto.id_producto, producto.activo)}
                         </button>
                     </div>
                 </td>

@@ -65,6 +65,13 @@ export const UserList = ({ onRefresh }: UserListProps) => {
         loadUsers();
     }, [loadUsers]);
 
+    const getButtonText = (isLoading: boolean, isActive: boolean): string => {
+        if (isLoading) {
+            return 'Procesando...';
+        }
+        return isActive ? 'Desactivar' : 'Activar';
+    };
+
     const renderTableContent = () => {
         if (loading) {
             return (
@@ -145,8 +152,7 @@ export const UserList = ({ onRefresh }: UserListProps) => {
                             className={`${styles.statusButton} ${user.activo ? styles.deactivateButton : styles.activateButton}`}
                             disabled={loadingUserId === user.id_usuario}
                         >
-                            {loadingUserId === user.id_usuario ? 'Procesando...' : 
-                             user.activo ? 'Desactivar' : 'Activar'}
+                            {getButtonText(loadingUserId === user.id_usuario, user.activo)}
                         </button>
                     </div>
                 </td>

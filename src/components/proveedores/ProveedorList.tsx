@@ -78,6 +78,13 @@ export const ProveedorList = ({ onRefresh, userRole }: ProveedorListProps) => {
         loadProveedores({ search: searchTerm });
     };
 
+    const getButtonText = (isLoading: boolean, isActive: boolean): string => {
+        if (isLoading) {
+            return 'Procesando...';
+        }
+        return isActive ? 'Desactivar' : 'Activar';
+    };
+
     const renderTableContent = () => {
         if (loading) {
             return (
@@ -151,11 +158,7 @@ export const ProveedorList = ({ onRefresh, userRole }: ProveedorListProps) => {
                                 disabled={loadingProveedor === proveedor.id_proveedor}
                                 title={proveedor.activo ? 'Desactivar proveedor' : 'Activar proveedor'}
                             >
-                                {loadingProveedor === proveedor.id_proveedor 
-                                    ? 'Procesando...' 
-                                    : proveedor.activo 
-                                        ? 'Desactivar' 
-                                        : 'Activar'}
+                                {getButtonText(loadingProveedor === proveedor.id_proveedor, proveedor.activo)}
                             </button>
                         </div>
                     </td>
