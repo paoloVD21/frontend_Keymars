@@ -14,54 +14,66 @@ const getAuthHeaders = () => {
     };
 };
 
+const extractUserIdFromToken = (): number => {
+    const token = localStorage.getItem('token');
+    if (!token) throw new TypeError('No token found');
+    
+    const parts = token.split('.');
+    if (parts.length !== 3) {
+        throw new TypeError('Token inválido');
+    }
+
+    try {
+        const payload = JSON.parse(atob(parts[1]));
+        
+        if (!payload.sub) {
+            throw new TypeError('ID de usuario no encontrado en el token');
+        }
+        
+        const userId = Number.parseInt(payload.sub);
+        if (Number.isNaN(userId)) {
+            throw new TypeError('ID de usuario inválido en el token');
+        }
+        
+        return userId;
+    } catch (error) {
+        if (error instanceof TypeError) {
+            throw error;
+        }
+        throw new TypeError('Error al obtener el ID de usuario del token');
+    }
+};
+
+const handleApiError = (error: unknown, defaultMessage: string): never => {
+    if (axios.isAxiosError(error) && error.response?.data) {
+        throw new Error(error.response.data.detail || defaultMessage);
+    }
+    
+    if (error instanceof Error) {
+        throw error;
+    }
+    
+    throw new Error(defaultMessage);
+};
+
 export const entradaService = {
     getEntradas: async (fecha?: string): Promise<{ entradas: Entrada[] }> => {
         try {
             const url = fecha ? `${BASE_URL}/historial/${fecha}` : `${BASE_URL}/entradas`;
-            const { data } = await axios.get<{ entradas: Entrada[] }>(
-                url,
-                {
-                    headers: getAuthHeaders()
-                }
-            );
+            const { data } = await axios.get<{ entradas: Entrada[] }>(url, {
+                headers: getAuthHeaders()
+            });
             
-            return {
-                entradas: data.entradas || []
-            };
+            return { entradas: data.entradas || [] };
         } catch (error) {
-            if (axios.isAxiosError(error)) {
-                throw new Error(error.response?.data?.detail || `Error al obtener entradas${fecha ? ' para la fecha ' + fecha : ''}`);
-            }
-            throw error;
+            return handleApiError(error, `Error al obtener entradas${fecha ? ' para la fecha ' + fecha : ''}`);
         }
     },
 
     registrarIngreso: async (entrada: EntradaCreate): Promise<EntradaResponse> => {
         try {
-            const token = localStorage.getItem('token');
-            if (!token) throw new Error('No token found');
+            const userId = extractUserIdFromToken();
             
-            // Extraer el ID del usuario del token
-            const parts = token.split('.');
-            if (parts.length !== 3) {
-                throw new TypeError('Token inválido');
-            }
-
-            let userId: number;
-            try {
-                const payload = JSON.parse(atob(parts[1]));
-                
-                if (!payload.sub) {
-                    throw new TypeError('ID de usuario no encontrado en el token');
-                }
-                userId = Number.parseInt(payload.sub);
-                if (Number.isNaN(userId)) {
-                    throw new TypeError('ID de usuario inválido en el token');
-                }
-            } catch {
-                throw new TypeError('Error al obtener el ID de usuario del token');
-            }
-
             const datosAEnviar = {
                 ...entrada,
                 id_usuario: userId
@@ -70,19 +82,12 @@ export const entradaService = {
             const { data } = await axios.post<EntradaResponse>(
                 `${BASE_URL}/registrarIngreso`,
                 datosAEnviar,
-                {
-                    headers: getAuthHeaders()
-                }
+                { headers: getAuthHeaders() }
             );
+            
             return data;
         } catch (error) {
-            if (axios.isAxiosError(error) && error.response?.data) {
-                throw new Error(error.response.data.detail || 'Error al crear entrada');
-            } else if (error instanceof Error) {
-                throw error;
-            } else {
-                throw new Error('Error desconocido al crear entrada');
-            }
+            return handleApiError(error, 'Error al registrar ingreso');
         }
     },
 
@@ -91,16 +96,11 @@ export const entradaService = {
             const { data } = await axios.post<EntradaResponse>(
                 `${BASE_URL}/entradas`,
                 entrada,
-                {
-                    headers: getAuthHeaders()
-                }
+                { headers: getAuthHeaders() }
             );
             return data;
         } catch (error) {
-            if (axios.isAxiosError(error) && error.response?.data) {
-                throw new Error(error.response.data.detail || 'Error al crear entrada');
-            }
-            throw new Error('Error al crear entrada');
+            return handleApiError(error, 'Error al crear entrada');
         }
     },
 
@@ -108,16 +108,11 @@ export const entradaService = {
         try {
             const { data } = await axios.get<EntradaResponse>(
                 `${BASE_URL}/entradas/${id}`,
-                {
-                    headers: getAuthHeaders()
-                }
+                { headers: getAuthHeaders() }
             );
             return data;
         } catch (error) {
-            if (axios.isAxiosError(error) && error.response) {
-                throw new Error(error.response.data.detail || 'Error al obtener entrada');
-            }
-            throw error;
+            return handleApiError(error, 'Error al obtener entrada');
         }
     },
 
@@ -125,24 +120,16 @@ export const entradaService = {
         try {
             const { data } = await axios.get(
                 `${BASE_URL}/historial/entradas/${fecha}`,
-                {
-                    headers: getAuthHeaders()
-                }
+                { headers: getAuthHeaders() }
             );
 
-            // Formatear la respuesta según su estructura
             if (Array.isArray(data)) {
-                return {
-                    movimientos: data
-                };
+                return { movimientos: data };
             }
             return data;
         } catch (error) {
             console.error('Error al obtener historial de entradas:', error);
-            if (axios.isAxiosError(error) && error.response) {
-                throw new Error(error.response.data.detail || 'Error al obtener el historial de entradas');
-            }
-            throw error;
+            return handleApiError(error, 'Error al obtener el historial de entradas');
         }
     },
 
@@ -150,16 +137,11 @@ export const entradaService = {
         try {
             const { data } = await axios.get(
                 `${BASE_URL}/${movimientoId}`,
-                {
-                    headers: getAuthHeaders()
-                }
+                { headers: getAuthHeaders() }
             );
             return data;
         } catch (error) {
-            if (axios.isAxiosError(error) && error.response) {
-                throw new Error(error.response.data.detail || 'Error al obtener los detalles del movimiento');
-            }
-            throw error;
+            return handleApiError(error, 'Error al obtener los detalles del movimiento');
         }
     }
 };

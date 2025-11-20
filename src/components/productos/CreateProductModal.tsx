@@ -202,6 +202,46 @@ export const CreateProductModal = ({
         }
     };
 
+    const renderSelectField = (
+        id: string,
+        label: string,
+        name: string,
+        options: { id: string | number; nombre: string }[] | undefined,
+        value: string | number,
+        placeholder: string,
+        emptyMessage?: string
+    ) => (
+        <div className={styles.formGroup}>
+            <label className={styles.label} htmlFor={id}>
+                {label}
+            </label>
+            <select
+                id={id}
+                name={name}
+                required
+                value={value || ''}
+                onChange={handleChange}
+                className={styles.select}
+                disabled={loading}
+            >
+                <option value="">
+                    {loading ? `Cargando ${placeholder}...` : `Seleccione ${placeholder}`}
+                </option>
+                {options && options.length > 0 ? (
+                    options.map(option => (
+                        <option key={option.id} value={option.id}>
+                            {option.nombre}
+                        </option>
+                    ))
+                ) : (
+                    <option value="" disabled>
+                        {emptyMessage || `No hay ${placeholder} disponibles`}
+                    </option>
+                )}
+            </select>
+        </div>
+    );
+
     if (!isOpen) return null;
 
     return (
@@ -310,86 +350,33 @@ export const CreateProductModal = ({
                         </select>
                     </div>
 
-                    <div className={styles.formGroup}>
-                        <label className={styles.label} htmlFor="id_categoria">
-                            Categoría
-                        </label>
-                        <select
-                            id="id_categoria"
-                            name="id_categoria"
-                            required
-                            value={formData.id_categoria || ''}
-                            onChange={handleChange}
-                            className={styles.select}
-                            disabled={loading}
-                        >
-                            <option value="">
-                                {loading ? 'Cargando categorías...' : 'Seleccione una categoría'}
-                            </option>
-                            {categorias?.map(categoria => (
-                                <option key={categoria.id_categoria} value={categoria.id_categoria}>
-                                    {categoria.nombre}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
+                    {renderSelectField(
+                        'id_categoria',
+                        'Categoría',
+                        'id_categoria',
+                        categorias?.map(c => ({ id: c.id_categoria, nombre: c.nombre })),
+                        formData.id_categoria,
+                        'una categoría'
+                    )}
 
-                    <div className={styles.formGroup}>
-                        <label className={styles.label} htmlFor="id_marca">
-                            Marca
-                        </label>
-                        <select
-                            id="id_marca"
-                            name="id_marca"
-                            required
-                            value={formData.id_marca || ''}
-                            onChange={handleChange}
-                            className={styles.select}
-                            disabled={loading}
-                        >
-                            <option value="">
-                                {loading ? 'Cargando marcas...' : 'Seleccione una marca'}
-                            </option>
-                            {marcas?.map(marca => (
-                                <option key={marca.id_marca} value={marca.id_marca}>
-                                    {marca.nombre}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
+                    {renderSelectField(
+                        'id_marca',
+                        'Marca',
+                        'id_marca',
+                        marcas?.map(m => ({ id: m.id_marca, nombre: m.nombre })),
+                        formData.id_marca,
+                        'una marca'
+                    )}
 
-                    <div className={styles.formGroup}>
-                        <label className={styles.label} htmlFor="id_proveedor">
-                            Proveedor
-                        </label>
-                        <select
-                            id="id_proveedor"
-                            name="id_proveedor"
-                            required
-                            value={formData.id_proveedor || ''}
-                            onChange={handleChange}
-                            className={styles.select}
-                            disabled={loading}
-                        >
-                            <option value="">
-                                {loading ? 'Cargando proveedores...' : 'Seleccione un proveedor'}
-                            </option>
-                            {proveedores && proveedores.length > 0 ? (
-                                proveedores.map(proveedor => (
-                                    <option 
-                                        key={proveedor.id_proveedor} 
-                                        value={proveedor.id_proveedor}
-                                    >
-                                        {proveedor.nombre || 'Proveedor sin nombre'}
-                                    </option>
-                                ))
-                            ) : (
-                                <option value="" disabled>
-                                    No hay proveedores disponibles
-                                </option>
-                            )}
-                        </select>
-                    </div>
+                    {renderSelectField(
+                        'id_proveedor',
+                        'Proveedor',
+                        'id_proveedor',
+                        proveedores?.map(p => ({ id: p.id_proveedor, nombre: p.nombre || 'Proveedor sin nombre' })),
+                        formData.id_proveedor,
+                        'un proveedor',
+                        'No hay proveedores disponibles'
+                    )}
 
                     {error && <p className={styles.errorText}>{error}</p>}
 

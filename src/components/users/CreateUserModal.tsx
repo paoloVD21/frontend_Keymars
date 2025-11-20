@@ -4,6 +4,8 @@ import type { Sucursal } from '../../types/sucursal';
 import { sucursalService } from '../../services/sucursalService';
 import { userService } from '../../services/userService';
 
+const DEFAULT_ROL_ID = 2; // Rol asistente
+
 interface CreateUserModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -18,7 +20,7 @@ export const CreateUserModal = ({ isOpen, onClose, onUserCreated }: CreateUserMo
         password: '',
         id_sucursal: '',
         activo: true,
-        id_rol: '2' // Rol asistente (ID 2)
+        id_rol: String(DEFAULT_ROL_ID)
     });
 
     const [sucursales, setSucursales] = useState<Sucursal[]>([]);
@@ -76,7 +78,7 @@ export const CreateUserModal = ({ isOpen, onClose, onUserCreated }: CreateUserMo
             email: '',
             password: '',
             id_sucursal: '',
-            id_rol: '2', // Rol asistente (ID 2)
+            id_rol: String(DEFAULT_ROL_ID),
             activo: true
         });
     };
@@ -90,8 +92,8 @@ export const CreateUserModal = ({ isOpen, onClose, onUserCreated }: CreateUserMo
             await userService.createUser({
                 ...formData,
                 id_sucursal: Number.parseInt(formData.id_sucursal),
-                id_rol: 2, // Rol asistente (ID 2)
-                activo: formData.activo // Asegurar que se envía el estado activo
+                id_rol: DEFAULT_ROL_ID,
+                activo: formData.activo
             });
             onUserCreated();
             resetForm(); // Reseteamos el formulario después de crear exitosamente

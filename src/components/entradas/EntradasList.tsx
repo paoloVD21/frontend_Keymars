@@ -35,14 +35,6 @@ export const EntradasList: React.FC = () => {
         setSelectedDate(event.target.value);
     };
 
-    const handleOpenCreateModal = () => {
-        setIsCreateModalOpen(true);
-    };
-
-    const handleCloseCreateModal = () => {
-        setIsCreateModalOpen(false);
-    };
-
     const handleEntradaCreated = () => {
         loadEntradas();
     };
@@ -77,7 +69,7 @@ export const EntradasList: React.FC = () => {
                         />
                     </div>
                     <button
-                        onClick={handleOpenCreateModal}
+                        onClick={() => setIsCreateModalOpen(true)}
                         className={styles.createButton}
                         disabled={loading}
                     >
@@ -137,7 +129,7 @@ export const EntradasList: React.FC = () => {
 
             <CreateEntradaModal
                 isOpen={isCreateModalOpen}
-                onClose={handleCloseCreateModal}
+                onClose={() => setIsCreateModalOpen(false)}
                 onSuccess={handleEntradaCreated}
             />
 

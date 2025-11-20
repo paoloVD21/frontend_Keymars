@@ -35,14 +35,6 @@ export const SalidasList: React.FC = () => {
         setSelectedDate(event.target.value);
     };
 
-    const handleOpenCreateModal = () => {
-        setIsCreateModalOpen(true);
-    };
-
-    const handleCloseCreateModal = () => {
-        setIsCreateModalOpen(false);
-    };
-
     const handleSalidaCreated = () => {
         loadSalidas();
     };
@@ -77,7 +69,7 @@ export const SalidasList: React.FC = () => {
                         />
                     </div>
                     <button
-                        onClick={handleOpenCreateModal}
+                        onClick={() => setIsCreateModalOpen(true)}
                         className={styles.createButton}
                         disabled={loading}
                     >
@@ -135,7 +127,7 @@ export const SalidasList: React.FC = () => {
 
             <CreateSalidaModal
                 isOpen={isCreateModalOpen}
-                onClose={handleCloseCreateModal}
+                onClose={() => setIsCreateModalOpen(false)}
                 onSuccess={handleSalidaCreated}
             />
 
