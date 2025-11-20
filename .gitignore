@@ -14,7 +14,6 @@ dist-ssr
 basededatos.sql
 .scannerwork
 ./__tests__
-__tests__
 
 # Editor directories and files
 .vscode
