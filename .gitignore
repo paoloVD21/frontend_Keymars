@@ -13,7 +13,7 @@ dist-ssr
 *.local
 basededatos.sql
 .scannerwork
-./__tests__
+src/__tests__
 
 # Editor directories and files
 .vscode
