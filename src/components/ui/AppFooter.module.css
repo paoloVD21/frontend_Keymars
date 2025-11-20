@@ -1,7 +1,7 @@
 .footer {
   padding: 0.01rem;
   position: fixed;
-  background-color: #f8f9fa;
+  background-color: #195ab5;
   bottom: 0;
   border-top: 1px solid #dee2e6;
   left: 0;
@@ -9,10 +9,8 @@
   right: 0;
   font-size: 0.875rem;
   width: 100%;
-  color: #6c757d;
-  background-color: #195ab5;
+  color: white;
   margin-top: auto;
-  width: 100%;
 }
 .footerContent {
   display: flex;
@@ -21,11 +19,8 @@
   justify-content: center;
   margin: 0 auto;
   text-align: center;
-  display: flex;
   font-size: 0.875rem;
-  justify-content: center;
   color: white;
-  align-items: center;
   width: 100%;
   gap: 0.5rem;
   padding: 0.5rem 0;

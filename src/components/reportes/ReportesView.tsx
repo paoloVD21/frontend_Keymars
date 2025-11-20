@@ -151,13 +151,14 @@ export const ReportesView = () => {
                                 </div>
                             ) : (
                                 sucursales.map(sucursal => (
-                                    <div
+                                    <button
                                         key={sucursal.id_sucursal}
                                         className={`${styles.sucursalCard} ${filtros.sucursal === sucursal.id_sucursal ? styles.selected : ''}`}
                                         onClick={() => setFiltros(prev => ({ ...prev, sucursal: sucursal.id_sucursal }))}
+                                        type="button"
                                     >
                                         <h4>{sucursal.nombre}</h4>
-                                    </div>
+                                    </button>
                                 ))
                             )}
                         </div>

@@ -440,10 +440,11 @@ export const CreateEntradaModal: React.FC<CreateEntradaModalProps> = ({
                                 <h3 className={styles.subtitle}>Seleccionar Sucursal</h3>
                                 <div className={styles.sucursalList}>
                                     {sucursales.map(sucursal => (
-                                        <div
+                                        <button
                                             key={sucursal.id_sucursal}
                                             className={`${styles.sucursalCard} ${selectedSucursal?.id_sucursal === sucursal.id_sucursal ? styles.selected : ''}`}
                                             onClick={() => handleSucursalClick(sucursal.id_sucursal)}
+                                            type="button"
                                         >
                                             <h4>{sucursal.nombre}</h4>
                                             {selectedSucursal?.id_sucursal === sucursal.id_sucursal && (
@@ -451,7 +452,7 @@ export const CreateEntradaModal: React.FC<CreateEntradaModalProps> = ({
                                                     Sucursal Seleccionada ✓
                                                 </div>
                                             )}
-                                        </div>
+                                        </button>
                                     ))}
                                 </div>
                                 {selectedSucursal && (
@@ -483,8 +484,9 @@ export const CreateEntradaModal: React.FC<CreateEntradaModalProps> = ({
                                         <div className={styles.newUbicacionForm}>
                                             <div className={styles.formInputs}>
                                                 <div className={styles.formGroup}>
-                                                    <label className={styles.label}>Nombre</label>
+                                                    <label htmlFor="ubicacion-nombre" className={styles.label}>Nombre</label>
                                                     <input
+                                                        id="ubicacion-nombre"
                                                         type="text"
                                                         value={newUbicacionData.nombre}
                                                         onChange={(e) => setNewUbicacionData((prev: CreateUbicacion) => ({
@@ -496,8 +498,9 @@ export const CreateEntradaModal: React.FC<CreateEntradaModalProps> = ({
                                                     />
                                                 </div>
                                                 <div className={styles.formGroup}>
-                                                    <label className={styles.label}>Código</label>
+                                                    <label htmlFor="ubicacion-codigo" className={styles.label}>Código</label>
                                                     <input
+                                                        id="ubicacion-codigo"
                                                         type="text"
                                                         value={newUbicacionData.codigo_ubicacion}
                                                         onChange={(e) => setNewUbicacionData((prev: CreateUbicacion) => ({
@@ -509,8 +512,9 @@ export const CreateEntradaModal: React.FC<CreateEntradaModalProps> = ({
                                                     />
                                                 </div>
                                                 <div className={styles.formGroup}>
-                                                    <label className={styles.label}>Tipo de Ubicación</label>
+                                                    <label htmlFor="ubicacion-tipo" className={styles.label}>Tipo de Ubicación</label>
                                                     <select
+                                                        id="ubicacion-tipo"
                                                         value={newUbicacionData.tipo_ubicacion}
                                                         onChange={(e) => setNewUbicacionData((prev: CreateUbicacion) => ({
                                                             ...prev,

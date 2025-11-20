@@ -102,9 +102,9 @@ export const EditProductModal = ({
         let parsedValue: string | number | null = value;
 
         if (['precio', 'id_categoria', 'id_proveedor', 'stock_minimo'].includes(name)) {
-            parsedValue = value === '' ? 0 : parseFloat(value);
+            parsedValue = value === '' ? 0 : Number.parseFloat(value);
         } else if (name === 'id_marca') {
-            parsedValue = value === '' ? null : parseFloat(value);
+            parsedValue = value === '' ? null : Number.parseFloat(value);
         } else if (name === 'descripcion') {
             parsedValue = value === '' ? null : value;
         }

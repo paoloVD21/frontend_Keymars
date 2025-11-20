@@ -156,7 +156,7 @@ export const proveedorService = {
                     id_proveedor: Number(p.id_proveedor),
                     nombre: String(p.nombre).trim()
                 }))
-                .filter(p => !isNaN(p.id_proveedor) && p.nombre);
+                .filter(p => !Number.isNaN(p.id_proveedor) && p.nombre);
             
             return {
                 proveedores,

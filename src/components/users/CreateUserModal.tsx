@@ -89,7 +89,7 @@ export const CreateUserModal = ({ isOpen, onClose, onUserCreated }: CreateUserMo
         try {
             await userService.createUser({
                 ...formData,
-                id_sucursal: parseInt(formData.id_sucursal),
+                id_sucursal: Number.parseInt(formData.id_sucursal),
                 id_rol: 2, // Rol asistente (ID 2)
                 activo: formData.activo // Asegurar que se envía el estado activo
             });

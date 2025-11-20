@@ -37,9 +37,9 @@ export const productoService = {
       const productosOrdenados = data.productos
         .map((producto: Producto): Producto => ({
           ...producto,
-          stock_actual: parseFloat(producto.stock_actual as unknown as string),
-          stock_minimo: parseFloat(producto.stock_minimo as unknown as string),
-          precio: parseFloat(producto.precio as unknown as string)
+          stock_actual: Number.parseFloat(producto.stock_actual as unknown as string),
+          stock_minimo: Number.parseFloat(producto.stock_minimo as unknown as string),
+          precio: Number.parseFloat(producto.precio as unknown as string)
         }))
         .sort((a: Producto, b: Producto) => a.id_producto - b.id_producto);
 

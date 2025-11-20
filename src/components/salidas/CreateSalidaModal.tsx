@@ -394,10 +394,11 @@ export const CreateSalidaModal: React.FC<CreateSalidaModalProps> = ({
                             <h3 className={styles.subtitle}>Seleccionar Sucursal</h3>
                             <div className={styles.sucursalList}>
                                 {state.sucursales.map((sucursal: Sucursal) => (
-                                    <div
+                                    <button
                                         key={sucursal.id_sucursal}
                                         className={`${styles.sucursalCard} ${state.formData.id_sucursal === sucursal.id_sucursal ? styles.selected : ''}`}
                                         onClick={() => handleSucursalChange(sucursal.id_sucursal)}
+                                        type="button"
                                     >
                                         <h4>{sucursal.nombre}</h4>
                                         {state.formData.id_sucursal === sucursal.id_sucursal && (
@@ -405,7 +406,7 @@ export const CreateSalidaModal: React.FC<CreateSalidaModalProps> = ({
                                                 Sucursal Seleccionada ✓
                                             </div>
                                         )}
-                                    </div>
+                                    </button>
                                 ))}
                             </div>
                             {state.formData.id_sucursal && (

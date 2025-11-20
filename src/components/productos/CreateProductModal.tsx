@@ -46,50 +46,67 @@ export const CreateProductModal = ({
     const [proveedores, setProveedores] = useState<ProveedorSelect[]>([]);
     // Se eliminaron los estados de sucursales y ubicaciones
 
+    const validateToken = (): boolean => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            setError('No hay sesión activa. Por favor, inicia sesión nuevamente.');
+            return false;
+        }
+        return true;
+    };
+
+    const validateResponseData = (res: any, type: string): boolean => {
+        const key = type === 'proveedores' ? 'proveedores' : type === 'categorias' ? 'categorias' : 'marcas';
+        if (res?.[key] && Array.isArray(res[key])) {
+            return true;
+        }
+        throw new Error(`No se pudieron cargar los ${type} correctamente`);
+    };
+
+    const handleDataResponse = (
+        proveedoresRes: any,
+        categoriasRes: any,
+        marcasRes: any
+    ): void => {
+        validateResponseData(proveedoresRes, 'proveedores');
+        validateResponseData(categoriasRes, 'categorias');
+        validateResponseData(marcasRes, 'marcas');
+
+        setProveedores(proveedoresRes.proveedores);
+        setCategorias(categoriasRes.categorias);
+        setMarcas(marcasRes.marcas);
+    };
+
+    const handleLoadError = (error: unknown): void => {
+        console.error('Error al cargar datos:', error);
+        const message = error instanceof Error 
+            ? error.message 
+            : 'Error al cargar los datos necesarios. Por favor, intenta de nuevo.';
+        setError(message);
+    };
+
     useEffect(() => {
         const loadData = async () => {
             if (!isOpen && !shouldRefreshData) {
                 return;
             }
             
+            if (!validateToken()) {
+                setLoading(false);
+                return;
+            }
+
             setLoading(true);
             try {
-                const token = localStorage.getItem('token');
-                if (!token) {
-                    setError('No hay sesión activa. Por favor, inicia sesión nuevamente.');
-                    return;
-                }
-                
                 const [proveedoresRes, categoriasRes, marcasRes] = await Promise.all([
                     proveedorService.getProveedoresSimple(),
                     categoriaService.getCategorias(),
                     marcaService.getMarcas()
                 ]);
                 
-                if (proveedoresRes?.proveedores && Array.isArray(proveedoresRes.proveedores)) {
-                    setProveedores(proveedoresRes.proveedores);
-                } else {
-                    throw new Error('No se pudieron cargar los proveedores correctamente');
-                }
-
-                if (categoriasRes?.categorias && Array.isArray(categoriasRes.categorias)) {
-                    setCategorias(categoriasRes.categorias);
-                } else {
-                    throw new Error('No se pudieron cargar las categorías correctamente');
-                }
-                
-                if (marcasRes?.marcas && Array.isArray(marcasRes.marcas)) {
-                    setMarcas(marcasRes.marcas);
-                } else {
-                    throw new Error('No se pudieron cargar las marcas correctamente');
-                }
+                handleDataResponse(proveedoresRes, categoriasRes, marcasRes);
             } catch (error) {
-                console.error('Error al cargar datos:', error);
-                if (error instanceof Error) {
-                    setError(error.message);
-                } else {
-                    setError('Error al cargar los datos necesarios. Por favor, intenta de nuevo.');
-                }
+                handleLoadError(error);
             } finally {
                 setLoading(false);
             }
@@ -104,9 +121,9 @@ export const CreateProductModal = ({
 
         // Convertir a número si el campo lo requiere
         if (['precio', 'id_categoria', 'id_proveedor', 'stock_minimo'].includes(name)) {
-            parsedValue = value === '' ? 0 : parseFloat(value);
+            parsedValue = value === '' ? 0 : Number.parseFloat(value);
         } else if (name === 'id_marca') {
-            parsedValue = value === '' ? null : parseFloat(value);
+            parsedValue = value === '' ? null : Number.parseFloat(value);
         } else if (name === 'descripcion') {
             parsedValue = value === '' ? null : value;
         }
@@ -132,7 +149,29 @@ export const CreateProductModal = ({
         setError('');
     };
 
-    // Se eliminaron las funciones relacionadas con sucursales y ubicaciones
+    const validateFormData = (): void => {
+        if (!formData.nombre.trim()) {
+            throw new Error('El nombre es requerido');
+        }
+        if (!formData.codigo_producto.trim()) {
+            throw new Error('El código de producto es requerido');
+        }
+        if (!formData.id_categoria || formData.id_categoria <= 0) {
+            throw new Error('La categoría es requerida');
+        }
+        if (!formData.id_proveedor || formData.id_proveedor <= 0) {
+            throw new Error('El proveedor es requerido');
+        }
+        if (formData.precio < 0) {
+            throw new Error('El precio no puede ser negativo');
+        }
+        if (formData.stock_minimo < 0) {
+            throw new Error('El stock mínimo no puede ser negativo');
+        }
+        if (!formData.unidad_medida) {
+            throw new Error('La unidad de medida es requerida');
+        }
+    };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -140,39 +179,14 @@ export const CreateProductModal = ({
         setError('');
 
         try {
-            // Validaciones
-            if (!formData.nombre.trim()) {
-                throw new Error('El nombre es requerido');
-            }
-            if (!formData.codigo_producto.trim()) {
-                throw new Error('El código de producto es requerido');
-            }
-            if (!formData.id_categoria || formData.id_categoria <= 0) {
-                throw new Error('La categoría es requerida');
-            }
-            if (!formData.id_proveedor || formData.id_proveedor <= 0) {
-                throw new Error('El proveedor es requerido');
-            }
-            if (formData.precio < 0) {
-                throw new Error('El precio no puede ser negativo');
-            }
-            if (formData.stock_minimo < 0) {
-                throw new Error('El stock mínimo no puede ser negativo');
-            }
-            if (!formData.unidad_medida) {
-                throw new Error('La unidad de medida es requerida');
-            }
-
+            validateFormData();
             await productoService.createProducto(formData);
             onProductCreated();
             resetForm();
             onClose();
         } catch (error) {
-            if (error instanceof Error) {
-                setError(error.message);
-            } else {
-                setError('Error al crear el producto');
-            }
+            const message = error instanceof Error ? error.message : 'Error al crear el producto';
+            setError(message);
         } finally {
             setLoading(false);
         }

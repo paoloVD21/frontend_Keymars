@@ -50,8 +50,8 @@ export const salidaService = {
                 if (!payload.sub) {
                     throw new Error('ID de usuario no encontrado en el token');
                 }
-                userId = parseInt(payload.sub);
-                if (isNaN(userId)) {
+                userId = Number.parseInt(payload.sub);d.sub);
+                if (Number.isNaN(userId)) {
                     throw new Error('ID de usuario inválido en el token');
                 }
             } catch {

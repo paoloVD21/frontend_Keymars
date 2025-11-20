@@ -69,7 +69,7 @@ export const EditUserModal: FC<EditUserModalProps> = ({ isOpen, onClose, onUserU
                 nombre: formData.nombre,
                 apellido: formData.apellido,
                 email: formData.email,
-                id_sucursal: parseInt(formData.id_sucursal)
+                id_sucursal: Number.parseInt(formData.id_sucursal)
             };
 
             // Solo incluir password si se ha modificado

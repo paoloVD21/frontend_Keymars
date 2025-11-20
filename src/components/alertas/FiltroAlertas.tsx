@@ -32,7 +32,7 @@ const FiltroAlertas: React.FC<FiltroAlertasProps> = ({
         const filtros: AlertaFiltros = {};
         
         if (estado) filtros.estado = estado as 'creado' | 'stock_minimo' | 'stock_bajo';
-        if (sucursal) filtros.id_sucursal = parseInt(sucursal);
+        if (sucursal) filtros.id_sucursal = Number.parseInt(sucursal);
         if (mes && anio) filtros.mes = `${anio}-${mes}`;
 
         onFiltrar(filtros);
@@ -50,8 +50,9 @@ const FiltroAlertas: React.FC<FiltroAlertasProps> = ({
         <div className={styles.filterContainer}>
             <form onSubmit={aplicarFiltros} className={styles.form}>
                 <div className={styles.formGroup}>
-                    <label className={styles.label}>Estado</label>
+                    <label htmlFor="estado" className={styles.label}>Estado</label>
                     <select
+                        id="estado"
                         className={styles.select}
                         value={estado}
                         onChange={(e) => setEstado(e.target.value)}
@@ -64,8 +65,9 @@ const FiltroAlertas: React.FC<FiltroAlertasProps> = ({
                 </div>
 
                 <div className={styles.formGroup}>
-                    <label className={styles.label}>Sucursal</label>
+                    <label htmlFor="sucursal" className={styles.label}>Sucursal</label>
                     <select
+                        id="sucursal"
                         className={styles.select}
                         value={sucursal}
                         onChange={(e) => setSucursal(e.target.value)}
@@ -86,8 +88,9 @@ const FiltroAlertas: React.FC<FiltroAlertasProps> = ({
 
 
                 <div className={styles.formGroup}>
-                    <label className={styles.label}>Mes</label>
+                    <label htmlFor="mes" className={styles.label}>Mes</label>
                     <select
+                        id="mes"
                         className={styles.select}
                         value={mes}
                         onChange={(e) => setMes(e.target.value)}
@@ -109,8 +112,9 @@ const FiltroAlertas: React.FC<FiltroAlertasProps> = ({
                 </div>
 
                 <div className={styles.formGroup}>
-                    <label className={styles.label}>Año</label>
+                    <label htmlFor="anio" className={styles.label}>Año</label>
                     <select
+                        id="anio"
                         className={styles.select}
                         value={anio}
                         onChange={(e) => setAnio(e.target.value)}
