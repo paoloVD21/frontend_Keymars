@@ -48,7 +48,7 @@ export const EditProductModal = ({
             descripcion: producto.descripcion || null,
             codigo_producto: producto.codigo_producto,
             id_categoria: Number(producto.id_categoria),
-            id_marca: producto.id_marca !== null ? Number(producto.id_marca) : null,
+            id_marca: producto.id_marca == null ? null : Number(producto.id_marca),
             id_proveedor: Number(producto.id_proveedor),
             precio: Number(producto.precio) || 0,
             unidad_medida: producto.unidad_medida,

@@ -3,6 +3,59 @@ import type { AuthResponse, LoginCredentials } from '../types/auth';
 
 const API_URL = `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/auth`;
 
+const extractTokenFromResponse = (responseData: any): string => {
+    const possibleTokenKeys = ['access_token', 'accessToken', 'token', 'auth_token', 'id_token'];
+    
+    // Intenta encontrar el token en las claves principales
+    if (responseData && typeof responseData === 'object') {
+        for (const key of possibleTokenKeys) {
+            if (responseData[key]) {
+                return responseData[key];
+            }
+        }
+        
+        // Intenta buscar en objetos anidados
+        const nestedCandidates = ['data', 'result', 'payload'];
+        for (const nested of nestedCandidates) {
+            if (responseData[nested] && typeof responseData[nested] === 'object') {
+                for (const key of possibleTokenKeys) {
+                    if (responseData[nested][key]) {
+                        return responseData[nested][key];
+                    }
+                }
+            }
+        }
+        
+        // Si viene directamente como string
+        if (typeof responseData === 'string') {
+            return responseData;
+        }
+    }
+    
+    throw new Error('No se recibió token de acceso. Revisa la respuesta del servidor en la consola.');
+};
+
+const getRoleFromId = (id: number): 'supervisor' | 'asistente' => {
+    if (id === 1) {
+        return 'supervisor';
+    } else if (id === 2) {
+        return 'asistente';
+    }
+    console.warn(`ID de rol no reconocido: ${id}, asignando rol por defecto 'asistente'`);
+    return 'asistente';
+};
+
+const handleLoginError = (error: any): never => {
+    console.error('Error durante el login:', error);
+    if (axios.isAxiosError(error)) {
+        if (error.code === 'ERR_NETWORK' && !error.response) {
+            throw new Error('Error de conexión: El servidor no permite peticiones desde esta aplicación. Contacta al administrador.');
+        }
+        console.error('Detalles del error:', error.response?.data);
+    }
+    throw error;
+};
+
 export const authService = {
     getCurrentUser: async (): Promise<AuthResponse> => {
         const token = localStorage.getItem('token');
@@ -59,7 +112,6 @@ export const authService = {
         try {
             // Crear FormData con el formato correcto
             const formData = new URLSearchParams();
-            // Enviar tanto 'username' como 'email' para compatibilidad con distintos backends
             formData.append('username', credentials.email);
             formData.append('email', credentials.email);
             formData.append('password', credentials.password);
@@ -70,60 +122,11 @@ export const authService = {
                 }
             });
 
-
-
-            // Intentar extraer el token desde varias claves comunes
-            const possibleTokenKeys = ['access_token', 'accessToken', 'token', 'auth_token', 'id_token'];
-            let token: string | undefined = undefined;
-            if (response.data && typeof response.data === 'object') {
-                for (const key of possibleTokenKeys) {
-                    if (response.data[key]) {
-                        token = response.data[key];
-                        break;
-                    }
-                }
-                // Manejar respuestas anidadas: { data: { token: '...' } } o { result: { access_token: '...' } }
-                if (!token) {
-                    const nestedCandidates = ['data', 'result', 'payload'];
-                    for (const nested of nestedCandidates) {
-                        if (response.data[nested] && typeof response.data[nested] === 'object') {
-                            for (const key of possibleTokenKeys) {
-                                if (response.data[nested][key]) {
-                                    token = response.data[nested][key];
-                                    break;
-                                }
-                            }
-                        }
-                        if (token) break;
-                    }
-                }
-                // También puede venir directamente como string (ej: response.data === '...')
-                if (!token && typeof response.data === 'string') {
-                    token = response.data as string;
-                }
-            }
-
-            if (!token) {
-                console.error('No se encontró token en la respuesta. Claves recibidas:', Object.keys(response.data || {}));
-                // Lanzar error con detalle para que el UI pueda mostrarlo
-                throw new Error('No se recibió token de acceso. Revisa la respuesta del servidor en la consola.');
-            }
-            
-            // Guardar el token
+            // Extraer token
+            const token = extractTokenFromResponse(response.data);
             localStorage.setItem('token', token);
 
-            // Convertir id_rol a string role
-            const getRoleFromId = (id: number): 'supervisor' | 'asistente' => {
-                if (id === 1) {
-                    return 'supervisor';
-                } else if (id === 2) {
-                    return 'asistente';
-                } else {
-                    console.warn(`ID de rol no reconocido: ${id}, asignando rol por defecto 'asistente'`);
-                    return 'asistente';
-                }
-            };
-
+            // Crear objeto de usuario
             const user = {
                 email: credentials.email,
                 role: getRoleFromId(response.data.user?.id_rol),
@@ -131,33 +134,19 @@ export const authService = {
                 apellido: response.data.user?.apellido || ''
             };
 
-            // Guardar la información del usuario
             localStorage.setItem('user', JSON.stringify(user));
 
-            // Adaptar la respuesta al formato que espera nuestra aplicación
-            const authResponse: AuthResponse = {
+            return {
                 user,
                 token
             };
-            
-            return authResponse;
         } catch (error) {
-            console.error('Error durante el login:', error);
-            if (axios.isAxiosError(error)) {
-                // Detectar error de CORS
-                if (error.code === 'ERR_NETWORK' && !error.response) {
-                    console.error('Error de CORS detectado - El backend no permite peticiones desde este origen');
-                    throw new Error('Error de conexión: El servidor no permite peticiones desde esta aplicación. Contacta al administrador.');
-                }
-                console.error('Detalles del error:', error.response?.data);
-            }
-            throw error;
+            handleLoginError(error);
         }
     },
     
     logout: async (): Promise<void> => {
         try {
-            // Si tu backend tiene un endpoint de logout, llamarlo aquí
             localStorage.removeItem('token');
             localStorage.removeItem('user');
         } catch (error) {

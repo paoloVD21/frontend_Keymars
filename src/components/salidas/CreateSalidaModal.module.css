@@ -68,7 +68,7 @@
 }
 
 .error {
-    color: #DC2626;
+    color: #7F1D1D; /* Rojo oscuro para mejor contraste */
     padding: 1rem;
     background-color: #FEE2E2;
     border-radius: 0.375rem;
@@ -124,7 +124,7 @@
 .removeButton {
     padding: 0.375rem 0.75rem;
     background-color: #EF4444;
-    color: white;
+    color: #000000;
     border: none;
     border-radius: 0.25rem;
     font-size: 0.875rem;
@@ -156,8 +156,8 @@
 }
 
 .submitButton {
-    background-color: #10B981;
-    color: white;
+    background-color: #108981;
+    color: #000000;
 }
 
 .submitButton:hover {
@@ -220,8 +220,8 @@
 }
 
 .sucursalCard.selected {
-    background-color: #10B981;
-    color: white;
+    background-color: #108981;
+    color: #000000;
     border-color: #10B981;
     box-shadow: 0 3px 6px rgba(16, 185, 129, 0.2);
 }
@@ -259,8 +259,8 @@
 
 .searchButton {
     padding: 0.75rem 1.5rem;
-    background-color: #10B981;
-    color: white;
+    background-color: #108981;
+    color: #000000;
     border: none;
     border-radius: 6px;
     font-weight: 500;
@@ -380,12 +380,12 @@
 
 .stockEmpty {
     background-color: #FEE2E2;
-    color: #DC2626;
+    color: #7F1D1D; /* Rojo más oscuro para mejor contraste */
 }
 
 .addButton {
-    background-color: #10B981;
-    color: white;
+    background-color: #108981;
+    color: #000000; /* White provides good contrast with green background */
     border: none;
     padding: 0.5rem 1rem;
     border-radius: 0.375rem;
@@ -430,17 +430,17 @@
 
 .disabledButton {
     background-color: #E5E7EB !important;
-    color: #9CA3AF !important;
+    color: #374151 !important;
     cursor: not-allowed !important;
 }
 
 .selectedIndicator {
     position: absolute;
     bottom: -10px;
-    left: 50%;
+    left: -50%;
     transform: translateX(-50%);
     background-color: #059669;
-    color: white;
+    color: #000000;
     padding: 4px 8px;
     border-radius: 12px;
     font-size: 0.75rem;

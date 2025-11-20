@@ -145,7 +145,7 @@ export const proveedorService = {
             
             // Validación exhaustiva de la respuesta
             if (!Array.isArray(data)) {
-                throw new Error('Formato de respuesta inválido');
+                throw new TypeError('Formato de respuesta inválido');
             }
 
             // Transformamos y validamos cada proveedor

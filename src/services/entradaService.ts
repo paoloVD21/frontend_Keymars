@@ -44,7 +44,7 @@ export const entradaService = {
             // Extraer el ID del usuario del token
             const parts = token.split('.');
             if (parts.length !== 3) {
-                throw new Error('Token inválido');
+                throw new TypeError('Token inválido');
             }
 
             let userId: number;
@@ -52,14 +52,14 @@ export const entradaService = {
                 const payload = JSON.parse(atob(parts[1]));
                 
                 if (!payload.sub) {
-                    throw new Error('ID de usuario no encontrado en el token');
+                    throw new TypeError('ID de usuario no encontrado en el token');
                 }
                 userId = Number.parseInt(payload.sub);
                 if (Number.isNaN(userId)) {
-                    throw new Error('ID de usuario inválido en el token');
+                    throw new TypeError('ID de usuario inválido en el token');
                 }
             } catch {
-                throw new Error('Error al obtener el ID de usuario del token');
+                throw new TypeError('Error al obtener el ID de usuario del token');
             }
 
             const datosAEnviar = {

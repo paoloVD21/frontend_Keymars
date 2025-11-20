@@ -9,6 +9,17 @@ interface FiltrosReporte {
     tipo_reporte: 'resumen_inventario' | 'stock_bajo' | 'mayores_movimientos';
 }
 
+const downloadFile = (blob: Blob, fileName: string) => {
+    const url = globalThis.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    globalThis.URL.revokeObjectURL(url);
+};
+
 export const ReportesView = () => {
     const { sucursales, isLoading, error } = useSucursales();
     const [filtros, setFiltros] = useState<FiltrosReporte>({
@@ -54,19 +65,8 @@ export const ReportesView = () => {
             };
 
             const blob = await reportService.exportToExcel(params);
-            
-            // Crear nombre de archivo basado en los filtros
             const fileName = `reporte-${filtros.tipo_reporte}-${filtros.periodo}.xlsx`;
-            
-            // Descargar archivo
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = fileName;
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-            document.body.removeChild(a);
+            downloadFile(blob, fileName);
         } catch (error) {
             console.error('Error al exportar a Excel:', error);
             setExportError('Error al generar el reporte Excel');
@@ -87,19 +87,8 @@ export const ReportesView = () => {
             };
 
             const blob = await reportService.exportToPDF(params);
-            
-            // Crear nombre de archivo basado en los filtros
             const fileName = `reporte-${filtros.tipo_reporte}-${filtros.periodo}.pdf`;
-            
-            // Descargar archivo
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = fileName;
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-            document.body.removeChild(a);
+            downloadFile(blob, fileName);
         } catch (error) {
             console.error('Error al exportar a PDF:', error);
             setExportError('Error al generar el reporte PDF');

@@ -122,7 +122,7 @@
 
 .editButton {
     background-color: #007bff;
-    color: white;
+    color: #000000;
 }
 
 .editButton:hover {
@@ -140,7 +140,7 @@
 
 .activateButton {
     background-color: #059669;
-    color: white;
+    color: #000000;
 }
 
 .activateButton:hover {
@@ -257,6 +257,8 @@
     .table th,
     .table td {
         display: none !important;
+        padding: 0.5rem;
+        min-width: 80px;
     }
 
     /* Luego, mostrar SOLO las columnas específicas que queremos */
@@ -277,12 +279,6 @@
     .table td:nth-child(9) {  /* Acciones */
         display: table-cell !important;
         width: 35%;
-    }
-
-    .table th,
-    .table td {
-        padding: 0.5rem;
-        min-width: 80px;
     }
 
     /* Estilos específicos para mejorar la visualización */

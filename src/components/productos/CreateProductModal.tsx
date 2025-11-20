@@ -55,8 +55,18 @@ export const CreateProductModal = ({
         return true;
     };
 
+    const getResponseKey = (type: string): string => {
+        if (type === 'proveedores') {
+            return 'proveedores';
+        }
+        if (type === 'categorias') {
+            return 'categorias';
+        }
+        return 'marcas';
+    };
+
     const validateResponseData = (res: any, type: string): boolean => {
-        const key = type === 'proveedores' ? 'proveedores' : type === 'categorias' ? 'categorias' : 'marcas';
+        const key = getResponseKey(type);
         if (res?.[key] && Array.isArray(res[key])) {
             return true;
         }

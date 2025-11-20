@@ -22,7 +22,7 @@ export const Sidebar = ({ user }: SidebarProps) => {
     };
 
     return (
-        <aside className={`${styles.sidebar} ${!isExpanded ? styles.collapsed : ''}`}>
+        <aside className={`${styles.sidebar} ${isExpanded ? '' : styles.collapsed}`}>
             <div className={styles.header}>
                 <div className={styles.logo}>
                     <img 

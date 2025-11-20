@@ -2,9 +2,29 @@ import styles from './ListaAlertas.module.css';
 import type { Alerta } from '../../types/alerta';
 
 interface ListaAlertasProps {
-    alertas: Alerta[];
-    cargando: boolean;
+    readonly alertas: Alerta[];
+    readonly cargando: boolean;
 }
+
+const getStatusClass = (estado: string): string => {
+    if (estado === 'stock_bajo') {
+        return styles.statusBajo;
+    }
+    if (estado === 'stock_minimo') {
+        return styles.statusMinimo;
+    }
+    return styles.statusCreado;
+};
+
+const getStatusText = (estado: string): string => {
+    if (estado === 'creado') {
+        return 'Creado';
+    }
+    if (estado === 'stock_minimo') {
+        return 'Stock Mínimo';
+    }
+    return 'Stock Bajo';
+};
 
 export default function ListaAlertas({ 
     alertas, 
@@ -55,16 +75,8 @@ export default function ListaAlertas({
                                 <td>{alerta.nombre_sucursal}</td>
                                 <td>{formatearFecha(alerta.fecha_alerta)}</td>
                                 <td>
-                                    <span className={`${styles.status} ${
-                                        alerta.estado === 'stock_bajo'
-                                            ? styles.statusBajo
-                                            : alerta.estado === 'stock_minimo'
-                                            ? styles.statusMinimo
-                                            : styles.statusCreado
-                                    }`}>
-                                        {alerta.estado === 'creado' ? 'Creado' :
-                                         alerta.estado === 'stock_minimo' ? 'Stock Mínimo' :
-                                         'Stock Bajo'}
+                                    <span className={`${styles.status} ${getStatusClass(alerta.estado)}`}>
+                                        {getStatusText(alerta.estado)}
                                     </span>
                                 </td>
                             </tr>

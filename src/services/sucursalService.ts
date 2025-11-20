@@ -23,7 +23,7 @@ export const sucursalService = {
             
             // El backend devuelve directamente el array de sucursales
             if (!Array.isArray(data)) {
-                throw new Error('Formato de respuesta inválido');
+                throw new TypeError('Formato de respuesta inválido');
             }
 
             // Transformamos la respuesta al formato esperado por el frontend

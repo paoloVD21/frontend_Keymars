@@ -42,7 +42,7 @@
 
 .tipoButton.active {
     background: #3b82f6;
-    color: white;
+    color: #000000;
 }
 
 .reportesList {

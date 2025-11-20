@@ -26,6 +26,16 @@ interface MovimientosChartProps {
     isLoading?: boolean;
 }
 
+const renderChartContent = (isLoading: boolean | undefined, data: DashboardMovimientos | null, chartData: any, options: any) => {
+    if (isLoading) {
+        return <div className={styles.loading}>Cargando...</div>;
+    }
+    if (data) {
+        return <Bar options={options} data={chartData} height={250} />;
+    }
+    return <div className={styles.noData}>No hay datos disponibles</div>;
+};
+
 export const MovimientosChart: React.FC<MovimientosChartProps> = ({ data, isLoading }) => {
     const chartData = {
         labels: data?.labels || [],
@@ -87,13 +97,7 @@ export const MovimientosChart: React.FC<MovimientosChartProps> = ({ data, isLoad
                 </div>
             </div>
             <div className={styles.chart}>
-                {isLoading ? (
-                    <div className={styles.loading}>Cargando...</div>
-                ) : data ? (
-                    <Bar options={options} data={chartData} height={250} />
-                ) : (
-                    <div className={styles.noData}>No hay datos disponibles</div>
-                )}
+                {renderChartContent(isLoading, data, chartData, options)}
             </div>
         </div>
     );

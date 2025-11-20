@@ -56,7 +56,7 @@
 }
 
 .statusActive {
-    color: #059669;
+    color: #065f46;
     background-color: #ecfdf5;
     padding: 0.25rem 0.75rem;
     border-radius: 9999px;
@@ -64,7 +64,7 @@
 }
 
 .statusInactive {
-    color: #dc2626;
+    color: #991b1b;
     background-color: #fef2f2;
     padding: 0.25rem 0.75rem;
     border-radius: 9999px;
@@ -102,25 +102,9 @@
 }
 
 .activateButton {
-    background-color: #059669;
-}
-
-.activateButton:hover:not(:disabled) {
-    background-color: #047857;
-}
-
-.deactivateButton {
-    background-color: #dc2626;
-}
-
-.deactivateButton:hover:not(:disabled) {
-    background-color: #b91c1c;
-}
-
-.activateButton {
     padding: 0.25rem 0.75rem;
     background-color: #059669;
-    color: white;
+    color: #000000;
     border-radius: 0.25rem;
     font-size: 0.875rem;
 }
@@ -132,7 +116,7 @@
 .deactivateButton {
     padding: 0.25rem 0.75rem;
     background-color: #dc2626;
-    color: white;
+    color: #000000;
     border-radius: 0.25rem;
     font-size: 0.875rem;
 }
@@ -150,7 +134,7 @@
 }
 
 .rolAsistente {
-    color: #ea580c;
+    color: #92400e;
     background-color: #fff7ed;
     padding: 0.25rem 0.75rem;
     border-radius: 9999px;

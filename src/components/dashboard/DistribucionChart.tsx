@@ -20,6 +20,16 @@ interface DistribucionChartProps {
     isLoading?: boolean;
 }
 
+const renderChartContent = (isLoading: boolean | undefined, data: DashboardDistribucion | null, chartData: any, options: any) => {
+    if (isLoading) {
+        return <div className={styles.loading}>Cargando...</div>;
+    }
+    if (data) {
+        return <Doughnut data={chartData} options={options} />;
+    }
+    return <div className={styles.noData}>No hay datos disponibles</div>;
+};
+
 export const DistribucionChart: React.FC<DistribucionChartProps> = ({ data, isLoading }) => {
     const chartData = {
         labels: data?.labels || [],
@@ -64,13 +74,7 @@ export const DistribucionChart: React.FC<DistribucionChartProps> = ({ data, isLo
                 <h3 className={styles.title}>Distribución por Categoría</h3>
             </div>
             <div className={styles.chart}>
-                {isLoading ? (
-                    <div className={styles.loading}>Cargando...</div>
-                ) : data ? (
-                    <Doughnut data={chartData} options={options} />
-                ) : (
-                    <div className={styles.noData}>No hay datos disponibles</div>
-                )}
+                {renderChartContent(isLoading, data, chartData, options)}
             </div>
         </div>
     );

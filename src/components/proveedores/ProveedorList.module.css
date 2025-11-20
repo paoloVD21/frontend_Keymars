@@ -17,7 +17,7 @@
 
 .createButton {
     background-color: #28a745;
-    color: white;
+    color: #000000;
     border: none;
     padding: 0.5rem 1rem;
     border-radius: 4px;
@@ -48,7 +48,7 @@
 .searchButton {
     padding: 0.5rem 1rem;
     background-color: #007bff;
-    color: white;
+    color: #000000;
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -132,7 +132,7 @@
 
 .editButton {
     background-color: #007bff;
-    color: white;
+    color: #000000;
 }
 
 .editButton:hover {
@@ -150,7 +150,7 @@
 
 .activateButton {
     background-color: #059669;
-    color: white;
+    color: #000000;
 }
 
 .activateButton:hover {
@@ -180,15 +180,15 @@
 }
 
 .statusActive {
-    color: #059669;
-    background-color: #ecfdf5;
+    color: #065f46;
+    background-color: #ecf6f5;
     padding: 0.25rem 0.75rem;
     border-radius: 9999px;
     font-size: 0.875rem;
 }
 
 .statusInactive {
-    color: #dc2626;
+    color: #991b1b;
     background-color: #fef2f2;
     padding: 0.25rem 0.75rem;
     border-radius: 9999px;
@@ -321,6 +321,9 @@
     .table th,
     .table td {
         display: none !important;
+        padding: 0.5rem;
+        font-size: 0.875rem;
+        min-width: 80px;
     }
 
     /* Mostrar solo las columnas importantes */
@@ -350,13 +353,6 @@
 
     .table td:nth-child(6) {
         width: 20%;
-    }
-
-    .table th,
-    .table td {
-        padding: 0.5rem;
-        font-size: 0.875rem;
-        min-width: 80px;
     }
 
     /* Ajustar botones de acción */
