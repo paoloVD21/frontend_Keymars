@@ -167,8 +167,9 @@ export const ProductList = ({ onRefresh }: ProductListProps) => {
                             disabled={loadingProducto === producto.id_producto}
                             title={producto.activo ? 'Desactivar producto' : 'Activar producto'}
                         >
-                            {loadingProducto === producto.id_producto ? 'Procesando...' : 
-                             producto.activo ? 'Desactivar' : 'Activar'}
+                            {loadingProducto === producto.id_producto 
+                                ? 'Procesando...' 
+                                : (producto.activo ? 'Desactivar' : 'Activar')}
                         </button>
                     </div>
                 </td>

@@ -134,7 +134,7 @@ export const CreateSalidaModal: React.FC<CreateSalidaModalProps> = ({
             // Cargar las ubicaciones si aún no están cargadas
             if (state.ubicaciones.length === 0) {
                 const ubicacionesData = await ubicacionService.getUbicacionesPorSucursal(state.formData.id_sucursal);
-                if (!ubicacionesData || !ubicacionesData.ubicaciones) {
+                if (!ubicacionesData?.ubicaciones) {
                     throw new Error('No se pudieron cargar las ubicaciones');
                 }
                 const ubicacionesActivas = ubicacionesData.ubicaciones.filter(u => u.activo);
@@ -515,7 +515,7 @@ export const CreateSalidaModal: React.FC<CreateSalidaModalProps> = ({
                                         </thead>
                                         <tbody>
                                             {state.productosSeleccionados.map((producto: ProductoSeleccionado, index: number) => (
-                                                <tr key={index}>
+                                                <tr key={`${producto.id_producto}-${producto.id_ubicacion}`}>
                                                     <td>{producto.nombre}</td>
                                                     <td>{producto.codigo_producto}</td>
                                                     <td>{producto.ubicacion_nombre}</td>

@@ -16,7 +16,7 @@ const downloadFile = (blob: Blob, fileName: string) => {
     link.download = fileName;
     document.body.appendChild(link);
     link.click();
-    document.body.removeChild(link);
+    link.remove();
     globalThis.URL.revokeObjectURL(url);
 };
 

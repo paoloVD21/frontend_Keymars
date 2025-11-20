@@ -151,8 +151,11 @@ export const ProveedorList = ({ onRefresh, userRole }: ProveedorListProps) => {
                                 disabled={loadingProveedor === proveedor.id_proveedor}
                                 title={proveedor.activo ? 'Desactivar proveedor' : 'Activar proveedor'}
                             >
-                                {loadingProveedor === proveedor.id_proveedor ? 'Procesando...' : 
-                                 proveedor.activo ? 'Desactivar' : 'Activar'}
+                                {loadingProveedor === proveedor.id_proveedor 
+                                    ? 'Procesando...' 
+                                    : proveedor.activo 
+                                        ? 'Desactivar' 
+                                        : 'Activar'}
                             </button>
                         </div>
                     </td>

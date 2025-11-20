@@ -64,9 +64,9 @@ export const MobileNav = ({ user }: MobileNavProps) => {
             </div>
 
             <div className={`${styles.dropdown} ${isMenuOpen ? styles.show : ''}`}>
-                {menuItems.map((item, index) => (
+                {menuItems.map((item) => (
                     <Link
-                        key={index}
+                        key={item.path}
                         to={item.path}
                         className={styles.menuItem}
                         onClick={handleLinkClick}

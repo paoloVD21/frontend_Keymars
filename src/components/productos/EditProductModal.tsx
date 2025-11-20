@@ -75,7 +75,7 @@ export const EditProductModal = ({
                 setProveedores(proveedoresData);
                 
                 // Buscar el id_proveedor basado en el nombre del proveedor
-                if (producto && producto.proveedor_nombre) {
+                if (producto?.proveedor_nombre) {
                     const proveedorEncontrado = proveedoresData.find(
                         prov => prov.nombre === producto.proveedor_nombre
                     );

@@ -624,7 +624,7 @@ export const CreateEntradaModal: React.FC<CreateEntradaModalProps> = ({
                                         </thead>
                                         <tbody>
                                             {productosSeleccionados.map((producto, index) => (
-                                                <tr key={index}>
+                                                <tr key={producto.id_producto}>
                                                     <td>{producto.nombre}</td>
                                                     <td>
                                                         <input
